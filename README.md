@@ -16,7 +16,7 @@ The demo contains:
 * Keyboard/Mouse and Joystick support
 
 # Keyboard Commands:
-(see file [GInputAppState](https://github.com/capdevon/Archer-Game-Template/blob/main/src/main/java/com/capdevon/input/GInputAppState.java) for all configurations, joystick included)
+(see file [GInputAppState](https://github.com/capdevon/Archer-Game-Template2/blob/main/src/main/java/com/capdevon/input/GInputAppState.java) for all configurations, joystick included)
 - WASD: Basic movements
 - E: Aiming
 - R: Switch arrow type
