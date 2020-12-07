@@ -11,7 +11,7 @@ import com.jme3.math.Transform;
 
 /**
  *
- * @author chris
+ * @author capdevon
  */
 public class IKPositions {
 
