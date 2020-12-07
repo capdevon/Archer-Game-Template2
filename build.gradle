@@ -1,0 +1,112 @@
+plugins {
+    id 'application'
+    id 'java'
+}
+
+description = 'prototypical JMonkeyEngine application'
+
+//// select one source-code (JDK) option
+//sourceCompatibility = '1.6'
+//sourceCompatibility = '1.7'
+sourceCompatibility = '1.8'
+
+//targetCompatibility = '1.6'
+//targetCompatibility = '1.7'
+targetCompatibility = '1.8'
+
+// select one version of the Engine
+//ext.jmonkeyengineVersion = '3.2.4-stable' // from jCenter
+ext.jmonkeyengineVersion = '3.3.2-stable' // from jCenter
+//ext.jmonkeyengineVersion = '3.4.0-SNAPSHOT' // from mavenLocal
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) { // compile-time options:
+        options.compilerArgs << '-Xdiags:verbose'
+        options.compilerArgs << '-Xlint:unchecked'
+        options.deprecation = true
+        options.encoding = 'UTF-8'
+    }
+    tasks.withType(JavaExec) { // runtime options:
+        args = []
+        classpath sourceSets.main.runtimeClasspath
+        //debug true
+        enableAssertions true
+        //jvmArgs '-verbose:gc'
+        //jvmArgs '-Xbatch'
+        //jvmArgs '-Xms512m', '-Xmx512m'
+        //jvmArgs '-XX:+PrintCompilation'
+        //jvmArgs '-XX:+UseConcMarkSweepGC'
+        jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
+    }
+}
+
+// NetBeans will automatically add "run" and "debug" tasks relying on the
+// "mainClass" property. You may however define the property prior executing
+// tasks by passing a "-PmainClass=<QUALIFIED_CLASS_NAME>" argument.
+//
+// Note however, that you may define your own "run" and "debug" task if you
+// prefer. In this case NetBeans will not add these tasks but you may rely on
+// your own implementation.
+mainClassName = 'mygame.Main'
+if (!hasProperty('mainClass')) {
+    ext.mainClass = mainClassName
+}
+jar.manifest.attributes('Main-Class': mainClassName)
+
+repositories {
+    //mavenLocal()
+    jcenter()
+    //maven { url 'http://nifty-gui.sourceforge.net/nifty-maven-repo' }
+    maven { url 'https://dl.bintray.com/stephengold/org.jmonkeyengine' }
+    //google()
+    //mavenCentral()
+
+    // Read more about repositories here:
+    //   https://docs.gradle.org/current/userguide/dependency_management.html#sec:repositories
+}
+
+dependencies {
+    // You can read more about how to add dependencies here:
+    //   https://docs.gradle.org/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
+
+    // from jcenter (or mavenLocal) repositories:
+    implementation 'org.jmonkeyengine:jme3-core:' + jmonkeyengineVersion
+    implementation 'org.jmonkeyengine:jme3-desktop:' + jmonkeyengineVersion
+    implementation 'org.jmonkeyengine:jme3-effects:' + jmonkeyengineVersion
+    implementation 'org.jmonkeyengine:jme3-jogl:' + jmonkeyengineVersion
+    //implementation 'org.jmonkeyengine:jme3-networking:' + jmonkeyengineVersion
+    //implementation 'org.jmonkeyengine:jme3-niftygui:' + jmonkeyengineVersion
+    implementation 'org.jmonkeyengine:jme3-terrain:' + jmonkeyengineVersion
+
+    implementation 'com.github.stephengold:Minie:3.0.0'
+    //implementation 'com.github.stephengold:Minie:3.0.0+debug'
+
+    // select one version of LWJGL (from jCenter or mavenLocal)
+    //runtimeOnly 'org.jmonkeyengine:jme3-lwjgl:' + jmonkeyengineVersion  // LWJGL 2.x
+    runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jmonkeyengineVersion // LWJGL 3.x
+
+    // BasicGame doesn't use jme3-blender, jme3-jogg, or jme3-plugins
+    //  -- they are added solely to avoid warnings from AssetConfig
+    runtimeOnly 'org.jmonkeyengine:jme3-blender:' + jmonkeyengineVersion
+    runtimeOnly 'org.jmonkeyengine:jme3-jogg:' + jmonkeyengineVersion
+    runtimeOnly 'org.jmonkeyengine:jme3-plugins:' + jmonkeyengineVersion
+
+    // from stephengold's bintray repositories:
+    runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
+    //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.3.0-alpha2'
+}
+
+// cleanup tasks
+clean.dependsOn('cleanDLLs', 'cleanDyLibs', 'cleanLogs', 'cleanSOs')
+task cleanDLLs(type: Delete) {
+    delete fileTree(dir: '.', include: '*.dll')
+}
+task cleanDyLibs(type: Delete) {
+    delete fileTree(dir: '.', include: '*.dylib')
+}
+task cleanLogs(type: Delete) {
+    delete fileTree(dir: '.', include: 'hs_err_pid*.log')
+}
+task cleanSOs(type: Delete) {
+    delete fileTree(dir: '.', include: '*.so')
+}
