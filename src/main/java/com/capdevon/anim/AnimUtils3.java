@@ -72,25 +72,12 @@ public class AnimUtils3 {
 		for (AnimTrack track : sourceClip.getTracks()) {
 
 			TransformTrack tt = (TransformTrack) track;
-//			HasLocalTransform target = null;
-//
-//			if (tt.getTarget() instanceof Node) {
-//				System.out.println("You're in trouble!");
-////                target = getAnimRoot(model);
-//				
-//			} else if (tt.getTarget() instanceof Joint) {
-//				Joint joint = (Joint) tt.getTarget();
-//				target = targetArmature.getJoint(joint.getName());
-//			}
-//
-//			TransformTrack newTrack = new TransformTrack(target, tt.getTimes(), tt.getTranslations(), tt.getRotations(), tt.getScales());
-//			tracks.add(newTrack);
 			
 			if (tt.getTarget() instanceof Joint) {
 				Joint joint = (Joint) tt.getTarget();
 				HasLocalTransform target = targetArmature.getJoint(joint.getName());
 //				TransformTrack newTrack = new TransformTrack(target, tt.getTimes(), tt.getTranslations(), tt.getRotations(), tt.getScales());
-				TransformTrack newTrack = tt.jmeClone();
+				TransformTrack newTrack = tt.jmeClone(); // optimization
 				newTrack.setTarget(target);
 				tracks.add(newTrack);
 			}
