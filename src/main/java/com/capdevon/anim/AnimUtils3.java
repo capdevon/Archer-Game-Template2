@@ -24,7 +24,7 @@ import com.jme3.util.SafeArrayList;
 
 /**
  *
- * @author Christian
+ * @author capdevon
  */
 public class AnimUtils3 {
 
