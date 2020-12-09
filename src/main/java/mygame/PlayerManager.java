@@ -55,6 +55,12 @@ public class PlayerManager extends SimpleAppState {
         ginput.addActionListener(m_PlayerInput);
     }
 
+    @Override
+    public void update(float tpf) {
+        super.update(tpf);
+        app.getListener().setLocation(player.getWorldTranslation());
+    }
+
     private void setupPlayer() {
         // Create a node for the character model
         player = (Node) assetManager.loadModel(AnimDefs.MODEL);

@@ -18,17 +18,15 @@ import com.jme3.environment.LightProbeFactory;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.LightProbe;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
-import com.jme3.post.filters.BloomFilter;
 import com.jme3.post.filters.FXAAFilter;
 import com.jme3.post.filters.LightScatteringFilter;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
-import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
+import org.shaderblowex.filter.MipMapBloom.MipmapBloomFilter;
 
 /**
  *
@@ -99,36 +97,35 @@ public class Main extends BaseGameApplication {
     @Override
     public void setupFilters() {
         //Shadows
-        DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(assetManager, 2048, 3);
-        dlsf.setLight(sun);
+        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, 2048, 3);
+        dlsr.setLight(sun);
+        viewPort.addProcessor(dlsr);
 
         LightScatteringFilter lsf = new LightScatteringFilter(lightDir.mult(-300));
         lsf.setLightDensity(0.5f);
 
-        BloomFilter bloom = new BloomFilter();
-        bloom.setExposurePower(55);
-        bloom.setBloomIntensity(1.0f);
+        MipmapBloomFilter bloom = new MipmapBloomFilter(MipmapBloomFilter.Quality.High, MipmapBloomFilter.GlowMode.Scene);
+        bloom.setExposurePower(0.7f);
+        bloom.setBloomIntensity(0.4f, 0.55f);
 
-        SSAOFilter ssaoFilter = new SSAOFilter(5f, 10f, 0.5f, 0.50f);
+        SSAOFilter ssaoFilter = new SSAOFilter(5f, 10f, 0.8f, 0.70f);
 
         FXAAFilter fxaa = new FXAAFilter();
 
         fpp = new FilterPostProcessor(assetManager);
-        fpp.addFilter(dlsf);
         fpp.addFilter(ssaoFilter);
-        fpp.addFilter(bloom);
         fpp.addFilter(lsf);
+        fpp.addFilter(bloom);
         fpp.addFilter(fxaa);
         viewPort.addProcessor(fpp);
     }
 
     @Override
     public void setupScene() {
-//        Spatial scene = PhysicsTestHelper.getMainScene(assetManager);
-//        scene.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         Spatial scene = assetManager.loadModel("Scenes/level.gltf");
         scene.setName("MainScene");
         scene.move(0, -5, 0);
+        scene.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         PhysicsTestHelper.addStaticMeshCollider(scene);
         rootNode.attachChild(scene);
         
@@ -136,6 +133,7 @@ public class Main extends BaseGameApplication {
 //        rootNode.attachChild(targets);
         
         rootNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        rootNode.setQueueBucket(RenderQueue.Bucket.Opaque);
 
         /* nature sound - keeps playing in a loop. */
         AudioNode audio_nature = getAudioEnv("Sound/Environment/Nature.ogg", true, false, 4);
