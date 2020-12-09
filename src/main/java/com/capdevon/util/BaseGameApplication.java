@@ -17,6 +17,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
 import com.jme3.post.filters.LightScatteringFilter;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.Arrow;
@@ -46,8 +47,9 @@ public abstract class BaseGameApplication extends SimpleApplication {
     }
     
     public void setupSkyBox() {
-        rootNode.attachChild(SkyFactory.createSky(assetManager, 
-                "Scenes/Beach/FullskiesSunset0068.dds", SkyFactory.EnvMapType.CubeMap));
+        Spatial sky = SkyFactory.createSky(assetManager, "Scenes/Beach/FullskiesSunset0068.dds", SkyFactory.EnvMapType.CubeMap);
+        sky.setShadowMode(RenderQueue.ShadowMode.Off);
+        rootNode.attachChild(sky);
     }
     
     /** An ambient light and a directional sun light */
