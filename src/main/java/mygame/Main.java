@@ -45,8 +45,7 @@ public class Main extends BaseGameApplication {
         AppSettings settings = new AppSettings(true);
         settings.setUseJoysticks(true);
         settings.setResolution(1280, 720);
-        settings.setFrequency(60);
-        settings.setFrameRate(60);
+        settings.setVSync(true);
         settings.setSamples(4);
         settings.setBitsPerPixel(32);
         settings.setGammaCorrection(true);
@@ -99,6 +98,7 @@ public class Main extends BaseGameApplication {
         //Shadows
         DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, 2048, 3);
         dlsr.setLight(sun);
+        dlsr.setShadowIntensity(0.65f);
         viewPort.addProcessor(dlsr);
 
         LightScatteringFilter lsf = new LightScatteringFilter(lightDir.mult(-300));
@@ -138,6 +138,6 @@ public class Main extends BaseGameApplication {
         /* nature sound - keeps playing in a loop. */
         AudioNode audio_nature = getAudioEnv("Sound/Environment/Nature.ogg", true, false, 4);
     }
-    
+
 }
 
