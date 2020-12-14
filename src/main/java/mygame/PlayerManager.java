@@ -157,7 +157,11 @@ public class PlayerManager extends SimpleAppState {
     
     private Node createFakeBowModel() {
         Node model = new Node("ArcherToolkit");
-        Geometry bow = createGeometry("Bow.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Red);
+        Spatial bow = assetManager.loadModel("Models/Bow/bow.gltf");
+        bow.rotate(-FastMath.HALF_PI, 0, 0);
+        bow.move(-0.03f, 0.1f, 0);
+        bow.setName("Bow.GeoMesh");
+//        Geometry bow = createGeometry("Bow.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Red);
         Geometry arrow = createGeometry("Arrow.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Green);
         Geometry quiver = createGeometry("Quiver.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Green);
         model.setCullHint(Spatial.CullHint.Never);
