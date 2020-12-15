@@ -135,8 +135,8 @@ public class PlayerManager extends SimpleAppState {
         
         RangedBullet[] bullets = new RangedBullet[3];
         bullets[0] = new ArrowPrefab(app, "Arrow");
-        bullets[1] = new ExplosiveArrowPrefab(app, "FlameArrow", "Scenes/jMonkey/Flame.j3o");
-        bullets[2] = new ExplosiveArrowPrefab(app, "PoisonArrow", "Scenes/jMonkey/Poison.j3o");
+        bullets[1] = new ExplosiveArrowPrefab(app, "FlameArrow", "Scenes/jMonkey/Flame.j3o", ColorRGBA.Orange, 1.05f);
+        bullets[2] = new ExplosiveArrowPrefab(app, "PoisonArrow", "Scenes/jMonkey/Poison.j3o", new ColorRGBA(0, 1.0f, 0.452f, 1f), 8.85f);
         rWeapon.setBullets(bullets);
         
         // weapons list
@@ -161,7 +161,6 @@ public class PlayerManager extends SimpleAppState {
         bow.rotate(-FastMath.HALF_PI, 0, 0);
         bow.move(-0.03f, 0.1f, 0);
         bow.setName("Bow.GeoMesh");
-//        Geometry bow = createGeometry("Bow.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Red);
         Geometry arrow = createGeometry("Arrow.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Green);
         Geometry quiver = createGeometry("Quiver.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Green);
         model.setCullHint(Spatial.CullHint.Never);

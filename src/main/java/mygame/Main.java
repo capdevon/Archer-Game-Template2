@@ -122,7 +122,7 @@ public class Main extends BaseGameApplication {
 
     @Override
     public void setupScene() {
-        Spatial scene = assetManager.loadModel("Scenes/level.gltf");
+        Spatial scene = assetManager.loadModel("Scenes/level_rough.gltf");
         scene.setName("MainScene");
         scene.move(0, -5, 0);
         scene.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
