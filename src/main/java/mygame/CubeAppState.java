@@ -10,6 +10,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
@@ -59,15 +60,17 @@ public class CubeAppState extends SimpleAppState {
 		float size = .5f;
 		cubePrefab = new Node("Box");
 		Geometry geo = new Geometry("Box.GeoMesh", new Box(size, size, size));
-		Material mat = getUnshadedMaterial();
+		Material mat = getCubeMaterial();
 		geo.setMaterial(mat);
+		geo.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
 		cubePrefab.attachChild(geo);
 	}
-	
-	private Material getUnshadedMaterial() {
-		Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-		mat.setTexture("ColorMap", assetManager.loadTexture("Textures/github-logo.png"));
-		mat.setColor("Color", ColorRGBA.White.clone());
+
+	private Material getCubeMaterial() {
+		Material mat = new Material(assetManager, "Common/MatDefs/Light/PBRLighting.j3md");
+		mat.setTexture("BaseColorMap", assetManager.loadTexture("Textures/github-logo.png"));
+		mat.setFloat("Metallic", 0);
+		mat.setFloat("Roughness", 0.4f);
 		return mat;
 	}
 

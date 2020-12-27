@@ -127,11 +127,11 @@ public class PhysicsTestHelper {
         return floor;
     }
 
-    private static void addStaticMeshCollider(Spatial sp) {
+    public static void addStaticMeshCollider(Spatial sp) {
         addMeshCollider(sp, 0f);
     }
 
-    private static void addMeshCollider(Spatial sp, float mass) {
+    public static void addMeshCollider(Spatial sp, float mass) {
         CollisionShape shape = CollisionShapeFactory.createMeshShape(sp);
         RigidBodyControl rgb = new RigidBodyControl(shape, mass);
         sp.addControl(rgb);

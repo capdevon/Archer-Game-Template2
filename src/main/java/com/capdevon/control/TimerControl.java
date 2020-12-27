@@ -6,8 +6,8 @@ import com.jme3.scene.control.AbstractControl;
 
 public abstract class TimerControl extends AbstractControl {
 
-	float time = 0;
-	float maxTime = 0;
+	protected float time = 0;
+	protected float maxTime = 0;
 
 	public TimerControl(float maxTime) {
 		this.maxTime = maxTime;

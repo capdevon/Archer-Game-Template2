@@ -23,6 +23,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -52,6 +53,12 @@ public class PlayerManager extends SimpleAppState {
     protected void registerInput() {
         GInputAppState ginput = stateManager.getState(GInputAppState.class);
         ginput.addActionListener(m_PlayerInput);
+    }
+
+    @Override
+    public void update(float tpf) {
+        super.update(tpf);
+        app.getListener().setLocation(player.getWorldTranslation());
     }
 
     private void setupPlayer() {
@@ -128,8 +135,8 @@ public class PlayerManager extends SimpleAppState {
         
         RangedBullet[] bullets = new RangedBullet[3];
         bullets[0] = new ArrowPrefab(app, "Arrow");
-        bullets[1] = new ExplosiveArrowPrefab(app, "FlameArrow", "Scenes/jMonkey/Flame.j3o");
-        bullets[2] = new ExplosiveArrowPrefab(app, "PoisonArrow", "Scenes/jMonkey/Poison.j3o");
+        bullets[1] = new ExplosiveArrowPrefab(app, "FlameArrow", "Scenes/jMonkey/Flame.j3o", ColorRGBA.Orange, 1.05f);
+        bullets[2] = new ExplosiveArrowPrefab(app, "PoisonArrow", "Scenes/jMonkey/Poison.j3o", new ColorRGBA(0, 1.0f, 0.452f, 1f), 8.85f);
         rWeapon.setBullets(bullets);
         
         // weapons list
@@ -150,7 +157,10 @@ public class PlayerManager extends SimpleAppState {
     
     private Node createFakeBowModel() {
         Node model = new Node("ArcherToolkit");
-        Geometry bow = createGeometry("Bow.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Red);
+        Spatial bow = assetManager.loadModel("Models/Bow/bow.gltf");
+        bow.rotate(-FastMath.HALF_PI, 0, 0);
+        bow.move(-0.03f, 0.1f, 0);
+        bow.setName("Bow.GeoMesh");
         Geometry arrow = createGeometry("Arrow.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Green);
         Geometry quiver = createGeometry("Quiver.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Green);
         model.setCullHint(Spatial.CullHint.Never);

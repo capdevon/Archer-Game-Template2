@@ -37,7 +37,7 @@ public class RangedWeapon extends Weapon {
 	}
 	
     /**
-     * @return {@link RangedBullet} The bullet this weapon fires
+     * @return {@link RangedBullet} The bullet this weapon fires
      */
     public RangedBullet getBullet() {
         return bullets[index];

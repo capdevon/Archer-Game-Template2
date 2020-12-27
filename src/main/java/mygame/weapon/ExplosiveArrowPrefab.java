@@ -18,12 +18,14 @@ public class ExplosiveArrowPrefab extends RangedBullet {
 	
 	ExplosionPrefab explosionPrefab;
 	
-	public ExplosiveArrowPrefab(Application app, String name, String effectName) {
+	public ExplosiveArrowPrefab(Application app, String name, String effectName, ColorRGBA effectColor, float effectDuration) {
 		super(app);
 		this.name = name;
 		mass = 6f;
 		explosionPrefab = new ExplosionPrefab(app);
 		explosionPrefab.assetName = effectName;
+		explosionPrefab.explosionColor = effectColor;
+		explosionPrefab.lifeTimeVFX = effectDuration;
 	}
 
 	@Override
