@@ -355,7 +355,7 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
         Vector3f location = launchLocation.clone();
         Vector3f previousLocation = new Vector3f();
 
-        float timeStep = 0.02 f; // seconds per step
+        float timeStep = 0.02f; // seconds per step
         //logger.log(Level.INFO, "Start simulation. Position=" + location + ", Velocity=" + launchVelocity + ", timeStep=" + timeStep); 
 
         points.clear();
