@@ -16,61 +16,65 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.shape.Sphere;
 
+/**
+ * @author capdevon
+ */
 public class ArrowPrefab extends RangedBullet {
-	
-	float radius = 0.05f;
-	
-	public ArrowPrefab(Application app, String name) {
-		super(app);
-		this.mass = 6f;
-		this.name = name;
+
+    private float radius = 0.04f;
+
+    public ArrowPrefab(Application app, String name) {
+        super(app);
+        this.mass = 6f;
+        this.name = name;
+    }
+
+    @Override
+	public Spatial loadModel() {
+//		Node model = new Node();
+//
+//		Geometry g1 = new Geometry("Arrow.GeoMesh", new Sphere(16, 16, radius));
+//		Material mat1 = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+//		mat1.setColor("Color", ColorRGBA.Green.clone());
+//		g1.setMaterial(mat1);
+//		model.attachChild(g1);
+//
+//		Geometry g2 = new Geometry("Axis.Z", new Arrow(Vector3f.UNIT_Z));
+//		Material mat2 = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+//		mat2.setColor("Color", ColorRGBA.Blue.clone());
+//		mat2.getAdditionalRenderState().setLineWidth(2f);
+//		g2.setMaterial(mat2);
+//		g2.setLocalTranslation(FVector.forward(g1).negate());
+//		model.attachChild(g2);
+//
+//		return model;
+
+		return app.getAssetManager().loadModel("Models/Arrow/arrow.glb");
 	}
 
-	@Override
-	public Spatial getAssetModel() {
-		// TODO Auto-generated method stub
-		Node model = new Node();
-		
-		Geometry g1 = new Geometry("Arrow.GeoMesh", new Sphere(16, 16, radius));
-		Material mat1 = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-		mat1.setColor("Color", ColorRGBA.Green.clone());
-		g1.setMaterial(mat1);
-		model.attachChild(g1);
-		
-        Geometry g2 = new Geometry("Axis.Z", new Arrow(Vector3f.UNIT_Z));
-        Material mat2 = new Material(app.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-        mat2.setColor("Color", ColorRGBA.Blue.clone());
-        mat2.getAdditionalRenderState().setLineWidth(2f);
-        g2.setMaterial(mat2);
-        g2.setLocalTranslation(FVector.forward(g1).negate());
-		model.attachChild(g2);
-		
-		return model;
-	}
-	
-	@Override
-	public Spatial instantiate(Vector3f position, Quaternion rotation, Node parent) {
-    	Spatial model = getAssetModel();
-    	model.setName(name + "-" + nextSeqId());
-    	model.setLocalTranslation(position);
-    	model.setLocalRotation(rotation);
-    	parent.attachChild(model);
-    	
-    	// Add Physics.
-    	SphereCollisionShape shape = new SphereCollisionShape(radius);
+    @Override
+    public Spatial instantiate(Vector3f position, Quaternion rotation, Node parent) {
+        Spatial model = loadModel();
+        model.setName(name + "-" + nextSeqId());
+        model.setLocalTranslation(position);
+        model.setLocalRotation(rotation);
+        parent.attachChild(model);
+
+        // Add Physics.
+        SphereCollisionShape shape = new SphereCollisionShape(radius);
         RigidBodyControl rgb = new RigidBodyControl(shape, mass);
         model.addControl(rgb);
         PhysicsSpace.getPhysicsSpace().add(rgb);
-        
+
         rgb.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
         rgb.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_01);
         rgb.setCcdMotionThreshold(0.001f);
-//        rgb.setCcdSweptSphereRadius(0.001f);
-        
+        // rgb.setCcdSweptSphereRadius(0.001f);
+
         ArrowControl arrow = new ArrowControl();
         model.addControl(arrow);
-    	
-    	return model;
+
+        return model;
     }
 
 }
