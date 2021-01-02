@@ -66,13 +66,13 @@ public class JMonkey3 {
     public static void initEngine(SimpleApplication app) {
         if (!initialized) {
             initialized = true;
-            JMonkey3.settings = app.getContext().getSettings();
+            JMonkey3.settings     = app.getContext().getSettings();
             JMonkey3.stateManager = app.getStateManager();
             JMonkey3.assetManager = app.getAssetManager();
             JMonkey3.inputManager = app.getInputManager();
-            JMonkey3.rootNode = app.getRootNode();
-            JMonkey3.guiNode = app.getGuiNode();
-            JMonkey3.camera = app.getCamera();
+            JMonkey3.rootNode     = app.getRootNode();
+            JMonkey3.guiNode      = app.getGuiNode();
+            JMonkey3.camera       = app.getCamera();
         }
     }
 
@@ -228,7 +228,7 @@ public class JMonkey3 {
 
     /**
      * -------------------------------------------------------------------------
-     * JMonkey3.GameObject
+     * JMonkey3.Primitive
      * -------------------------------------------------------------------------
      */
     public static class Primitive {
@@ -434,7 +434,7 @@ public class JMonkey3 {
      */
     public static class Engine {
 
-        public static < T extends AppState > T getState(Class < T > clazz) {
+        public static <T extends AppState> T getState(Class <T> clazz) {
             return stateManager.getState(clazz);
         }
 
@@ -472,7 +472,7 @@ public class JMonkey3 {
          * @return
          */
         public Node find(final String childName) {
-            final List < Node > lst = new ArrayList < > ();
+            final List <Node> lst = new ArrayList<>();
             rootNode.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
                 @Override
                 public void visit(Node node) {
@@ -492,8 +492,8 @@ public class JMonkey3 {
          * @param tagName
          * @return
          */
-        public List < Node > findGameObjectsWithTag(final String tagName) {
-            final List < Node > lst = new ArrayList < > ();
+        public List <Node> findGameObjectsWithTag(final String tagName) {
+            final List <Node> lst = new ArrayList<>();
             rootNode.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
                 @Override
                 public void visit(Node node) {
@@ -510,7 +510,7 @@ public class JMonkey3 {
          * @return
          */
         public Node findWithTag(final String tagName) {
-            List < Node > lst = findGameObjectsWithTag(tagName);
+            List <Node> lst = findGameObjectsWithTag(tagName);
             if (lst.isEmpty()) {
                 String err = "The object %s could not be found";
                 throw new RuntimeException(String.format(err, tagName));
@@ -524,7 +524,7 @@ public class JMonkey3 {
          * @param clazz
          * @return
          */
-        public < T extends Control > T getComponent(Spatial spatial, Class < T > clazz) {
+        public <T extends Control> T getComponent(Spatial spatial, Class <T> clazz) {
             T control = spatial.getControl(clazz);
             if (control != null) {
                 return control;
