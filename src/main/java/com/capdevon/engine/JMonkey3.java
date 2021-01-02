@@ -178,7 +178,7 @@ public class JMonkey3 {
          * @param size
          */
         public static void drawWireGrid(Vector3f offset, int size) {
-            Geometry g = new Geometry("Grid.WireMesh", new Grid(size, size, 1 f));
+            Geometry g = new Geometry("Grid.WireMesh", new Grid(size, size, 1f));
             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             mat.setColor("Color", color);
             g.setMaterial(mat);
