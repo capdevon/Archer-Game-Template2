@@ -9,11 +9,17 @@ The demo contains:
   - normal (The normal arrows stick to surfaces)
   - explosive
   - acid
+* A “materialize” shader that simulates “materializing” an object in or out. (https://store.jmonkeyengine.org/13e64183-01fb-4511-88a8-f6958f95a2c2)
 * Animations (with gltf2 animations, file .blend included): 
     * "Idle", "Running", "Running_2", "Aim_Idle", "Aim_Overdraw", "Aim_Recoil", "Draw_Arrow", "Water_Idle", "Water_Moving", "Swimming"
 * Third Person Camera with collision detection
 * Dynamic update of camera FOV when aiming
-* Keyboard/Mouse and Joystick support
+* Keyboard/Mouse support
+* Joystick support (currently, the joystick functions are based on the library jme3-lwjgl:3.3.2)
+
+WIP:
+* shoulder camera prototype when the player aims
+* spine rotation when aiming up and down
 
 # Keyboard Commands:
 (see file [GInputAppState](https://github.com/capdevon/Archer-Game-Template2/blob/main/src/main/java/com/capdevon/input/GInputAppState.java) for all configurations, joystick included)
@@ -21,9 +27,9 @@ The demo contains:
 - E: Aiming
 - R: Switch arrow type
 - LMB: Left Mouse Button to fire
-- SPACE: Hold down the key while moving to sprinting
+- LSHIFT: Running
 - CAMERA: Use the mouse to orient the camera
-- 0 (zero): toggle Physics Debug
+- 0 - Zero: Toggle Physics Debug
 
 # Resource Used:
 
