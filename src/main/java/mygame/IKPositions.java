@@ -19,14 +19,14 @@ public class IKPositions {
     public static final Transform[] M4 = new Transform[1];
     public static final Transform[] SHOTGUN = new Transform[1];
     public static final Transform[] RIFLE = new Transform[1];
-    public static final Transform[] BOW = new Transform[3];
+    public static final Transform[] ARCHER = new Transform[3];
     
     static {
         NONE[0] = new Transform();
     }
 
     static {
-        // M4 weapon configuration
+        // M4
         float x = FastMath.DEG_TO_RAD * -85;
         float y = FastMath.DEG_TO_RAD * -180;
         M4[0] = new Transform();
@@ -36,7 +36,7 @@ public class IKPositions {
     }
 
     static {
-        // Shotgun weapon configuration
+        // Shotgun
         float x = FastMath.DEG_TO_RAD * -85;
         float y = FastMath.DEG_TO_RAD * -180;
         SHOTGUN[0] = new Transform();
@@ -46,7 +46,7 @@ public class IKPositions {
     }
 
     static {
-        // Hunting Rifle weapon configuration
+        // Hunting Rifle
         float x = FastMath.DEG_TO_RAD * -85;
         float y = FastMath.DEG_TO_RAD * -180;
         RIFLE[0] = new Transform();
@@ -56,25 +56,27 @@ public class IKPositions {
     }
 
     static {
-        // Bow weapon configuration
+        // Arrow
         float x = FastMath.DEG_TO_RAD * -95;
-        float z = FastMath.DEG_TO_RAD * 6;
-        BOW[0] = new Transform();
-//        BOW[0].setRotation(new Quaternion().fromAngles(x, 0, z).normalizeLocal());
-//        BOW[0].setTranslation(-8, 50, -2);
-        BOW[0].setScale(100f);
+        float z = FastMath.DEG_TO_RAD * 8;
+        ARCHER[0] = new Transform();
+        ARCHER[0].setRotation(new Quaternion().fromAngles(x, 0, z).normalizeLocal());
+        ARCHER[0].setTranslation(-15f, 105f, -2f);
+        ARCHER[0].setScale(100f);
 
+        // Bow
         x = FastMath.DEG_TO_RAD * -90;
-        BOW[1] = new Transform();
-//        BOW[1].setRotation(new Quaternion().fromAngles(x, 0, 0).normalizeLocal());
-//        BOW[1].setTranslation(-5f, -25f, 0f);
-        BOW[1].setScale(100f);
+        ARCHER[1] = new Transform();
+        ARCHER[1].setRotation(new Quaternion().fromAngles(x, 0, 0).normalizeLocal());
+        ARCHER[1].setTranslation(-2f, 10f, -1f);
+        ARCHER[1].setScale(100f);
 
+        // Quiver
         z = FastMath.DEG_TO_RAD * -15;
-        BOW[2] = new Transform();
+        ARCHER[2] = new Transform();
 //        BOW[2].setRotation(new Quaternion().fromAngles(0, 0, z).normalizeLocal());
 //        BOW[2].setTranslation(-10f, -10f, -30f);
-        BOW[2].setScale(100f);
+        ARCHER[2].setScale(100f);
     }
 
 }
