@@ -5,34 +5,21 @@
  */
 package mygame;
 
+import com.capdevon.engine.Capture;
 import com.capdevon.engine.JMonkey3;
 import com.capdevon.engine.SoundManager;
 import com.capdevon.input.GInputAppState;
+import com.capdevon.physx.Physics;
 import com.capdevon.physx.PhysxDebugAppState;
-import com.capdevon.util.BaseGameApplication;
-import com.capdevon.util.PhysicsTestHelper;
 import com.jme3.app.FlyCamAppState;
-import com.jme3.audio.AudioNode;
-import com.jme3.environment.EnvironmentCamera;
-import com.jme3.environment.LightProbeFactory;
-import com.jme3.light.DirectionalLight;
-import com.jme3.light.LightProbe;
-import com.jme3.math.ColorRGBA;
-import com.jme3.post.FilterPostProcessor;
-import com.jme3.post.filters.FXAAFilter;
-import com.jme3.post.filters.LightScatteringFilter;
-import com.jme3.post.ssao.SSAOFilter;
-import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Spatial;
-import com.jme3.shadow.DirectionalLightShadowRenderer;
+import com.jme3.app.SimpleApplication;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.system.AppSettings;
-import org.shaderblowex.filter.MipMapBloom.MipmapBloomFilter;
 
 /**
  *
  */
 public class Main extends BaseGameApplication {
-    private DirectionalLight sun;
     
     /**
      * Start the jMonkeyEngine application
@@ -43,6 +30,7 @@ public class Main extends BaseGameApplication {
         Main app = new Main();
         
         AppSettings settings = new AppSettings(true);
+        settings.setTitle("Archer-Game-Template-2");
         settings.setUseJoysticks(true);
         settings.setResolution(1280, 720);
         settings.setVSync(true);
@@ -56,88 +44,31 @@ public class Main extends BaseGameApplication {
         app.start();
     }
 
-    @Override
-    public void simpleInitApp() {
-        // disable the default 1st-person flyCam!
-        stateManager.detach(stateManager.getState(FlyCamAppState.class));
-        flyCam.setEnabled(false);
-        
-        JMonkey3.initEngine(this);
-        SoundManager.init(assetManager);
-        
-        initPhysics(false);
-        setupScene();
-        setupSkyBox();
-        setupLights();
-        setupFilters();
-        
-        stateManager.attach(new CubeAppState());
-        stateManager.attach(new PhysxDebugAppState());
-        stateManager.attach(new GInputAppState());
-        stateManager.attach(new ParticleManager());
-        stateManager.attach(new PlayerManager());
-    }
+	@Override
+	public void simpleInitApp() {
+		// disable the default 1st-person flyCam!
+		stateManager.detach(stateManager.getState(FlyCamAppState.class));
+		flyCam.setEnabled(false);
 
-    @Override
-    public void setupLights() {
-        sun = new DirectionalLight();
-        sun.setDirection(lightDir);
-        sun.setColor(ColorRGBA.White);
-        rootNode.addLight(sun);
+		JMonkey3.initEngine(this);
+		SoundManager.init(assetManager);
 
-        EnvironmentCamera envCam = new EnvironmentCamera(); //Make an env camera
-        stateManager.attach(envCam);
-        envCam.initialize(stateManager, this); //Manually initialize so we can add a probe before the next update happens
-        LightProbe probe = LightProbeFactory.makeProbe(envCam, rootNode);
-        probe.getArea().setRadius(100); //Set the probe's radius in world units
-        rootNode.addLight(probe);
-    }
+		/** Initialize the physics simulation */
+		BulletAppState physics = new BulletAppState();
+		physics.setThreadingType(BulletAppState.ThreadingType.SEQUENTIAL);
+		stateManager.attach(physics);
+		physics.getPhysicsSpace().setGravity(Physics.DEFAULT_GRAVITY);
+		physics.setDebugEnabled(false);
 
-    @Override
-    public void setupFilters() {
-        //Shadows
-        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, 2048, 3);
-        dlsr.setLight(sun);
-        dlsr.setShadowIntensity(0.65f);
-        viewPort.addProcessor(dlsr);
-
-        LightScatteringFilter lsf = new LightScatteringFilter(lightDir.mult(-300));
-        lsf.setLightDensity(0.5f);
-
-        MipmapBloomFilter bloom = new MipmapBloomFilter(MipmapBloomFilter.Quality.High, MipmapBloomFilter.GlowMode.Scene);
-        bloom.setExposurePower(0.7f);
-        bloom.setBloomIntensity(0.4f, 0.55f);
-
-        SSAOFilter ssaoFilter = new SSAOFilter(5f, 10f, 0.8f, 0.70f);
-
-        FXAAFilter fxaa = new FXAAFilter();
-
-        fpp = new FilterPostProcessor(assetManager);
-        fpp.addFilter(ssaoFilter);
-        fpp.addFilter(lsf);
-        fpp.addFilter(bloom);
-        fpp.addFilter(fxaa);
-        viewPort.addProcessor(fpp);
-    }
-
-    @Override
-    public void setupScene() {
-        Spatial scene = assetManager.loadModel("Scenes/level_rough.gltf");
-        scene.setName("MainScene");
-        scene.move(0, -5, 0);
-        scene.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-        PhysicsTestHelper.addStaticMeshCollider(scene);
-        rootNode.attachChild(scene);
-        
-//        Node targets  = PhysicsTestHelper.createUnshadedBox(assetManager, 20);
-//        rootNode.attachChild(targets);
-        
-        rootNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-        rootNode.setQueueBucket(RenderQueue.Bucket.Opaque);
-
-        /* nature sound - keeps playing in a loop. */
-        AudioNode audio_nature = getAudioEnv("Sound/Environment/Nature.ogg", true, false, 4);
-    }
+		stateManager.attach(new SceneAppState());
+		stateManager.attach(new CubeAppState());
+		stateManager.attach(new PhysxDebugAppState());
+		stateManager.attach(new GInputAppState());
+		stateManager.attach(new PlayerManager());
+		
+//		String dirName = System.getProperty("user.dir") + "/video";
+//		Capture.captureVideo(this, 0.5f, dirName);
+	}
 
 }
 
