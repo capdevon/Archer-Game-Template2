@@ -23,7 +23,6 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -32,6 +31,7 @@ import com.jme3.scene.shape.Sphere;
 
 import mygame.weapon.ArrowPrefab;
 import mygame.weapon.CrosshairData;
+import mygame.weapon.ExplosionPrefab;
 import mygame.weapon.ExplosiveArrowPrefab;
 import mygame.weapon.FireWeapon;
 import mygame.weapon.RangedBullet;
@@ -54,32 +54,43 @@ public class PlayerManager extends SimpleAppState {
         GInputAppState ginput = stateManager.getState(GInputAppState.class);
         ginput.addActionListener(m_PlayerInput);
     }
-
+    
     @Override
     public void update(float tpf) {
         super.update(tpf);
         app.getListener().setLocation(player.getWorldTranslation());
     }
 
-    private void setupPlayer() {
-        // Create a node for the character model
-        player = (Node) assetManager.loadModel(AnimDefs.MODEL);
+	private void setupPlayer() {
+		// Create a node for the character model
+		player = (Node) assetManager.loadModel(AnimDefs.MODEL);
+		player.setName("Player");
+		
+		// add Physics & Animation Control
+		player.addControl(new Animator());
+		player.addControl(new BetterCharacterControl(.4f, 1.8f, 80f));
+		physics.getPhysicsSpace().add(player);
+		rootNode.attachChild(player);
+		
+		Node aimNode = new Node("AimPivot");
+		player.attachChild(aimNode);
+		
+		Node cameraPivot = new Node("CameraPivot");
+		player.attachChild(cameraPivot);
+		
+		initCamera(cameraPivot);
 
-        player.addControl(new Animator());
-        player.addControl(new BetterCharacterControl(.5f, 1.8f, 80f));
+		WeaponUIManager m_WeaponUIManager = new WeaponUIManager();
+		m_WeaponUIManager.weaponText = UIEditor.getText(20, settings.getHeight() - 20);
+		player.addControl(m_WeaponUIManager);
 
-        initCamera();
-        
-        WeaponUIManager m_WeaponUIManager = new WeaponUIManager();
-        m_WeaponUIManager.weaponText = UIEditor.getText(20, settings.getHeight() - 20);
-        player.addControl(m_WeaponUIManager);
-        
-        LineRenderer lr = new LineRenderer(assetManager, "LineRenderer");
-        lr.setLineWidth(3f);
-        lr.setParent(rootNode);
+		LineRenderer lr = new LineRenderer(assetManager, "LineRenderer");
+		lr.setLineWidth(3f);
+		lr.setParent(rootNode);
 
 		PlayerWeaponManager m_PlayerWeaponManager = new PlayerWeaponManager();
 		m_PlayerWeaponManager.lr = lr;
+		m_PlayerWeaponManager.assetManager = assetManager;
 		m_PlayerWeaponManager.camera = camera;
 		m_PlayerWeaponManager.lstWeapons = initWeapons();
 		m_PlayerWeaponManager.shoot = SoundManager.getAudioClip(AudioLib.ARROW_HIT);
@@ -87,33 +98,30 @@ public class PlayerManager extends SimpleAppState {
 		player.addControl(m_PlayerWeaponManager);
 
 		PlayerControl m_PlayerControl = new PlayerControl();
-        m_PlayerControl.camera = camera;
-        m_PlayerControl.footsteps = SoundManager.getAudioClip(AudioLib.GRASS_FOOTSTEPS);
-        player.addControl(m_PlayerControl);
+		m_PlayerControl.camera = camera;
+		m_PlayerControl.footsteps = SoundManager.getAudioClip(AudioLib.GRASS_FOOTSTEPS);
+		player.addControl(m_PlayerControl);
 
-        m_PlayerInput = new PlayerInput();
-        player.addControl(m_PlayerInput);
+		m_PlayerInput = new PlayerInput();
+		player.addControl(m_PlayerInput);
+	}
 
-        physics.getPhysicsSpace().add(player);
-        rootNode.attachChild(player);
-    }
+	private void initCamera(Node target) {
+		TPSChaseCamera chaseCam = new TPSChaseCamera(camera, target);
+		chaseCam.registerWithInput(inputManager, settings.useJoysticks());
+//		chaseCam.setLookAtOffset(new Vector3f(0f, 2f, 0f));
+		chaseCam.setMaxDistance(2.5f);
+		chaseCam.setMinDistance(1.5f);
+		chaseCam.setDefaultDistance(chaseCam.getMaxDistance());
+		chaseCam.setMaxVerticalRotation(FastMath.QUARTER_PI);
+		chaseCam.setMinVerticalRotation(-FastMath.QUARTER_PI * 0.75f);
+		chaseCam.setRotationSensitivity(3f); //1.5f
+		chaseCam.setZoomSensitivity(2f); //3f
+		chaseCam.setDownRotateOnCloseViewOnly(false);
 
-    private void initCamera() {
-        TPSChaseCamera chaseCam = new TPSChaseCamera(camera, player);
-        chaseCam.registerWithInput(inputManager, settings.useJoysticks());
-        chaseCam.setLookAtOffset(new Vector3f(0f, 2f, 0f));
-        chaseCam.setMaxDistance(3f);
-        chaseCam.setMinDistance(1.5f);
-        chaseCam.setDefaultDistance(chaseCam.getMaxDistance());
-        chaseCam.setMaxVerticalRotation(FastMath.QUARTER_PI);
-        chaseCam.setMinVerticalRotation(-FastMath.QUARTER_PI);
-        chaseCam.setRotationSensitivity(1.5f);
-        chaseCam.setZoomSensitivity(3f);
-        chaseCam.setDownRotateOnCloseViewOnly(false);
-
-        Spatial scene = find("MainScene");
-        CameraCollisionControl cameraCollision = new CameraCollisionControl(camera, player, scene);
-    }
+//		Spatial scene = find("MainScene");
+//		CameraCollisionControl cameraCollision = new CameraCollisionControl(camera, target, scene);
+	}
 
     private List<Weapon> initWeapons() {
     	
@@ -130,13 +138,17 @@ public class PlayerManager extends SimpleAppState {
         rWeapon.name = "Bow";
         rWeapon.model = createFakeBowModel();
         rWeapon.weaponType = WeaponType.Bow;
-        rWeapon.ik = IKPositions.BOW;
+        rWeapon.ik = IKPositions.ARCHER;
         rWeapon.crosshair = new CrosshairData(guiNode, getCrossHair("-.-"));
         
         RangedBullet[] bullets = new RangedBullet[3];
         bullets[0] = new ArrowPrefab(app, "Arrow");
-        bullets[1] = new ExplosiveArrowPrefab(app, "FlameArrow", "Scenes/jMonkey/Flame.j3o", ColorRGBA.Orange, 1.05f);
-        bullets[2] = new ExplosiveArrowPrefab(app, "PoisonArrow", "Scenes/jMonkey/Poison.j3o", new ColorRGBA(0, 1.0f, 0.452f, 1f), 8.85f);
+        
+        ExplosionPrefab eFlame = new ExplosionPrefab(app, "Scenes/jMonkey/Flame.j3o", ColorRGBA.Orange.clone(), 1.05f);
+        bullets[1] = new ExplosiveArrowPrefab(app, "FlameArrow", 6f, eFlame);
+        
+        ExplosionPrefab ePoison = new ExplosionPrefab(app, "Scenes/jMonkey/Poison.j3o", new ColorRGBA(0, 1.0f, 0.452f, 1f), 8.85f);
+        bullets[2] = new ExplosiveArrowPrefab(app, "PoisonArrow", 6f, ePoison);
         rWeapon.setBullets(bullets);
         
         // weapons list
@@ -157,16 +169,13 @@ public class PlayerManager extends SimpleAppState {
     
     private Node createFakeBowModel() {
         Node model = new Node("ArcherToolkit");
-        Spatial bow = assetManager.loadModel("Models/Bow/bow.gltf");
-        bow.rotate(-FastMath.HALF_PI, 0, 0);
-        bow.move(-0.03f, 0.1f, 0);
-        bow.setName("Bow.GeoMesh");
-        Geometry arrow = createGeometry("Arrow.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Green);
-        Geometry quiver = createGeometry("Quiver.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Green);
-        model.setCullHint(Spatial.CullHint.Never);
-        model.attachChild(bow);
-        model.attachChild(arrow);
-        model.attachChild(quiver);
+//        Geometry bow = createGeometry("Bow.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Red);
+//        Geometry arrow = createGeometry("Arrow", new Sphere(8, 8, .05f), ColorRGBA.Green);
+//        Geometry quiver = createGeometry("Quiver", new Sphere(8, 8, .05f), ColorRGBA.Green);
+//        model.setCullHint(Spatial.CullHint.Never);
+//        model.attachChild(bow);
+//        model.attachChild(arrow);
+//        model.attachChild(quiver);
         
         return model;
     }
