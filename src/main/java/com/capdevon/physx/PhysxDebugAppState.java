@@ -1,7 +1,6 @@
 package com.capdevon.physx;
 
 import com.jme3.app.Application;
-import com.jme3.app.state.AppStateManager;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.InputManager;
@@ -17,7 +16,6 @@ public class PhysxDebugAppState extends BaseAppState implements ActionListener {
     private final String TOGGLE_PHYSICS_DEBUG = "TOGGLE_PHYSICS_DEBUG";
 
     private InputManager inputManager;
-    private AppStateManager stateManager;
     private BulletAppState bulletAppState;
 
     @Override
@@ -31,8 +29,7 @@ public class PhysxDebugAppState extends BaseAppState implements ActionListener {
     @Override
     protected void initialize(Application app) {
         this.inputManager = app.getInputManager();
-        this.stateManager = app.getStateManager();
-        this.bulletAppState = stateManager.getState(BulletAppState.class);
+        this.bulletAppState = getState(BulletAppState.class);
 
         inputManager.addListener(this, TOGGLE_PHYSICS_DEBUG);
     }
