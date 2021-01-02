@@ -24,6 +24,7 @@ import com.jme3.input.InputManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
@@ -37,6 +38,7 @@ import com.jme3.scene.debug.Grid;
 import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.debug.WireSphere;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.system.AppSettings;
 import com.jme3.texture.Texture;
@@ -44,7 +46,7 @@ import com.jme3.util.SkyFactory;
 import com.jme3.util.SkyFactory.EnvMapType;
 
 /**
- *
+ * @author capdevon
  */
 public class JMonkey3 {
 
@@ -64,35 +66,35 @@ public class JMonkey3 {
     public static void initEngine(SimpleApplication app) {
         if (!initialized) {
             initialized = true;
-            JMonkey3.settings     = app.getContext().getSettings();
+            JMonkey3.settings = app.getContext().getSettings();
             JMonkey3.stateManager = app.getStateManager();
             JMonkey3.assetManager = app.getAssetManager();
             JMonkey3.inputManager = app.getInputManager();
-            JMonkey3.rootNode     = app.getRootNode();
-            JMonkey3.guiNode      = app.getGuiNode();
-            JMonkey3.camera       = app.getCamera();
+            JMonkey3.rootNode = app.getRootNode();
+            JMonkey3.guiNode = app.getGuiNode();
+            JMonkey3.camera = app.getCamera();
         }
     }
-    
+
     /**
      * -------------------------------------------------------------------------
      * JMonkey3.UIEditor
      * -------------------------------------------------------------------------
      */
     public static class UIEditor {
-    	
-    	public static BitmapFont guiFont;
-    	public static ColorRGBA color = ColorRGBA.Red;
-    	
+
+        public static BitmapFont guiFont;
+        public static ColorRGBA color = ColorRGBA.Red;
+
         /**
          * A centered plus sign to help the player aim.
          */
         public static BitmapText getCrossHair() {
             return getCrossHair("+");
         }
-        
-    	public static BitmapText getCrossHair(String text) {
-    		BitmapFont font = getGuiFont();
+
+        public static BitmapText getCrossHair(String text) {
+            BitmapFont font = getGuiFont();
             BitmapText ch = new BitmapText(font, false);
             ch.setSize(font.getCharSet().getRenderedSize() * 2);
             ch.setText(text);
@@ -100,11 +102,11 @@ public class JMonkey3 {
             float height = settings.getHeight() / 2 + ch.getLineHeight() / 2;
             ch.setLocalTranslation(width, height, 0);
             return ch;
-    	}
-    	
-    	public static BitmapText getText(float xPos, float yPos) {
-    		return getText(xPos, yPos, true);
-    	}
+        }
+
+        public static BitmapText getText(float xPos, float yPos) {
+            return getText(xPos, yPos, true);
+        }
 
         public static BitmapText getText(float xPos, float yPos, boolean show) {
             BitmapFont font = getGuiFont();
@@ -113,11 +115,11 @@ public class JMonkey3 {
             hud.setLocalTranslation(xPos, yPos, 0);
             hud.setColor(color);
             if (show) {
-            	guiNode.attachChild(hud);
+                guiNode.attachChild(hud);
             }
             return hud;
         }
-        
+
         public static BitmapFont getGuiFont() {
             if (guiFont == null) {
                 guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
@@ -176,7 +178,7 @@ public class JMonkey3 {
          * @param size
          */
         public static void drawWireGrid(Vector3f offset, int size) {
-            Geometry g = new Geometry("Grid.WireMesh", new Grid(size, size, 1f));
+            Geometry g = new Geometry("Grid.WireMesh", new Grid(size, size, 1 f));
             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             mat.setColor("Color", color);
             g.setMaterial(mat);
@@ -215,9 +217,9 @@ public class JMonkey3 {
          * @param points
          * @param node
          */
-        public static void drawPoints(List<Vector3f> points, Node node) {
+        public static void drawPoints(List < Vector3f > points, Node node) {
             MotionPath path = new MotionPath();
-            for (Vector3f p : points) {
+            for (Vector3f p: points) {
                 path.addWayPoint(p);
             }
             path.enableDebugShape(assetManager, node);
@@ -229,7 +231,7 @@ public class JMonkey3 {
      * JMonkey3.GameObject
      * -------------------------------------------------------------------------
      */
-    public static class GameObject {
+    public static class Primitive {
 
         /**
          * Get default axes.
@@ -237,11 +239,11 @@ public class JMonkey3 {
          * @param id
          * @return 
          */
-        public static Node getAxes(String id) {
+        public static Node createAxes(String id) {
             Node node = new Node(id);
-            node.attachChild(getArrow("X", Vector3f.UNIT_X, ColorRGBA.Red));
-            node.attachChild(getArrow("Y", Vector3f.UNIT_Y, ColorRGBA.Green));
-            node.attachChild(getArrow("Z", Vector3f.UNIT_Z, ColorRGBA.Blue));
+            node.attachChild(createArrow("X", Vector3f.UNIT_X, ColorRGBA.Red));
+            node.attachChild(createArrow("Y", Vector3f.UNIT_Y, ColorRGBA.Green));
+            node.attachChild(createArrow("Z", Vector3f.UNIT_Z, ColorRGBA.Blue));
             return node;
         }
 
@@ -253,7 +255,7 @@ public class JMonkey3 {
          * @param color
          * @return
          */
-        public static Geometry getArrow(String name, Vector3f dir, ColorRGBA color) {
+        public static Geometry createArrow(String name, Vector3f dir, ColorRGBA color) {
             Arrow arrow = new Arrow(dir);
             Geometry g = new Geometry(name, arrow);
             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -269,13 +271,13 @@ public class JMonkey3 {
          * @param size
          * @return
          */
-        public static Geometry getBox(ColorRGBA color, Vector3f size) {
+        public static Geometry createCube(ColorRGBA color, Vector3f size) {
             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             mat.setColor("Color", color);
-            return getBox(mat, size);
+            return createCube(mat, size);
         }
-        
-        public static Geometry getBox(Material mat, Vector3f size) {
+
+        public static Geometry createCube(Material mat, Vector3f size) {
             Box box = new Box(size.x, size.y, size.z);
             Geometry geo = new Geometry("Box.GeoMesh", box);
             geo.setMaterial(mat);
@@ -289,17 +291,35 @@ public class JMonkey3 {
          * @param radius
          * @return
          */
-        public static Geometry getSphere(ColorRGBA color, float radius) {
+        public static Geometry createSphere(ColorRGBA color, float radius) {
             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             mat.setColor("Color", color);
-            return getSphere(mat, radius);
+            return createSphere(mat, radius);
         }
-        
-        public static Geometry getSphere(Material mat, float radius) {
+
+        public static Geometry createSphere(Material mat, float radius) {
             Sphere sphere = new Sphere(6, 6, radius);
             Geometry geo = new Geometry("Sphere.GeoMesh", sphere);
             geo.setMaterial(mat);
             return geo;
+        }
+
+        public static Node createCapsule(ColorRGBA color, float radius, float height) {
+            Node capsule = new Node("Capsule");
+            Geometry cylinder = new Geometry("Cylinder", new Cylinder(16, 16, radius, height));
+            Geometry top = new Geometry("Top.Sphere", new Sphere(16, 16, radius));
+            Geometry bottom = new Geometry("Bottom.Sphere", new Sphere(16, 16, radius));
+            cylinder.rotate(FastMath.HALF_PI, 0, 0);
+            bottom.setLocalTranslation(0, -height / 2, 0);
+            top.setLocalTranslation(0, height / 2, 0);
+            capsule.attachChild(cylinder);
+            capsule.attachChild(bottom);
+            capsule.attachChild(top);
+
+            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+            mat.setColor("Color", color);
+            capsule.setMaterial(mat);
+            return capsule;
         }
 
     }
@@ -322,7 +342,7 @@ public class JMonkey3 {
             m.setTexture("DiffuseMap", assetManager.loadTexture(texture));
             return m;
         }
-        
+
         /**
          * Create a lighting material with diffuse color.
          * @param color
@@ -346,7 +366,7 @@ public class JMonkey3 {
             m.setTexture("ColorMap", assetManager.loadTexture(texture));
             return m;
         }
-        
+
         /**
          * Create an unshaded material with color.
          *
@@ -414,7 +434,7 @@ public class JMonkey3 {
      */
     public static class Engine {
 
-        public static <T extends AppState> T getState(Class<T> clazz) {
+        public static < T extends AppState > T getState(Class < T > clazz) {
             return stateManager.getState(clazz);
         }
 
@@ -437,7 +457,7 @@ public class JMonkey3 {
         public static boolean useJoysticks() {
             return settings.useJoysticks();
         }
-        
+
         public static void setUserDataRecursive(Spatial sp, final String key, final Object data) {
             sp.depthFirstTraversal(new SceneGraphVisitorAdapter() {
                 @Override
@@ -446,13 +466,13 @@ public class JMonkey3 {
                 }
             });
         }
-        
+
         /**
          * @param childName
          * @return
          */
         public Node find(final String childName) {
-            final List<Node> lst = new ArrayList<>();
+            final List < Node > lst = new ArrayList < > ();
             rootNode.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
                 @Override
                 public void visit(Node node) {
@@ -472,8 +492,8 @@ public class JMonkey3 {
          * @param tagName
          * @return
          */
-        public List<Node> findGameObjectsWithTag(final String tagName) {
-            final List<Node> lst = new ArrayList<>();
+        public List < Node > findGameObjectsWithTag(final String tagName) {
+            final List < Node > lst = new ArrayList < > ();
             rootNode.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
                 @Override
                 public void visit(Node node) {
@@ -490,7 +510,7 @@ public class JMonkey3 {
          * @return
          */
         public Node findWithTag(final String tagName) {
-            List<Node> lst = findGameObjectsWithTag(tagName);
+            List < Node > lst = findGameObjectsWithTag(tagName);
             if (lst.isEmpty()) {
                 String err = "The object %s could not be found";
                 throw new RuntimeException(String.format(err, tagName));
@@ -504,14 +524,14 @@ public class JMonkey3 {
          * @param clazz
          * @return
          */
-        public <T extends Control> T getComponent(Spatial spatial, Class<T> clazz) {
+        public < T extends Control > T getComponent(Spatial spatial, Class < T > clazz) {
             T control = spatial.getControl(clazz);
             if (control != null) {
                 return control;
             }
 
             if (spatial instanceof Node) {
-                for (Spatial child : ((Node) spatial).getChildren()) {
+                for (Spatial child: ((Node) spatial).getChildren()) {
                     control = getComponent(child, clazz);
                     if (control != null) {
                         return control;
@@ -521,7 +541,7 @@ public class JMonkey3 {
 
             return null;
         }
-        
+
     }
 
 }
