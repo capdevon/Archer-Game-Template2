@@ -21,6 +21,9 @@ WIP:
 * shoulder camera prototype when the player aims
 * spine rotation when aiming up and down
 
+Video:
+https://www.youtube.com/watch?v=US9KNTqL2js&feature=emb_logo
+
 # Keyboard Commands:
 (see file [GInputAppState](https://github.com/capdevon/Archer-Game-Template2/blob/main/src/main/java/com/capdevon/input/GInputAppState.java) for all configurations, joystick included)
 - WASD: Basic movements
