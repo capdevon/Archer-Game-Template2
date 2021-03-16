@@ -61,6 +61,7 @@ repositories {
     maven { url 'https://dl.bintray.com/stephengold/org.jmonkeyengine' }
     maven { url 'https://jitpack.io' }
     //google()
+    flatDir { dirs file('lib') }
 
     // Read more about repositories here:
     //   https://docs.gradle.org/current/userguide/dependency_management.html#sec:repositories
@@ -85,6 +86,7 @@ dependencies {
 
     // Additional filters
     implementation 'com.github.polincdev:ShaderBlowEx:-SNAPSHOT'
+    runtimeOnly 'com.github.jayfella:jme-materialize:'
 
     // select one version of LWJGL (from mavenCentral or mavenLocal)
     runtimeOnly 'org.jmonkeyengine:jme3-lwjgl:' + jmonkeyengineVersion  // LWJGL 2.x
