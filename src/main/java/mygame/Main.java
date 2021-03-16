@@ -19,16 +19,16 @@ import com.jme3.system.AppSettings;
 /**
  *
  */
-public class Main extends BaseGameApplication {
-    
+public class Main extends SimpleApplication {
+
     /**
      * Start the jMonkeyEngine application
      * @param args
      */
     public static void main(String[] args) {
-    	
+
         Main app = new Main();
-        
+
         AppSettings settings = new AppSettings(true);
         settings.setTitle("Archer-Game-Template-2");
         settings.setUseJoysticks(true);
@@ -37,38 +37,37 @@ public class Main extends BaseGameApplication {
         settings.setSamples(4);
         settings.setBitsPerPixel(32);
         settings.setGammaCorrection(true);
-        
+
         app.setSettings(settings);
         app.setShowSettings(true);
         app.setPauseOnLostFocus(false);
         app.start();
     }
 
-	@Override
-	public void simpleInitApp() {
-		// disable the default 1st-person flyCam!
-		stateManager.detach(stateManager.getState(FlyCamAppState.class));
-		flyCam.setEnabled(false);
+    @Override
+    public void simpleInitApp() {
+        // disable the default 1st-person flyCam!
+        stateManager.detach(stateManager.getState(FlyCamAppState.class));
+        flyCam.setEnabled(false);
 
-		JMonkey3.initEngine(this);
-		SoundManager.init(assetManager);
+        JMonkey3.initEngine(this);
+        SoundManager.init(assetManager);
 
-		/** Initialize the physics simulation */
-		BulletAppState physics = new BulletAppState();
-		physics.setThreadingType(BulletAppState.ThreadingType.SEQUENTIAL);
-		stateManager.attach(physics);
-		physics.getPhysicsSpace().setGravity(Physics.DEFAULT_GRAVITY);
-		physics.setDebugEnabled(false);
+        /** Initialize the physics simulation */
+        BulletAppState physics = new BulletAppState();
+        physics.setThreadingType(BulletAppState.ThreadingType.SEQUENTIAL);
+        stateManager.attach(physics);
+        physics.getPhysicsSpace().setGravity(Physics.DEFAULT_GRAVITY);
+        physics.setDebugEnabled(false);
 
-		stateManager.attach(new SceneAppState());
-		stateManager.attach(new CubeAppState());
-		stateManager.attach(new PhysxDebugAppState());
-		stateManager.attach(new GInputAppState());
-		stateManager.attach(new PlayerManager());
-		
-//		String dirName = System.getProperty("user.dir") + "/video";
-//		Capture.captureVideo(this, 0.5f, dirName);
-	}
+        stateManager.attach(new SceneAppState());
+        stateManager.attach(new CubeAppState());
+        stateManager.attach(new PhysxDebugAppState());
+        stateManager.attach(new GInputAppState());
+        stateManager.attach(new PlayerManager());
+
+        //String dirName = System.getProperty("user.dir") + "/video";
+        //Capture.captureVideo(this, 0.5f, dirName);
+    }
 
 }
-
