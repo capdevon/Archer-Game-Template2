@@ -79,7 +79,7 @@ dependencies {
     //implementation 'org.jmonkeyengine:jme3-niftygui:' + jmonkeyengineVersion
     implementation 'org.jmonkeyengine:jme3-terrain:' + jmonkeyengineVersion
 
-	// Physics
+    // Physics
     implementation 'com.github.stephengold:Minie:4.0.2'
     //implementation 'com.github.stephengold:Minie:4.0.2+debug'
 
