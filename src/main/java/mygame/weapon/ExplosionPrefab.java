@@ -25,7 +25,7 @@ public class ExplosionPrefab extends PrefabComponent {
 
     @Override
     public Spatial loadModel() {
-        return app.getAssetManager().loadModel(assetName);
+        return getAssetManager().loadModel(assetName);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ExplosionPrefab extends PrefabComponent {
         lightVFX.setPosition(position.add(0, 1f, 0));
         lightVFX.setRadius(13);
         lightVFX.setColor(explosionColor.mult(5));
-        app.getRootNode().addLight(lightVFX);
+        getRootNode().addLight(lightVFX);
 
         EmitterData emitter = new EmitterData(model);
         model.addControl(new TimerControl(lifeTimeVFX) {
@@ -55,11 +55,11 @@ public class ExplosionPrefab extends PrefabComponent {
             public void onTrigger() {
                 emitter.stop();
                 spatial.removeFromParent();
-                app.getRootNode().removeLight(lightVFX);
+                getRootNode().removeLight(lightVFX);
                 System.out.println("Explosion removed: " + model);
 
 //	            System.out.println("debug Scene LightList:--------------------");
-//	            for (Light light : app.getRootNode().getLocalLightList()) {
+//	            for (Light light : getRootNode().getLocalLightList()) {
 //	            	System.out.println(light);
 //	            }
             }
