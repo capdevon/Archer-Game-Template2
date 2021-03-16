@@ -15,8 +15,8 @@ sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 // select one version of the Engine
-//ext.jmonkeyengineVersion = '3.2.4-stable' // from jCenter
-ext.jmonkeyengineVersion = '3.3.2-stable' // from jCenter
+//ext.jmonkeyengineVersion = '3.2.4-stable' // from mavenCentral
+ext.jmonkeyengineVersion = '3.3.2-stable' // from mavenCentral
 //ext.jmonkeyengineVersion = '3.4.0-SNAPSHOT' // from mavenLocal
 
 gradle.projectsEvaluated {
@@ -55,12 +55,12 @@ jar.manifest.attributes('Main-Class': mainClassName)
 
 repositories {
     //mavenLocal()
-    jcenter()
+    mavenCentral()
+    //jcenter()
     //maven { url 'http://nifty-gui.sourceforge.net/nifty-maven-repo' }
     maven { url 'https://dl.bintray.com/stephengold/org.jmonkeyengine' }
     maven { url 'https://jitpack.io' }
     //google()
-    //mavenCentral()
 
     // Read more about repositories here:
     //   https://docs.gradle.org/current/userguide/dependency_management.html#sec:repositories
@@ -70,7 +70,7 @@ dependencies {
     // You can read more about how to add dependencies here:
     //   https://docs.gradle.org/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
 
-    // from jcenter (or mavenLocal) repositories:
+    // from mavenCentral (or mavenLocal) repositories:
     implementation 'org.jmonkeyengine:jme3-core:' + jmonkeyengineVersion
     implementation 'org.jmonkeyengine:jme3-desktop:' + jmonkeyengineVersion
     implementation 'org.jmonkeyengine:jme3-effects:' + jmonkeyengineVersion
@@ -79,13 +79,14 @@ dependencies {
     //implementation 'org.jmonkeyengine:jme3-niftygui:' + jmonkeyengineVersion
     implementation 'org.jmonkeyengine:jme3-terrain:' + jmonkeyengineVersion
 
-    implementation 'com.github.stephengold:Minie:3.0.0'
-    //implementation 'com.github.stephengold:Minie:3.0.0+debug'
+	// Physics
+    implementation 'com.github.stephengold:Minie:4.0.2'
+    //implementation 'com.github.stephengold:Minie:4.0.2+debug'
 
     // Additional filters
     implementation 'com.github.polincdev:ShaderBlowEx:-SNAPSHOT'
 
-    // select one version of LWJGL (from jCenter or mavenLocal)
+    // select one version of LWJGL (from mavenCentral or mavenLocal)
     runtimeOnly 'org.jmonkeyengine:jme3-lwjgl:' + jmonkeyengineVersion  // LWJGL 2.x
     //runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jmonkeyengineVersion // LWJGL 3.x
 
@@ -98,6 +99,12 @@ dependencies {
     // from stephengold's bintray repositories:
     runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
     //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.3.0-alpha2'
+    
+    // Libraries related to the Lemur GUI and Groovy:
+    //implementation 'com.simsilica:lemur:1.14.0'
+    //implementation 'com.simsilica:lemur-props:1.1.1'
+    //implementation 'com.simsilica:lemur-proto:1.11.0'
+    //runtimeOnly 'org.codehaus.groovy:groovy-jsr223:3.0.7'
 }
 
 // cleanup tasks
