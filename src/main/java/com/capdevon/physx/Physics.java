@@ -25,7 +25,7 @@ import com.jme3.util.TempVars;
 
 public class Physics {
 
-    public static final Vector3f DEFAULT_GRAVITY = new Vector3f(0, -9.81 f, 0).multLocal(2);
+    public static final Vector3f DEFAULT_GRAVITY = new Vector3f(0, -9.81f, 0).multLocal(2);
     private static final int DefaultRaycastLayers = PhysicsCollisionObject.COLLISION_GROUP_01;
 
     public static void addObject(Spatial sp) {
@@ -60,8 +60,8 @@ public class Physics {
     public static void addCapsuleCollider(Spatial spatial) {
         BoundingBox bb = (BoundingBox) spatial.getWorldBound();
         float radius = Math.min(bb.getXExtent(), bb.getZExtent());
-        float height = Math.max(bb.getYExtent(), radius * 2.5 f);
-        float mass = 50 f;
+        float height = Math.max(bb.getYExtent(), radius * 2.5f);
+        float mass = 50f;
         addCapsuleCollider(spatial, radius, height, mass);
     }
 
@@ -104,7 +104,7 @@ public class Physics {
         float distance = expCenter2Body.length();
         if (distance < explosionRadius) {
             // apply proportional explosion force
-            float strength = (1. f - FastMath.clamp(distance / explosionRadius, 0, 1)) * explosionForce;
+            float strength = (1.f - FastMath.clamp(distance / explosionRadius, 0, 1)) * explosionForce;
             rb.setLinearVelocity(expCenter2Body.normalize().mult(strength));
         }
     }
@@ -117,7 +117,7 @@ public class Physics {
      * @param maxDistance
      * @return
      */
-    public static List < RaycastHit > raycastAll(Vector3f origin, Vector3f direction, float maxDistance) {
+    public static List <RaycastHit> raycastAll(Vector3f origin, Vector3f direction, float maxDistance) {
         return raycastAll(origin, direction, maxDistance, DefaultRaycastLayers);
     }
 
@@ -130,9 +130,9 @@ public class Physics {
      * @param layerMask
      * @return
      */
-    public static List < RaycastHit > raycastAll(Vector3f origin, Vector3f direction, float maxDistance, int layerMask) {
+    public static List <RaycastHit> raycastAll(Vector3f origin, Vector3f direction, float maxDistance, int layerMask) {
 
-        List < RaycastHit > lstResults = new ArrayList < > ();
+        List <RaycastHit> lstResults = new ArrayList < > ();
 
         TempVars t = TempVars.get();
         Vector3f beginVec = t.vect1.set(origin);
