@@ -17,7 +17,7 @@ public class MathUtils {
      * zero is returned. If value is greater than one then one is returned.
      * 
      * @param value
-     * @returna
+     * @return
      */
     public static int clamp01(int value) {
         return clamp(value, 0, 1);
