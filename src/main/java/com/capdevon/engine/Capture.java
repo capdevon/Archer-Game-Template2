@@ -30,7 +30,7 @@ public class Capture {
 		VideoRecorderAppState recorder = new VideoRecorderAppState(file, quality, frameRate);
 		app.getStateManager().attach(recorder);
 
-		System.out.println(file.getAbsolutePath());
+		System.out.println("Start VideoRecorder=" + file.getAbsolutePath());
 	}
 
 }
