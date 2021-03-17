@@ -2,6 +2,7 @@ package com.capdevon.physx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingSphere;
@@ -25,8 +26,18 @@ import com.jme3.util.TempVars;
 
 public class Physics {
 
+	/**
+	 * Default gravity
+	 */
     public static final Vector3f DEFAULT_GRAVITY = new Vector3f(0, -9.81f, 0).multLocal(2);
+    /**
+     * DefaultRaycastLayers
+     */
     private static final int DefaultRaycastLayers = PhysicsCollisionObject.COLLISION_GROUP_01;
+    /**
+     * IdentityFunction
+     */
+    private static final Function<PhysicsCollisionObject, Boolean> IdentityFunction = x -> true;
 
     public static void addObject(Spatial sp) {
         PhysicsSpace.getPhysicsSpace().add(sp);
@@ -44,13 +55,9 @@ public class Physics {
         PhysicsSpace.getPhysicsSpace().addTickListener(listener);
     }
 
-    /**
-     * 
-     * @param spatial
-     * @param radius
-     * @param height
-     * @param mass 
-     */
+    //----------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------
+    
     public static void addCapsuleCollider(Spatial spatial, float radius, float height, float mass) {
         BetterCharacterControl bcc = new BetterCharacterControl(radius, height, mass);
         spatial.addControl(bcc);
@@ -117,7 +124,7 @@ public class Physics {
      * @param maxDistance
      * @return
      */
-    public static List <RaycastHit> raycastAll(Vector3f origin, Vector3f direction, float maxDistance) {
+    public static List<RaycastHit> raycastAll(Vector3f origin, Vector3f direction, float maxDistance) {
         return raycastAll(origin, direction, maxDistance, DefaultRaycastLayers);
     }
 
@@ -130,15 +137,15 @@ public class Physics {
      * @param layerMask
      * @return
      */
-    public static List <RaycastHit> raycastAll(Vector3f origin, Vector3f direction, float maxDistance, int layerMask) {
+    public static List<RaycastHit> raycastAll(Vector3f origin, Vector3f direction, float maxDistance, int layerMask) {
 
-        List <RaycastHit> lstResults = new ArrayList < > ();
+        List<RaycastHit> lstResults = new ArrayList<>();
 
         TempVars t = TempVars.get();
         Vector3f beginVec = t.vect1.set(origin);
         Vector3f finalVec = t.vect2.set(direction).multLocal(maxDistance).addLocal(origin);
 
-        List < PhysicsRayTestResult > results = PhysicsSpace.getPhysicsSpace().rayTest(beginVec, finalVec);
+        List<PhysicsRayTestResult> results = PhysicsSpace.getPhysicsSpace().rayTest(beginVec, finalVec);
 
         for (PhysicsRayTestResult ray: results) {
             PhysicsCollisionObject pco = ray.getCollisionObject();
@@ -193,7 +200,7 @@ public class Physics {
         Vector3f beginVec = t.vect1.set(origin);
         Vector3f finalVec = t.vect2.set(direction).multLocal(maxDistance).addLocal(origin);
 
-        List < PhysicsRayTestResult > results = PhysicsSpace.getPhysicsSpace().rayTest(beginVec, finalVec);
+        List<PhysicsRayTestResult> results = PhysicsSpace.getPhysicsSpace().rayTest(beginVec, finalVec);
         for (PhysicsRayTestResult ray: results) {
 
             PhysicsCollisionObject pco = ray.getCollisionObject();
@@ -240,7 +247,7 @@ public class Physics {
         boolean collision = false;
         float hf = Float.MAX_VALUE;
 
-        List < PhysicsRayTestResult > results = PhysicsSpace.getPhysicsSpace().rayTest(beginVec, finalVec);
+        List<PhysicsRayTestResult> results = PhysicsSpace.getPhysicsSpace().rayTest(beginVec, finalVec);
         for (PhysicsRayTestResult ray: results) {
 
             PhysicsCollisionObject pco = ray.getCollisionObject();
@@ -260,6 +267,85 @@ public class Physics {
         }
 
         return collision;
+    }
+    
+    /**
+     * Computes and stores colliders inside the sphere.
+     * 
+     * @param position	- Center of the sphere.
+     * @param radius	- Radius of the sphere.
+     * @param layerMask	- A Layer mask defines which layers of colliders to include in the query.
+     * @param func		- Specifies a function to filter colliders.
+     * @return Returns an array with all PhysicsRigidBody touching or inside the sphere.
+     */
+    public static PhysicsCollisionObject[] overlapSphere(Vector3f position, float radius, int layerMask, Function<PhysicsCollisionObject, Boolean> func) {
+        
+        List<PhysicsCollisionObject> lst = new ArrayList<>();
+    	lst.addAll(PhysicsSpace.getPhysicsSpace().getCharacterList());
+    	lst.addAll(PhysicsSpace.getPhysicsSpace().getRigidBodyList());
+        
+    	List<PhysicsCollisionObject> results = new ArrayList<>(10);
+        for (PhysicsCollisionObject pco : lst) {
+            
+            if ( contains(layerMask, pco.getCollisionGroup()) && func.apply(pco) ) {
+                Vector3f distance = pco.getPhysicsLocation().subtract(position);
+                
+                if (distance.length() < radius) {
+                	results.add(pco);
+                }
+            }
+        }
+        return (PhysicsCollisionObject[]) results.toArray();
+    }
+    
+    public static PhysicsCollisionObject[] overlapSphere(Vector3f position, float radius, int layerMask) {
+    	return overlapSphere(position, radius, layerMask, IdentityFunction);
+    }
+    
+    public static PhysicsCollisionObject[] overlapSphere(Vector3f position, float radius) {
+    	return overlapSphere(position, radius, DefaultRaycastLayers, IdentityFunction);
+    }
+    
+    /**
+     * Computes and stores colliders inside the sphere into the provided buffer.
+     * Does not attempt to grow the buffer if it runs out of space.
+     * 
+     * @param position	- Center of the sphere.
+     * @param radius	- Radius of the sphere.
+     * @param results	- The buffer to store the results into.
+     * @param layerMask	- A Layer mask defines which layers of colliders to include in the query.
+     * @param func		- Specifies a function to filter colliders.
+     * @return Returns the amount of colliders stored into the results buffer.
+     */
+    public static int overlapSphereNonAlloc(Vector3f position, float radius, PhysicsCollisionObject[] results, int layerMask, Function<PhysicsCollisionObject, Boolean> func) {
+    	
+    	List<PhysicsCollisionObject> lst = new ArrayList<>();
+    	lst.addAll(PhysicsSpace.getPhysicsSpace().getCharacterList());
+    	lst.addAll(PhysicsSpace.getPhysicsSpace().getRigidBodyList());
+    	
+    	int numColliders = 0;
+        for (PhysicsCollisionObject pco : lst) {
+            
+            if ( contains(layerMask, pco.getCollisionGroup()) && func.apply(pco) ) {
+                Vector3f distance = pco.getPhysicsLocation().subtract(position);
+             
+                if (distance.length() < radius) {
+                	results[numColliders++] = pco;
+                	if (numColliders == results.length) {
+                		break;
+                	}
+                }
+            }
+        }
+        return numColliders;
+    }
+    
+    public static int overlapSphereNonAlloc(Vector3f position, float radius, PhysicsCollisionObject[] results, int layerMask) {
+    	return overlapSphereNonAlloc(position, radius, results, layerMask, IdentityFunction);
+    }
+    
+    public static int overlapSphereNonAlloc(Vector3f position, float radius, PhysicsCollisionObject[] results) {
+    	return overlapSphereNonAlloc(position, radius, results, DefaultRaycastLayers, IdentityFunction);
     }
 
     /**
