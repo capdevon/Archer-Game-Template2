@@ -22,10 +22,15 @@ public class Capture {
 		String fileName = settings.getTitle() + "-" + fileId + ".avi";
 		File file = new File(dirName, fileName);
 
-		VideoRecorderAppState recorder = new VideoRecorderAppState(file, quality, settings.getFrameRate());
+		int frameRate = settings.getFrameRate();
+		if (settings.getFrameRate() < 0) {
+			throw new IllegalArgumentException("FrameRate must not be negative: " + frameRate);
+		}
+
+		VideoRecorderAppState recorder = new VideoRecorderAppState(file, quality, frameRate);
 		app.getStateManager().attach(recorder);
 
-		System.out.println("initVideoRecorder=" + file.getAbsolutePath());
+		System.out.println(file.getAbsolutePath());
 	}
 
 }
