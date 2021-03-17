@@ -50,14 +50,14 @@ import com.jme3.util.SkyFactory.EnvMapType;
  */
 public class JMonkey3 {
 
-    protected static boolean initialized;
-    protected static AppSettings settings;
-    protected static AppStateManager stateManager;
-    protected static AssetManager assetManager;
-    protected static InputManager inputManager;
-    protected static Node rootNode;
-    protected static Node guiNode;
-    protected static Camera camera;
+	protected static boolean initialized;
+	protected static AppSettings settings;
+	protected static AppStateManager stateManager;
+	protected static AssetManager assetManager;
+	protected static InputManager inputManager;
+	protected static Node rootNode;
+	protected static Node guiNode;
+	protected static Camera camera;
 
     private JMonkey3() {
         // singleton constructor
@@ -426,6 +426,150 @@ public class JMonkey3 {
         }
 
     }
+    
+    /**
+     * -------------------------------------------------------------------------
+     * JMonkey3.GameObject
+     * -------------------------------------------------------------------------
+     */
+    public static class GameObject {
+    	
+        public static void setUserDataRecursive(Spatial sp, final String key, final Object data) {
+            sp.depthFirstTraversal(new SceneGraphVisitorAdapter() {
+                @Override
+                public void visit(Geometry sp) {
+                    sp.setUserData(key, data);
+                }
+            });
+        }
+
+        /**
+         * Finds a GameObject by name and returns it. 
+         * If no GameObject with name can be found, null is returned
+         * 
+         * @param name
+         * @return 
+         */
+        public static Node find(final String name) {
+            final List<Node> lst = new ArrayList<>();
+            rootNode.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
+                @Override
+                public void visit(Node node) {
+                    if (name.equals(node.getName())) {
+                        lst.add(node);
+                    }
+                }
+            });
+            return lst.isEmpty() ? null : lst.get(0);
+        }
+        
+        /**
+         * Returns one active GameObject tagged tag. 
+         * Returns null if no GameObject was found.
+         * 
+         * @param tag
+         * @return
+         */
+        public static Node findWithTag(final String tag) {
+            List<Node> lst = findGameObjectsWithTag(tag);
+            return lst.isEmpty() ? null : lst.get(0);
+        }
+
+        /**
+         * Returns an array of active GameObjects tagged tag. 
+         * Returns empty array if no GameObject was found.
+         * 
+         * @param tag
+         * @return
+         */
+        public static List<Node> findGameObjectsWithTag(final String tag) {
+            final List<Node> lst = new ArrayList<>();
+            rootNode.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
+                @Override
+                public void visit(Node node) {
+                    if (tag.equals(node.getUserData("TagName"))) {
+                        lst.add(node);
+                    }
+                }
+            });
+            return lst;
+        }
+
+        /**
+         * Returns the first active loaded object of Type type.
+         * 
+         * @param clazz
+         * @return 
+         */
+        public static Node findObjectOfType(Class<? extends Control> clazz) {
+            List<Node> lst = findObjectsOfType(clazz);
+            return lst.isEmpty() ? null : lst.get(0);
+        }
+
+        /**
+         * Returns a list of all active loaded objects of Type type.
+         * 
+         * @param clazz
+         * @return 
+         */
+        public static List<Node> findObjectsOfType(Class<? extends Control> clazz) {
+            final List<Node> lst = new ArrayList<>();
+            rootNode.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
+                @Override
+                public void visit(Node node) {
+                    if (node.getControl(clazz) != null) {
+                        lst.add(node);
+                    }
+                }
+            });
+            return lst;
+        }
+
+        /**
+         * Returns the component of Type type in the GameObject or any of its children using depth first search.
+         * @param <T>
+         * @param spatial
+         * @param clazz
+         * @return
+         */
+        public static <T extends Control> T getComponentInChild(Spatial spatial, Class<T> clazz) {
+            T control = spatial.getControl(clazz);
+            if (control != null) {
+                return control;
+            }
+
+            if (spatial instanceof Node) {
+                for (Spatial child : ((Node) spatial).getChildren()) {
+                    control = getComponentInChild(child, clazz);
+                    if (control != null) {
+                        return control;
+                    }
+                }
+            }
+
+            return null;
+        }
+        
+        /**
+         * Retrieves the component of Type type in the GameObject or any of its parents.
+         * @param <T>
+         * @param spatial
+         * @param clazz
+         * @return 
+         */
+        public static <T extends Control> T getComponentInParent(Spatial spatial, Class<T> clazz) {
+            Node parent = spatial.getParent();
+            while (parent != null) {
+                T control = parent.getControl(clazz);
+                if (control != null) {
+                    return control;
+                }
+                parent = parent.getParent();
+            }
+            return null;
+        }
+    	
+    }
 
     /**
      * -------------------------------------------------------------------------
@@ -456,90 +600,6 @@ public class JMonkey3 {
 
         public static boolean useJoysticks() {
             return settings.useJoysticks();
-        }
-
-        public static void setUserDataRecursive(Spatial sp, final String key, final Object data) {
-            sp.depthFirstTraversal(new SceneGraphVisitorAdapter() {
-                @Override
-                public void visit(Geometry sp) {
-                    sp.setUserData(key, data);
-                }
-            });
-        }
-
-        /**
-         * @param childName
-         * @return
-         */
-        public Node find(final String childName) {
-            final List <Node> lst = new ArrayList<>();
-            rootNode.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
-                @Override
-                public void visit(Node node) {
-                    if (childName.equals(node.getName())) {
-                        lst.add(node);
-                    }
-                }
-            });
-            if (lst.isEmpty()) {
-                String err = "The component %s could not be found";
-                throw new RuntimeException(String.format(err, childName));
-            }
-            return lst.get(0);
-        }
-
-        /**
-         * @param tagName
-         * @return
-         */
-        public List <Node> findGameObjectsWithTag(final String tagName) {
-            final List <Node> lst = new ArrayList<>();
-            rootNode.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
-                @Override
-                public void visit(Node node) {
-                    if (tagName.equals(node.getUserData(DataKey.TAG_NAME))) {
-                        lst.add(node);
-                    }
-                }
-            });
-            return lst;
-        }
-
-        /**
-         * @param tagName
-         * @return
-         */
-        public Node findWithTag(final String tagName) {
-            List <Node> lst = findGameObjectsWithTag(tagName);
-            if (lst.isEmpty()) {
-                String err = "The object %s could not be found";
-                throw new RuntimeException(String.format(err, tagName));
-            }
-            return lst.get(0);
-        }
-
-        /**
-         * @param <T>
-         * @param spatial
-         * @param clazz
-         * @return
-         */
-        public <T extends Control> T getComponent(Spatial spatial, Class <T> clazz) {
-            T control = spatial.getControl(clazz);
-            if (control != null) {
-                return control;
-            }
-
-            if (spatial instanceof Node) {
-                for (Spatial child: ((Node) spatial).getChildren()) {
-                    control = getComponent(child, clazz);
-                    if (control != null) {
-                        return control;
-                    }
-                }
-            }
-
-            return null;
         }
 
     }
