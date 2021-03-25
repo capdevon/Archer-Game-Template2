@@ -280,8 +280,8 @@ public class Physics {
      */
     public static PhysicsCollisionObject[] overlapSphere(Vector3f position, float radius, int layerMask, Function<PhysicsCollisionObject, Boolean> func) {
 
-        List < PhysicsCollisionObject > results = new ArrayList <>(10);
-        for (PhysicsCollisionObject pco: PhysicsSpace.getPhysicsSpace().getRigidBodyList()) {
+        List <PhysicsCollisionObject> results = new ArrayList <>(10);
+        for (PhysicsCollisionObject pco : PhysicsSpace.getPhysicsSpace().getRigidBodyList()) {
 
             if (applyMask(layerMask, pco.getCollisionGroup()) && func.apply(pco)) {
                 Vector3f distance = pco.getPhysicsLocation().subtract(position);
@@ -316,7 +316,7 @@ public class Physics {
     public static int overlapSphereNonAlloc(Vector3f position, float radius, PhysicsCollisionObject[] results, int layerMask, Function<PhysicsCollisionObject, Boolean> func) {
 
         int numColliders = 0;
-        for (PhysicsCollisionObject pco: PhysicsSpace.getPhysicsSpace().getRigidBodyList()) {
+        for (PhysicsCollisionObject pco : PhysicsSpace.getPhysicsSpace().getRigidBodyList()) {
 
             if (applyMask(layerMask, pco.getCollisionGroup()) && func.apply(pco)) {
                 Vector3f distance = pco.getPhysicsLocation().subtract(position);
