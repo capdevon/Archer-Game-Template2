@@ -29,7 +29,7 @@ public class PhysxDebugAppState extends BaseAppState implements ActionListener {
     @Override
     protected void initialize(Application app) {
         this.inputManager = app.getInputManager();
-        this.bulletAppState = getState(BulletAppState.class);
+        this.bulletAppState = getState(BulletAppState.class, true);
 
         inputManager.addListener(this, TOGGLE_PHYSICS_DEBUG);
     }
