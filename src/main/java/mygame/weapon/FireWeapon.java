@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.capdevon.physx.Physics;
+import com.capdevon.physx.PhysxQuery;
 import com.capdevon.physx.RaycastHit;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -63,35 +64,21 @@ public class FireWeapon extends Weapon {
         float baseStrength = 10f;
         int layerMask = PhysicsCollisionObject.COLLISION_GROUP_01;
         ColorRGBA color = ColorRGBA.randomColor();
-
-        Function<PhysicsCollisionObject, Boolean> dynamicBodies = new Function<PhysicsCollisionObject, Boolean>() {
-            @Override
-            public Boolean apply(PhysicsCollisionObject pco) {
-                if (pco instanceof PhysicsRigidBody) {
-                    PhysicsRigidBody rb = (PhysicsRigidBody) pco;
-                    return rb.getMass() > 0;
-                }
-                return false;
-            }
-        };
+        Function<PhysicsRigidBody, Boolean> dynamicBodies = (x) -> x.getMass() > 0;
 
         int maxColliders = 10;
-        PhysicsCollisionObject[] hitColliders = new PhysicsCollisionObject[maxColliders];
-        int numColliders = Physics.overlapSphereNonAlloc(hit.point, explosionRadius, hitColliders, layerMask, dynamicBodies);
+        PhysicsRigidBody[] hitColliders = new PhysicsRigidBody[maxColliders];
+        int numColliders = PhysxQuery.overlapSphereNonAlloc(hit.point, explosionRadius, hitColliders, layerMask, dynamicBodies);
         System.out.println("numColliders=" + numColliders);
 
-        for (int i = 0; i < numColliders; i++) {
+		for (int i = 0; i < numColliders; i++) {
 
-            PhysicsCollisionObject pco = hitColliders[i];
-            if (pco instanceof PhysicsRigidBody) {
+			PhysicsRigidBody rb = hitColliders[i];
+			Physics.addExplosionForce(rb, baseStrength, hit.point, explosionRadius);
 
-                PhysicsRigidBody rb = (PhysicsRigidBody) pco;
-                Physics.addExplosionForce(rb, baseStrength, hit.point, explosionRadius);
-
-                Spatial userObj = (Spatial) pco.getUserObject();
-                applyDamage(userObj, color);
-            }
-        }
+			Spatial userObj = (Spatial) rb.getUserObject();
+			applyDamage(userObj, color);
+		}
     }
 
     /**
