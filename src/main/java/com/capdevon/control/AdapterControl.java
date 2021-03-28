@@ -5,106 +5,79 @@
  */
 package com.capdevon.control;
 
-import com.jme3.math.Vector3f;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
+import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 
 /**
- *
+ * @author capdevon
  */
 public class AdapterControl extends AbstractControl {
     
     /**
-     * 
-     * @param name
-     * @param location
-     * @return 
-     */
-    public Node addEmptyNode(String name, Vector3f location) {
-        Node node = new Node(name);
-        ((Node) spatial).attachChild(node);
-        node.setLocalTranslation(location);
-        return node;
-    }
-    
-    /**
-     * 
-     * @param name
-     * @return 
-     */
-    public Spatial getChild(String name) {
-        Spatial child = ((Node) spatial).getChild(name);
-        if (child == null) {
-            String err = "The component %s could not be found";
-            throw new RuntimeException(String.format(err, name));
-        }
-        return child;
-    }
-    
-    /**
-     * 
      * @param <T>
      * @param key
      * @return 
      */
     public <T> T getUserData(String key) {
         T objValue = spatial.getUserData(key);
-        if (objValue == null) {
-            String err = "The component %s could not be found";
-            throw new RuntimeException(String.format(err, key));
-        }
-        return objValue;
+        String message = "The component data %s could not be found";
+        return Objects.requireNonNull(objValue, String.format(message, key));
     }
     
     /**
+     * Returns all components of Type type in the GameObject.
      * 
      * @param <T>
      * @param clazz
      * @return 
      */
-    public <T> T getUserData(Class<T> clazz) {
-        T objValue = null;
-        for (String key : spatial.getUserDataKeys()) {
-            T data = spatial.getUserData(key);
-            if (clazz.isAssignableFrom(data.getClass())) {
-                objValue = data;
-                break;
+    public <T extends Control> T[] getComponents(Class<T> clazz) {
+        final List<Node> lst = new ArrayList<>(10);
+        spatial.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
+            @Override
+            public void visit(Node node) {
+                if (node.getControl(clazz) != null) {
+                    lst.add(node);
+                }
             }
-        }
-        if (objValue == null) {
-            String err = "The component %s could not be found";
-            throw new RuntimeException(String.format(err, clazz.getName()));
-        }
-        return objValue;
+        });
+        return (T[]) lst.toArray();
     }
     
     /**
+     * Returns the component of Type type if the game object has one attached,
+     * null if it doesn't.
+     *
      * @param <T>
      * @param clazz
-     * @return 
+     * @return
      */
-    protected <T extends Control> T getComponent(Class<T> clazz) {
+    public <T extends Control> T getComponent(Class<T> clazz) {
         T control = spatial.getControl(clazz);
-        if (control == null) {
-            String err = "The component %s could not be found";
-            throw new RuntimeException(String.format(err, clazz.getName()));
-        }
         return control;
     }
-
+    
     /**
+     * Returns the component of Type type in the GameObject or any of its
+     * children using depth first search.
+     *
      * @param <T>
      * @param clazz
-     * @return 
+     * @return
      */
-    protected <T extends Control> T getComponentInChild(final Class<T> clazz) {
+    public <T extends Control> T getComponentInChild(final Class<T> clazz) {
         return getComponentInChild(spatial, clazz);
     }
-
+    
     private <T extends Control> T getComponentInChild(Spatial spatial, final Class<T> clazz) {
         T control = spatial.getControl(clazz);
         if (control != null) {
@@ -118,6 +91,31 @@ public class AdapterControl extends AbstractControl {
                     return control;
                 }
             }
+        }
+
+        return null;
+    }
+    
+    /**
+     * Retrieves the component of Type type in the GameObject or any of its
+     * parents.
+     *
+     * @param <T>
+     * @param clazz
+     * @return
+     */
+    public <T extends Control> T getComponentInParent(Class<T> clazz) {
+        return getComponentInParent(spatial, clazz);
+    }
+    
+    private <T extends Control> T getComponentInParent(Spatial spatial, Class<T> clazz) {
+        Node parent = spatial.getParent();
+        while (parent != null) {
+            T control = parent.getControl(clazz);
+            if (control != null) {
+                return control;
+            }
+            parent = parent.getParent();
         }
         return null;
     }
