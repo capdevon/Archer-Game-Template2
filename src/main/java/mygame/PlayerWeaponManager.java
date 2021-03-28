@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import com.capdevon.anim.Animator;
 import com.capdevon.anim.HumanBodyBones;
+import com.capdevon.anim.TrackUtils;
 import com.capdevon.control.AdapterControl;
 import com.capdevon.physx.Physics;
 import com.capdevon.physx.RaycastHit;
@@ -19,7 +20,6 @@ import com.jme3.animation.Bone;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.input.ChaseCamera;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -29,6 +29,8 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+import mygame.camera.BPCameraCollider;
+import mygame.camera.MainCamera;
 import mygame.weapon.FireWeapon;
 import mygame.weapon.RangedWeapon;
 import mygame.weapon.Weapon;
@@ -38,39 +40,37 @@ import mygame.weapon.Weapon;
  */
 public class PlayerWeaponManager extends AdapterControl implements AnimEventListener {
 
-    private final Logger logger = Logger.getLogger(PlayerWeaponManager.class.getName());
+    private static final Logger logger = Logger.getLogger(PlayerWeaponManager.class.getName());
 
     AssetManager assetManager;
     Camera camera;
-    Animator animator;
-    WeaponUIManager weaponUI;
-    AudioNode shoot;
-    AudioNode reload;
+    AudioNode shootSFX;
+    AudioNode reloadSFX;
 
-    float fov = 0;
-    float aimingSpeed = 5f;
-    float aimZoomRatio = 0.75f;
-    float defaultFOV = 60;
+    private BPCameraCollider bpCamera;
+    private Animator animator;
+    private WeaponUIManager weaponUI;
+
+    private MainCamera _MainCamera;
+    public float nearClipPlane = 0.01f;
+    public float farClipPlane = 100f;
+    private float fov = 0;
+    private float aimingSpeed = 5f;
+    private float aimFOV = 45;
+    private float defaultFOV = 60;
     boolean isAiming, canShooting;
-
-    Spatial aimNode;
     float m_CurrentLaunchForce;
 
     // weapon hook
-    Node r_wh; // right hand
-    Node l_wh; // left hand
-    Node s_wh; // spine
+    private Node r_wh; // right hand
+    private Node l_wh; // left hand
+    private Node s_wh; // spine
     // runtime weapon
-    Weapon currentWeapon;
+    private Weapon currentWeapon;
     // current weapon index
-    int index = -1;
+    private int index = -1;
     // weapons list
-    List <Weapon> lstWeapons = new ArrayList<>();
-
-
-    private Spatial cameraPivot;
-    private Vector3f defaultCamPosition = new Vector3f(0f, 1.8f, 0f);
-    private Vector3f aimingCamPosition = new Vector3f(-0.4f, 1.8f, 0f);
+    private List<Weapon> lstWeapons = new ArrayList<>();
 
     private final String pfxMixamo = "Armature_mixamorig:";
     private Bone spineBone;
@@ -87,24 +87,24 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
     }
 
     private void awake() {
-        this.cameraPivot = getChild("CameraPivot");
-        cameraPivot.setLocalTranslation(defaultCamPosition);
-
-        this.aimNode = getChild("CameraPivot"); //getChild("AimPivot");
-        //aimNode.setLocalTranslation(x, y, z);
-
+        this.bpCamera = getComponent(BPCameraCollider.class);
         this.weaponUI = getComponent(WeaponUIManager.class);
         this.animator = getComponent(Animator.class);
+        this.lr = getComponent(LineRenderer.class);
+
+        _MainCamera = new MainCamera(camera, defaultFOV, nearClipPlane, farClipPlane);
 
         r_wh = createHook(HumanBodyBones.RightHand);
         l_wh = createHook(HumanBodyBones.LeftHand);
         s_wh = createHook(HumanBodyBones.Spine2);
 
         animator.addAnimListener(this);
-        setFOV(defaultFOV);
+        TrackUtils.addAudioTrack(spatial, reloadSFX, AnimDefs.Aim_Overdraw.getName());
 
         switchWeapon();
         setupBoneIK();
+
+        logger.log(Level.INFO, "Initialized");
     }
 
     private Node createHook(String boneName) {
@@ -123,20 +123,17 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
     @Override
     protected void controlUpdate(float tpf) {
         // TODO Auto-generated method stub
-
         updateBoneIK(tpf);
-        updateWeaponAiming(tpf);
         updateWeaponCharge(tpf);
+        updateWeaponAiming(tpf);
     }
 
     private void updateBoneIK(float tpf) {
         if (isAiming) {
             camera.getRotation().toAngles(angles);
             float rx = FastMath.clamp(angles[0], -0.1f, 0.75f);
-
             //System.out.println("updateBoneIK: " + angles[0] + " " + rx);
             tempRotation.fromAngles(0, 0, -rx);
-
             spineBone.setUserControl(true);
             spineBone.setUserTransforms(Vector3f.ZERO, tempRotation, Vector3f.UNIT_XYZ);
 
@@ -149,9 +146,19 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
         if (isAiming && currentWeapon instanceof RangedWeapon) {
             RangedWeapon rWeapon = (RangedWeapon) currentWeapon;
             m_CurrentLaunchForce = Math.min(m_CurrentLaunchForce + rWeapon.m_ChargeSpeed * tpf, rWeapon.m_MaxLaunchForce);
-
             //predictPOI(aimNode.getWorldTranslation(), camera.getDirection().mult(m_CurrentLaunchForce));
         }
+    }
+
+    private void updateWeaponAiming(float tpf) {
+        if (isAiming) {
+            fov += tpf * aimingSpeed;
+        } else {
+            fov -= tpf * aimingSpeed;
+        }
+
+        fov = FastMath.clamp(fov, 0, 1);
+        _MainCamera.setFieldOfView(FastMath.interpolateLinear(fov, defaultFOV, aimFOV));
     }
 
     private void resetWeaponCharge() {
@@ -161,30 +168,12 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
         }
     }
 
-    private void updateWeaponAiming(float tpf) {
-        if ((fov == 0 && !isAiming) || (fov == 1 && isAiming)) {
-            return;
-        }
-
-        float m = aimingSpeed * tpf;
-        fov = (isAiming) ? (fov + m) : (fov - m);
-        fov = FastMath.clamp(fov, 0, 1);
-        setFOV(FastMath.interpolateLinear(fov, defaultFOV, aimZoomRatio * defaultFOV));
-
-        cameraPivot.setLocalTranslation(FastMath.interpolateLinear(fov, defaultCamPosition, aimingCamPosition));
-    }
-
-    private void setFOV(float fov) {
-        float aspect = (float) camera.getWidth() / (float) camera.getHeight();
-        camera.setFrustumPerspective(fov, aspect, 0.2f, 100f);
-    }
-
     public void setAiming(boolean isAiming) {
         this.isAiming = isAiming;
-        // collCamera.setZooming(isAiming);
-        ChaseCamera chaseCam = getComponentInChild(ChaseCamera.class);
-        chaseCam.setRotationSpeed(isAiming ? 0.5f : 1f);
-        chaseCam.setDefaultDistance(isAiming ? chaseCam.getMinDistance() : chaseCam.getMaxDistance());
+        float distance = isAiming ? bpCamera.getMinDistance() : bpCamera.getMaxDistance();
+        bpCamera.setDistanceToTarget(-distance);
+        bpCamera.setAvoidObstacles(!isAiming);
+        bpCamera.setRotationSpeed(isAiming ? 0.5f : 1);
         currentWeapon.crosshair.setEnabled(isAiming);
         animator.setAnimation(AnimDefs.Draw_Arrow);
     }
@@ -193,7 +182,7 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
         if (isAiming && canShooting) {
 
             // Aim the ray from character location in camera direction.
-            Vector3f origin = aimNode.getWorldTranslation();
+            Vector3f origin = camera.getLocation(); //aimNode.getWorldTranslation();
             Vector3f dir = camera.getDirection();
 
             if (currentWeapon instanceof FireWeapon) {
@@ -206,7 +195,7 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
                 logger.log(Level.INFO, "m_CurrentLaunchForce: " + m_CurrentLaunchForce);
             }
 
-            shoot.playInstance();
+            shootSFX.playInstance();
             animator.setAnimation(AnimDefs.Aim_Recoil);
         }
     }
@@ -243,13 +232,13 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
     private void setWeaponReady() {
         canShooting = true;
         currentWeapon.crosshair.setColor(ColorRGBA.White);
-        reload.play();
+        //reloadSFX.play();
     }
 
     private void setWeaponCharging() {
         canShooting = false;
         currentWeapon.crosshair.setColor(ColorRGBA.Red);
-        reload.stop();
+        //reloadSFX.stop();
         resetWeaponCharge();
     }
 
@@ -316,7 +305,7 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
                 break;
 
             case Bow:
-                //spWeapon = (Node) assetManager.loadModel(currentWeapon.fileModel);
+                //spWeapon 		 = (Node) assetManager.loadModel(currentWeapon.fileModel);
                 //Spatial arrow  = spWeapon.getChild("10490_arrow_v1");
                 //Spatial bow 	 = spWeapon.getChild("10490_bow_v1");
                 //Spatial quiver = spWeapon.getChild("10490_quiver_v1");
@@ -343,10 +332,9 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
         weaponUI.changeWeapon(currentWeapon);
     }
 
-
     RaycastHit hitInfo = new RaycastHit();
     LineRenderer lr;
-    List <Vector3f> points = new LinkedList<>();
+    List<Vector3f> points = new LinkedList<>();
     boolean drawPoints = true;
 
     private void predictPOI(Vector3f launchLocation, Vector3f launchVelocity) {
