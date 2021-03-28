@@ -20,17 +20,20 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
 
+/**
+ * @author capdevon
+ */
 public class PlayerControl extends AdapterControl {
-	
-	private final Logger logger = Logger.getLogger(PlayerControl.class.getName());
+
+    private final Logger logger = Logger.getLogger(PlayerControl.class.getName());
 
     Camera camera;
     AudioNode footsteps;
-    
+
     private Animator animator;
     private BetterCharacterControl bcc;
     private PlayerWeaponManager m_PlayerWeaponManager;
-    
+
     private final Vector3f walkDirection = new Vector3f(0, 0, 0);
     private final Vector3f viewDirection = new Vector3f(0, 0, 1);
 
@@ -44,19 +47,19 @@ public class PlayerControl extends AdapterControl {
     float m_TurnSpeed = 10f;
 
     boolean _MoveForward, _MoveBackward, _MoveLeft, _MoveRight;
-    boolean isRunning, isAiming;
+    boolean isRunning;
 
     @Override
-	public void setSpatial(Spatial sp) {
-		super.setSpatial(sp);
-		if (spatial != null) {
-			this.animator 	= getComponent(Animator.class);
-			this.bcc 		= getComponent(BetterCharacterControl.class);
-			this.m_PlayerWeaponManager = getComponent(PlayerWeaponManager.class);
+    public void setSpatial(Spatial sp) {
+        super.setSpatial(sp);
+        if (spatial != null) {
+            this.animator = getComponent(Animator.class);
+            this.bcc = getComponent(BetterCharacterControl.class);
+            this.m_PlayerWeaponManager = getComponent(PlayerWeaponManager.class);
 
-			logger.log(Level.INFO, "Initialized");
-		}
-	}
+            logger.log(Level.INFO, "Initialized");
+        }
+    }
 
     @Override
     protected void controlUpdate(float tpf) {
@@ -113,7 +116,7 @@ public class PlayerControl extends AdapterControl {
             }
         }
     }
-    
+
     private void setAnimTrigger(Animation3 newAnim) {
         if (checkTransition(newAnim, AnimDefs.Running, AnimDefs.Running_2)) {
             animator.crossFade(newAnim);
@@ -126,5 +129,5 @@ public class PlayerControl extends AdapterControl {
         String curAnim = animator.getAnimationName();
         return (newAnim.equals(a) && b.name.equals(curAnim)) || (newAnim.equals(b) && a.name.equals(curAnim));
     }
-	
+
 }
