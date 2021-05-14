@@ -1,5 +1,5 @@
 # Archer-Game-Template 2
-A Third Person Shooter demo made with jMonkeyEngine v3.3.2-stable.
+A Third Person Shooter demo made with jMonkeyEngine.
 
 The demo contains:
 
