@@ -17,8 +17,7 @@ targetCompatibility = '1.8'
 // select one version of the Engine
 //ext.jmonkeyengineVersion = '3.2.4-stable' // from mavenCentral
 //ext.jmonkeyengineVersion = '3.3.2-stable' // from mavenCentral
-ext.jmonkeyengineVersion = '3.4.0-beta3' // from mavenCentral
-//ext.jmonkeyengineVersion = '3.4.0-SNAPSHOT' // from mavenLocal
+ext.jmonkeyengineVersion = '3.4.0-stable' // from mavenCentral
 
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile) { // compile-time options:
@@ -81,7 +80,7 @@ dependencies {
     //implementation 'org.jmonkeyengine:jme3-terrain:' + jmonkeyengineVersion
 
     // Physics
-    implementation 'com.github.stephengold:Minie:4.1.0+big3+for34'
+    implementation 'com.github.stephengold:Minie:4.2.0+big3'
 
     // Additional filters
     implementation 'com.github.polincdev:ShaderBlowEx:-SNAPSHOT'
