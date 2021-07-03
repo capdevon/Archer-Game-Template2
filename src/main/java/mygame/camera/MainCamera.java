@@ -88,19 +88,18 @@ public class MainCamera {
         cam.setFrustumPerspective(fieldOfView, aspect, near, far);
     }
     
-    public static float fieldOfView(Camera camera) {
-        float yTangent = yTangent(camera);
-        float fovY = 2f * FastMath.atan(yTangent);
-        float yDegrees = fovY * FastMath.RAD_TO_DEG;
-        return yDegrees;
-    }
-
-    private static float yTangent(Camera camera) {
-        float near = camera.getFrustumNear();
-        float height = camera.getFrustumTop() - camera.getFrustumBottom();
-        float halfHeight = height / 2.0F;
-        float yTangent = halfHeight / near;
-        return yTangent;
+    /**
+     * Returns a ray going from camera through a screen point.
+     * @param click2d
+     * @return
+     */
+    public Ray screenPointToRay(Vector2f click2d) {
+        // Convert screen click to 3d position
+        Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d), 0).clone();
+        Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d), 1).subtractLocal(click3d);
+        // Aim the ray from the clicked spot forwards.
+        Ray ray = new Ray(click3d, dir);
+        return ray;
     }
     
 }
