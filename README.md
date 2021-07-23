@@ -9,19 +9,15 @@ The demo contains:
   - normal (The normal arrows stick to surfaces)
   - explosive
   - acid
-* A “materialize” shader that simulates “materializing” an object in or out. (https://store.jmonkeyengine.org/13e64183-01fb-4511-88a8-f6958f95a2c2)
+* A [materialize](https://store.jmonkeyengine.org/13e64183-01fb-4511-88a8-f6958f95a2c2) shader that simulates “materializing” an object in or out.
 * Animations (with gltf2 animations, file .blend included): 
     * "Idle", "Running", "Running_2", "Aim_Idle", "Aim_Overdraw", "Aim_Recoil", "Draw_Arrow", "Water_Idle", "Water_Moving", "Swimming"
 * Third Person Camera with collision detection
 * Dynamic update of camera FOV when aiming
 * Keyboard/Mouse support
-* Joystick support (currently, the joystick functions are based on the library jme3-lwjgl:3.3.2)
+* Joystick support
 
-WIP:
-* shoulder camera prototype when the player aims
-* spine rotation when aiming up and down
-
-Video:
+Demo Video:
 https://www.youtube.com/watch?v=US9KNTqL2js&feature=emb_logo
 
 # Keyboard Commands:
