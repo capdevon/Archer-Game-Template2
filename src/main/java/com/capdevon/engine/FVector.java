@@ -167,11 +167,11 @@ public class FVector {
         return a.angleBetween(b);
     }
 
-    public boolean hasSameDirection(Vector3f a, Vector3f b) {
+    public static boolean hasSameDirection(Vector3f a, Vector3f b) {
         return a.dot(b) > 0;
     }
 
-    public boolean hasOppositeDirection(Vector3f a, Vector3f b) {
+    public static boolean hasOppositeDirection(Vector3f a, Vector3f b) {
         return a.dot(b) < 0;
     }
 
