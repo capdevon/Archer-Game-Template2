@@ -3,20 +3,13 @@ plugins {
     id 'java'
 }
 
-description = 'prototypical JMonkeyEngine application'
+description = 'Archer Toolkit'
 
-//// select one source-code (JDK) option
-//sourceCompatibility = '1.6'
-//sourceCompatibility = '1.7'
+// select one source-code (JDK) option
 sourceCompatibility = '1.8'
-
-//targetCompatibility = '1.6'
-//targetCompatibility = '1.7'
 targetCompatibility = '1.8'
 
-// select one version of the Engine
-//ext.jmonkeyengineVersion = '3.2.4-stable' // from mavenCentral
-//ext.jmonkeyengineVersion = '3.3.2-stable' // from mavenCentral
+// select one version of the Engine:
 ext.jmonkeyengineVersion = '3.4.0-stable' // from mavenCentral
 
 gradle.projectsEvaluated {
@@ -60,7 +53,6 @@ repositories {
     //maven { url 'http://nifty-gui.sourceforge.net/nifty-maven-repo' }
     maven { url 'https://jitpack.io' }
     maven { url 'https://jcenter.bintray.com/' } // for Lemur
-    //google()
     flatDir { dirs file('lib') }
 
     // Read more about repositories here:
@@ -79,31 +71,26 @@ dependencies {
     //implementation 'org.jmonkeyengine:jme3-niftygui:' + jmonkeyengineVersion
     //implementation 'org.jmonkeyengine:jme3-terrain:' + jmonkeyengineVersion
 
-    // Physics
-    implementation 'com.github.stephengold:Minie:4.2.0+big3'
-
-    // Additional filters
-    implementation 'com.github.polincdev:ShaderBlowEx:-SNAPSHOT'
-    runtimeOnly 'com.github.jayfella:jme-materialize:'
+	// Minie
+    implementation 'com.github.stephengold:Minie:4.3.0'
 
     // select one version of LWJGL (from mavenCentral or mavenLocal)
     runtimeOnly 'org.jmonkeyengine:jme3-lwjgl:' + jmonkeyengineVersion  // LWJGL 2.x
     //runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jmonkeyengineVersion // LWJGL 3.x
 
-    // BasicGame doesn't use jme3-blender, jme3-jogg, or jme3-plugins
-    //  -- they are added solely to avoid warnings from AssetConfig
-    //runtimeOnly 'org.jmonkeyengine:jme3-blender:' + jmonkeyengineVersion
     runtimeOnly 'org.jmonkeyengine:jme3-jogg:' + jmonkeyengineVersion
     runtimeOnly 'org.jmonkeyengine:jme3-plugins:' + jmonkeyengineVersion
-
-    //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
-    runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.4.0-alpha6'
+    runtimeOnly 'org.jmonkeyengine:jme3-testdata:' + jmonkeyengineVersion
     
     // Libraries related to the Lemur GUI and Groovy:
     //implementation 'com.simsilica:lemur:1.15.0'
     //implementation 'com.simsilica:lemur-props:1.1.1'
     //implementation 'com.simsilica:lemur-proto:1.12.0'
     //runtimeOnly 'org.codehaus.groovy:groovy-jsr223:3.0.7'
+    
+    // Additional filters
+    implementation 'com.github.polincdev:ShaderBlowEx:-SNAPSHOT'
+    runtimeOnly 'com.github.jayfella:jme-materialize:'
 }
 
 // cleanup tasks
