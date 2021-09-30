@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame;
 
 import com.capdevon.control.AdapterControl;
@@ -10,9 +5,13 @@ import com.capdevon.input.KeyMapping;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.scene.Spatial;
 
+/**
+ * 
+ * @author capdevon
+ */
 public class PlayerInput extends AdapterControl implements ActionListener {
 
-	private PlayerWeaponManager m_PlayerWeaponManager;
+    private PlayerWeaponManager m_PlayerWeaponManager;
     private PlayerControl playerControl;
 
     @Override
@@ -37,11 +36,11 @@ public class PlayerInput extends AdapterControl implements ActionListener {
         } else if (action.equals(KeyMapping.RUNNING)) {
             playerControl.isRunning = keyPressed;
         } else if (action.equals(KeyMapping.AIMING)) {
-        	m_PlayerWeaponManager.setAiming(keyPressed);
+            m_PlayerWeaponManager.setAiming(keyPressed);
         } else if (action.equals(KeyMapping.FIRE) && keyPressed) {
-        	m_PlayerWeaponManager.shooting();
+            m_PlayerWeaponManager.shooting();
         } else if (action.equals(KeyMapping.SWITCH_WEAPON) && keyPressed) {
-        	m_PlayerWeaponManager.switchWeaponBullet();
+            m_PlayerWeaponManager.switchWeaponBullet();
         }
     }
 }
