@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame.camera;
 
 import java.util.ArrayList;
@@ -70,20 +65,10 @@ public class BPCameraCollider extends BPPlayerCamera {
                 distance = 0.01f - hitInfo.distance;
             }
             
-            System.out.println("distance=" + distance);
             setDistanceToTarget(distance);
         }
     }
  
-    /**
-     * 
-     * @param origin
-     * @param direction
-     * @param hitInfo
-     * @param maxDistance
-     * @param layerMask
-     * @return 
-     */
     private boolean Raycast(Vector3f origin, Vector3f direction, RaycastHit hitInfo, float maxDistance, int layerMask) {
 
         TempVars t = TempVars.get();
