@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame.weapon;
 
 import java.util.Objects;
@@ -15,18 +10,30 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
+/**
+ * 
+ * @author capevon
+ */
 public abstract class Weapon {
-	
-	private final Logger logger = Logger.getLogger(Weapon.class.getName());
-	
-	public enum WeaponType { Bow, Normal, Melee }
-    public enum FireMode { Single, Automatic, Charge }
+
+    private final Logger logger = Logger.getLogger(Weapon.class.getName());
+
+    public enum WeaponType {
+        Bow,
+        Normal,
+        Melee
+    }
+    public enum FireMode {
+        Single,
+        Automatic,
+        Charge
+    }
 
     public WeaponType weaponType;
     // The type of weapon wil affect how it shoots
     public FireMode fireMode;
-	
-	// Default data for the crosshair
+
+    // Default data for the crosshair
     public CrosshairData crosshair;
     public Node weaponHook;
     public Node model;
@@ -35,18 +42,18 @@ public abstract class Weapon {
     public Transform[] ik;
     public float range;
     public float damage;
-    
+
     float accuracy;
-    float _CurrentAmmo, _MaxAmmo;
-    float _ShotsInBurst, _MaxBurst;
+    float m_CurrentAmmo, m_MaxAmmo;
+    float m_ShotsInBurst, m_MaxBurst;
     long nextShotTime;
     long fireRate, reloadRate;
-    
+
     // Angle for the cone in which the bullets will be shot randomly (0 means no spread at all)
     public float bulletSpreadAngle = 0f;
     // Amount of bullets per shot
     public int bulletsPerShot = 1;
-    
+
     // Sound played when shooting
     public AudioNode shootSFX;
     // Sound played when reloading
@@ -55,9 +62,9 @@ public abstract class Weapon {
     public AudioNode emptySFX;
     // Sound played when changing to this weapon
     public AudioNode changeWeaponSFX;
-    
+
     public Weapon() {
-    	// default empty.
+        // default empty.
     }
 
     /**
@@ -68,19 +75,19 @@ public abstract class Weapon {
         this.model = model;
         this.name = name;
     }
-    
+
     public void switchBullet() {
-    	// default empty.
+        // default empty.
     }
 
-	public boolean canShooting() {
+    public boolean canShooting() {
         return System.currentTimeMillis() > nextShotTime;
     }
 
     public boolean tryShoot() {
-        if (_ShotsInBurst > 0) {
+        if (m_ShotsInBurst > 0) {
             nextShotTime = System.currentTimeMillis() + fireRate;
-            _ShotsInBurst--;
+            m_ShotsInBurst--;
             playSound(shootSFX);
             return true;
         }
@@ -88,7 +95,7 @@ public abstract class Weapon {
     }
 
     public boolean isEmpty() {
-        if (_ShotsInBurst == 0 && _CurrentAmmo == 0) {
+        if (m_ShotsInBurst == 0 && m_CurrentAmmo == 0) {
             playSound(emptySFX);
             return true;
         }
@@ -96,31 +103,31 @@ public abstract class Weapon {
     }
 
     public void reload() {
-        if (_ShotsInBurst != _MaxBurst && _CurrentAmmo != 0) {
+        if (m_ShotsInBurst != m_MaxBurst && m_CurrentAmmo != 0) {
             nextShotTime = System.currentTimeMillis() + reloadRate;
             playSound(reloadSFX);
 
-            float totAmmo = _ShotsInBurst + _CurrentAmmo;
-            if (totAmmo <= _MaxBurst) {
-                _ShotsInBurst = totAmmo;
-                _CurrentAmmo = 0;
+            float totAmmo = m_ShotsInBurst + m_CurrentAmmo;
+            if (totAmmo <= m_MaxBurst) {
+                m_ShotsInBurst = totAmmo;
+                m_CurrentAmmo = 0;
 
             } else {
-                float shotsFired = _MaxBurst - _ShotsInBurst;
-                _CurrentAmmo -= shotsFired;
-                _ShotsInBurst = _MaxBurst;
+                float shotsFired = m_MaxBurst - m_ShotsInBurst;
+                m_CurrentAmmo -= shotsFired;
+                m_ShotsInBurst = m_MaxBurst;
             }
         }
     }
 
     public boolean isFull() {
-        return _CurrentAmmo == _MaxAmmo;
+        return m_CurrentAmmo == m_MaxAmmo;
     }
 
     public void setAmmo(float amount) {
-        _CurrentAmmo = FastMath.clamp(_CurrentAmmo + amount, 0, _MaxAmmo); 
+        m_CurrentAmmo = FastMath.clamp(m_CurrentAmmo + amount, 0, m_MaxAmmo);
     }
-    
+
     public Vector3f getShotDirectionWithinSpread(Vector3f shotDirection) {
         float spreadAngleRatio = bulletSpreadAngle / 180f;
         Vector3f spreadWorldDirection = FVector.slerp(shotDirection, FVector.insideUnitSphere(), spreadAngleRatio);
@@ -128,7 +135,7 @@ public abstract class Weapon {
     }
 
     public float getDamage() {
-        return damage * (float) (Math.random() * (1 / accuracy));
+        return damage * (float)(Math.random() * (1 / accuracy));
     }
 
     private void playSound(AudioNode audio) {
@@ -139,12 +146,12 @@ public abstract class Weapon {
     }
 
     public String getDescription() {
-        return "Weapon["
-                + " name: " + name
-                + " damage: " + damage
-                + " ammo: " + _ShotsInBurst + "/" + _CurrentAmmo
-                + " range: " + range
-                + " ]";
+        return "Weapon[" +
+            " name: " + name +
+            " damage: " + damage +
+            " ammo: " + m_ShotsInBurst + "/" + m_CurrentAmmo +
+            " range: " + range +
+            " ]";
     }
 
     @Override
@@ -157,22 +164,11 @@ public abstract class Weapon {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
+        if (obj instanceof Weapon) {
+            Weapon other = (Weapon) obj;
+            return Objects.equals(this.name, other.name) && Objects.equals(this.weaponType, other.weaponType);
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Weapon other = (Weapon) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (this.weaponType != other.weaponType) {
-            return false;
-        }
-        return true;
+        return false;
     }
+    
 }
