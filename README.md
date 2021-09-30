@@ -17,10 +17,10 @@ The demo contains:
 * Keyboard/Mouse support
 * Joystick support
 
-Demo Video:
-https://www.youtube.com/watch?v=US9KNTqL2js&feature=emb_logo
+# Youtube videos
+[Demo](https://www.youtube.com/watch?v=US9KNTqL2js&feature=emb_logo)
 
-# Keyboard Commands:
+# Keyboard Commands
 (see file [GInputAppState](https://github.com/capdevon/Archer-Game-Template2/blob/main/src/main/java/com/capdevon/input/GInputAppState.java) for all configurations, joystick included)
 - WASD: Basic movements
 - E: Aiming
@@ -28,17 +28,13 @@ https://www.youtube.com/watch?v=US9KNTqL2js&feature=emb_logo
 - LMB: Left Mouse Button to fire
 - LSHIFT: Running
 - CAMERA: Use the mouse to orient the camera
-- 0 - Zero: Toggle Physics Debug
+- KEY_0: Toggle Physics Debug
 
-# Resource Used:
-
-- Code
-    - [jMonkeyEngine](https://jmonkeyengine.org/)
-    - [Minie](https://stephengold.github.io/Minie/minie/overview.html)
-    
-- Assets
-    - [Mixamo](https://www.mixamo.com/)
-    - [Blender](https://www.blender.org/download/)
+# Resource Used
+- [jMonkeyEngine](https://jmonkeyengine.org/)
+- [Minie](https://stephengold.github.io/Minie/minie/overview.html)
+- [Mixamo](https://www.mixamo.com/)
+- [Blender](https://www.blender.org/download/)
 
 # 
 ![Screenshot](images/archer-1.jpg)
