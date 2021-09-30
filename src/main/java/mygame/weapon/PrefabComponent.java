@@ -60,18 +60,10 @@ public abstract class PrefabComponent {
         return ((SimpleApplication) app).getGuiNode();
     }
 
-    /**
-     * @return
-     */
     public int nextSeqId() {
         return ++objectId;
     }
 
-    /**
-     * @param position
-     * @param rotation
-     * @return
-     */
     public Spatial instantiate(Vector3f position, Quaternion rotation) {
         return instantiate(position, rotation, getRootNode());
     }
