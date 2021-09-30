@@ -12,6 +12,10 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.scene.Spatial;
 
+/**
+ * 
+ * @author capdevon
+ */
 public class Damageable extends AdapterControl {
 
     private boolean hasAppliedDamage;
