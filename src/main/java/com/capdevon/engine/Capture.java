@@ -12,7 +12,7 @@ import java.io.File;
 public class Capture {
 
     private Capture() {
-        // private cosntructor.
+        // private constructor.
     }
 
     /**
