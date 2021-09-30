@@ -19,16 +19,21 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 /**
+ * 
  * @author capdevon
  */
 public class FireWeapon extends Weapon {
 
     private static final Logger logger = Logger.getLogger(FireWeapon.class.getName());
 
-    float distance = 30f;
-    AudioNode impactSFX;
-    ParticleEmitter impactVFX;
-    RaycastHit shootHit = new RaycastHit();
+    public float distance = 30f;
+    public float explosionRadius = 5;
+    public float baseStrength = 10f;
+    public int layerMask = PhysicsCollisionObject.COLLISION_GROUP_01;
+    public AudioNode impactSFX;
+    public ParticleEmitter impactVFX;
+
+    private RaycastHit shootHit = new RaycastHit();
 
     public FireWeapon() {
         // default empty.
@@ -56,13 +61,7 @@ public class FireWeapon extends Weapon {
         }
     }
 
-    /**
-     * @param hit
-     */
     private void applyExplosion(RaycastHit hit) {
-        float explosionRadius = 5;
-        float baseStrength = 10f;
-        int layerMask = PhysicsCollisionObject.COLLISION_GROUP_01;
         ColorRGBA color = ColorRGBA.randomColor();
         Function<PhysicsRigidBody, Boolean> dynamicBodies = (x) -> x.getMass() > 0;
 
@@ -71,19 +70,16 @@ public class FireWeapon extends Weapon {
         int numColliders = PhysxQuery.overlapSphereNonAlloc(hit.point, explosionRadius, hitColliders, layerMask, dynamicBodies);
         System.out.println("numColliders=" + numColliders);
 
-		for (int i = 0; i < numColliders; i++) {
+        for (int i = 0; i < numColliders; i++) {
 
-			PhysicsRigidBody rb = hitColliders[i];
-			Physics.addExplosionForce(rb, baseStrength, hit.point, explosionRadius);
+            PhysicsRigidBody rb = hitColliders[i];
+            Physics.addExplosionForce(rb, baseStrength, hit.point, explosionRadius);
 
-			Spatial userObj = (Spatial) rb.getUserObject();
-			applyDamage(userObj, color);
-		}
+            Spatial userObj = (Spatial) rb.getUserObject();
+            applyDamage(userObj, color);
+        }
     }
 
-    /**
-     * @param hit
-     */
     private void applyImpulse(RaycastHit hit, Weapon weapon) {
         RigidBodyControl rgb = hit.userObject.getControl(RigidBodyControl.class);
         if (rgb != null && rgb.getMass() > 0) {
