@@ -1,5 +1,5 @@
 # Archer-Game-Template 2
-A Third Person Shooter demo made with jMonkeyEngine.
+A Third Person Shooter demo made with [jMonkeyEngine](https://jmonkeyengine.org/)
 
 The demo contains:
 
@@ -31,8 +31,6 @@ The demo contains:
 - KEY_0: Toggle Physics Debug
 
 # Resource Used
-- [jMonkeyEngine](https://jmonkeyengine.org/)
-- [Minie](https://stephengold.github.io/Minie/minie/overview.html)
 - [Mixamo](https://www.mixamo.com/)
 - [Blender](https://www.blender.org/download/)
 
