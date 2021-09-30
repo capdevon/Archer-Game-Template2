@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.capdevon.engine;
 
 import java.util.ArrayList;
@@ -28,7 +23,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
 /**
- *
+ * 
+ * @author capdevon
  */
 public abstract class SimpleAppState extends AbstractAppState {
     
@@ -90,18 +86,18 @@ public abstract class SimpleAppState extends AbstractAppState {
     
     protected void registerInput() {}
 
-	/**
-	 * @param childName
-	 * @return
-	 */
-	public Spatial find(final String childName) {
-		Spatial child = rootNode.getChild(childName);
-		if (child == null) {
-			String err = String.format("The spatial %s could not be found", childName);
-			throw new RuntimeException(err);
-		}
-		return child;
-	}
+    /**
+     * @param childName
+     * @return
+     */
+    public Spatial find(final String childName) {
+        Spatial child = rootNode.getChild(childName);
+        if (child == null) {
+            String err = String.format("The spatial %s could not be found", childName);
+            throw new RuntimeException(err);
+        }
+        return child;
+    }
 
     /**
      * @param tagName
