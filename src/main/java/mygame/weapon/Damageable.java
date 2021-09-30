@@ -26,7 +26,7 @@ public class Damageable extends AdapterControl {
             return;
 
         hasAppliedDamage = true;
-        List <Geometry> lstGeometries = listGeometries(spatial);
+        List<Geometry> lstGeometries = listGeometries(spatial);
 
         for (Geometry geo: lstGeometries) {
             Material mat = geo.getMaterial();
@@ -48,8 +48,8 @@ public class Damageable extends AdapterControl {
         }
     }
 
-    private List <Geometry> listGeometries(Spatial subtree) {
-        List <Geometry> storeResult = new ArrayList<>();
+    private List<Geometry> listGeometries(Spatial subtree) {
+        List<Geometry> storeResult = new ArrayList<>();
         subtree.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
             @Override
             public void visit(Geometry geo) {
