@@ -53,52 +53,52 @@ public class FVector {
     /**
      * Returns a random point inside or on a sphere with radius 1.0
      */
-	public static Vector3f insideUnitSphere() {
+    public static Vector3f insideUnitSphere() {
 
-		float u = FastMath.nextRandomFloat();
-		float v = FastMath.nextRandomFloat();
-		
-		// azimuthal angle: The angle between x-axis in radians [0, 2pi]
-		float theta = FastMath.TWO_PI * u;
-		// polar angle: The angle between z-axis in radians [0, pi]
-		float phi = (float) Math.acos(2f * v - 1f);
-		
-		float cosPolar = FastMath.cos(phi);
-		float sinPolar = FastMath.sin(phi);
-		float cosAzim = FastMath.cos(theta);
-		float sinAzim = FastMath.sin(theta);
+        float u = FastMath.nextRandomFloat();
+        float v = FastMath.nextRandomFloat();
 
-		return new Vector3f(cosAzim * sinPolar, sinAzim * sinPolar, cosPolar);
-	}
+        // azimuthal angle: The angle between x-axis in radians [0, 2pi]
+        float theta = FastMath.TWO_PI * u;
+        // polar angle: The angle between z-axis in radians [0, pi]
+        float phi = (float) Math.acos(2f * v - 1f);
 
-	/**
-	 * Rotates this vector by the given angle in degrees around Y axis.
-	 */
-	public Vector3f rotate(final Vector3f v, float degrees) {
-	    return rotateRad(v, Vector3f.UNIT_Y, degrees * FastMath.DEG_TO_RAD);
-	}
+        float cosPolar = FastMath.cos(phi);
+        float sinPolar = FastMath.sin(phi);
+        float cosAzim = FastMath.cos(theta);
+        float sinAzim = FastMath.sin(theta);
 
-	/**
-	 * Rotates this vector by the given angle in degrees around the given axis.
-	 */
-	public static Vector3f rotate(Vector3f v, Vector3f axis, float degrees) {
-	    return rotateRad(v, axis, degrees * FastMath.DEG_TO_RAD);
-	}
+        return new Vector3f(cosAzim * sinPolar, sinAzim * sinPolar, cosPolar);
+    }
 
-	/**
-	 * Rotates this vector by the given angle in radians around Y axis.
-	 */
-	public static Vector3f rotateRad(Vector3f v, float radians) {
-	    return rotateRad(v, Vector3f.UNIT_Y, radians);
-	}
+    /**
+     * Rotates this vector by the given angle in degrees around Y axis.
+     */
+    public Vector3f rotate(final Vector3f v, float degrees) {
+        return rotateRad(v, Vector3f.UNIT_Y, degrees * FastMath.DEG_TO_RAD);
+    }
 
-	/**
-	 * Rotates this vector by the given angle in radians around the given axis.
-	 */
-	public static Vector3f rotateRad(Vector3f v, Vector3f axis, float radians) {
-	    Quaternion q = new Quaternion().fromAngleNormalAxis(radians, axis);
-	    return q.mult(v);
-	}
+    /**
+     * Rotates this vector by the given angle in degrees around the given axis.
+     */
+    public static Vector3f rotate(Vector3f v, Vector3f axis, float degrees) {
+        return rotateRad(v, axis, degrees * FastMath.DEG_TO_RAD);
+    }
+
+    /**
+     * Rotates this vector by the given angle in radians around Y axis.
+     */
+    public static Vector3f rotateRad(Vector3f v, float radians) {
+        return rotateRad(v, Vector3f.UNIT_Y, radians);
+    }
+
+    /**
+     * Rotates this vector by the given angle in radians around the given axis.
+     */
+    public static Vector3f rotateRad(Vector3f v, Vector3f axis, float radians) {
+        Quaternion q = new Quaternion().fromAngleNormalAxis(radians, axis);
+        return q.mult(v);
+    }
 
     /**
      * truncate the length of the vector to the given limit
@@ -124,7 +124,7 @@ public class FVector {
     public static float distanceTo(Spatial a, Spatial b) {
         return a.getWorldBound().distanceTo(b.getWorldTranslation());
     }
-    
+
     /**
      * Subtracts the world position of spatial b from those of spatial a creating a new vector object.
      */
@@ -167,13 +167,13 @@ public class FVector {
         return a.angleBetween(b);
     }
 
-	public boolean hasSameDirection(Vector3f a, Vector3f b) {
-		return a.dot(b) > 0;
-	}
+    public boolean hasSameDirection(Vector3f a, Vector3f b) {
+        return a.dot(b) > 0;
+    }
 
-	public boolean hasOppositeDirection(Vector3f a, Vector3f b) {
-		return a.dot(b) < 0;
-	}
+    public boolean hasOppositeDirection(Vector3f a, Vector3f b) {
+        return a.dot(b) < 0;
+    }
 
     public static Vector3f forward(Spatial sp) {
         return sp.getWorldRotation().mult(forward);
