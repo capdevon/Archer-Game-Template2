@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame.camera;
 
 import com.jme3.math.Ray;
@@ -95,10 +90,10 @@ public class MainCamera {
      * @param click2d
      * @return
      */
-    public Ray screenPointToRay(Vector2f click2d) {
+    public static Ray screenPointToRay(Camera cam, Vector2f click2d) {
         // Convert screen click to 3d position
         Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d), 0).clone();
-        Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d), 1).subtractLocal(click3d);
+        Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d), 1).subtractLocal(click3d).normalizeLocal();
         // Aim the ray from the clicked spot forwards.
         Ray ray = new Ray(click3d, dir);
         return ray;
