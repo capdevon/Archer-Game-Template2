@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.capdevon.anim;
 
 import com.jme3.animation.AnimControl;
@@ -19,9 +14,11 @@ import com.jme3.scene.control.Control;
 import com.jme3.scene.debug.SkeletonDebugger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
- *
+ * 
+ * @author capdevon
  */
 public class AnimUtils {
 
@@ -42,6 +39,12 @@ public class AnimUtils {
         }
     }
         
+    /**
+     * Making the skeleton visible inside animated models can be handy for
+     * debugging animations
+     *
+     * @param spatial
+     */
     public static void addSkeletonDebugger(AssetManager asm, Spatial sp) {
         SkeletonControl skControl = getSkeletonControl(sp);
         addSkeletonDebugger(asm, skControl);
@@ -58,8 +61,7 @@ public class AnimUtils {
     }
     
     public static List<String> listBones(Spatial sp) {
-        SkeletonControl skControl = getSkeletonControl(sp);
-        return listBones(skControl);
+        return listBones( getSkeletonControl(sp) );
     }
     
     public static List<String> listBones(SkeletonControl skControl) {
@@ -76,35 +78,23 @@ public class AnimUtils {
     public static Bone getBone(Spatial sp, String boneName) {
         SkeletonControl skControl = getSkeletonControl(sp);
         Bone bone = skControl.getSkeleton().getBone(boneName);
-        if (bone == null) {
-            throw new IllegalArgumentException("Bone not found: " + boneName);
-        }
-        return bone;
+        return Objects.requireNonNull(bone, "Bone not found: " + boneName);
     }
-    
+
     public static Node getAttachments(Spatial sp, String boneName) {
         SkeletonControl skControl = getSkeletonControl(sp);
         Node attachedNode = skControl.getAttachmentsNode(boneName);
-        if (attachedNode == null) {
-            throw new IllegalArgumentException("AttachedNode not found: " + boneName);
-        }
-        return attachedNode;
+        return Objects.requireNonNull(attachedNode, "AttachedNode not found: " + boneName);
     }
 
     public static SkeletonControl getSkeletonControl(Spatial sp) {
         SkeletonControl control = findControl(sp, SkeletonControl.class);
-        if (control == null) {
-            throw new IllegalArgumentException("SkeletonControl not found: " + sp);
-        }
-        return control;
+        return Objects.requireNonNull(control, "SkeletonControl not found: " + sp);
     }
 
     public static AnimControl getAnimControl(Spatial sp) {
         AnimControl control = findControl(sp, AnimControl.class);
-        if (control == null) {
-            throw new IllegalArgumentException("AnimControl not found: " + sp);
-        }
-        return control;
+        return Objects.requireNonNull(control, "AnimControl not found: " + sp);
     }
 
     /**
