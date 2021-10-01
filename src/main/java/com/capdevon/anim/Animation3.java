@@ -4,7 +4,8 @@ import com.jme3.animation.LoopMode;
 import java.util.Objects;
 
 /**
- *
+ * 
+ * @author capdevon
  */
 public class Animation3 {
     
@@ -66,10 +67,10 @@ public class Animation3 {
 
     @Override
     public boolean equals(Object obj) {
-    	if (obj instanceof Animation3) {
-    		Animation3 other = (Animation3) obj;
-    		return Objects.equals(this.name, other.name);
-    	}
+        if (obj instanceof Animation3) {
+            Animation3 other = (Animation3) obj;
+            return Objects.equals(this.name, other.name);
+        }
         return false;
     }
     
