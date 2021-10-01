@@ -1,109 +1,182 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.capdevon.control;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import com.capdevon.physx.RaycastHit;
-import com.jme3.collision.CollisionResult;
-import com.jme3.collision.CollisionResults;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.input.CameraInput;
 import com.jme3.input.ChaseCamera;
-import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import com.jme3.util.TempVars;
 
 /**
- *
+ * 
+ * @author capdevon
  */
 public class CameraCollisionControl extends AbstractControl {
 
-    private final Spatial scene;
-    private final Camera camera;
-    private final ChaseCamera chaseCam;
+    private Camera camera;
+    private ChaseCamera chaseCam;
+
+    // The layer mask against which the collider will raycast, default all layers.
+    private int collideWithGroups = ~0;
+    // Obstacles with this tag will be ignored. It is a good idea to set this field to the target's tag.
+    private String ignoreTag = "";
+    // When enabled, will attempt to resolve situations where the line of sight to the target is blocked by an obstacle.
+    private boolean avoidObstacles = true;
+    // Upper limit on how many obstacle hits to process. Higher numbers may impact performance. In most environments, 4 is enough.
+    private int maxEffort = 4;
+    // Obstacles closer to the target than this will be ignored
+    private float minDistanceFromTarget = 0.02f;
+
     private final Vector3f targetLocation = new Vector3f();
     private final Vector3f targetToCamDirection = new Vector3f();
     private final RaycastHit hitInfo = new RaycastHit();
-    private boolean isZooming;
+    private final List < PhysicsRayTestResult > collResults = new ArrayList < > (10);
 
     /**
      * 
      * @param camera
-     * @param target
-     * @param scene 
      */
-    public CameraCollisionControl(Camera camera, Spatial target, Spatial scene) {
-        this.scene = scene;
+    public CameraCollisionControl(Camera camera) {
         this.camera = camera;
-        this.chaseCam = target.getControl(ChaseCamera.class);
-        target.addControl(this);
     }
-    
-    public void setZooming(boolean isZooming) {
-        this.isZooming = isZooming;
-        chaseCam.setRotationSpeed( isZooming ? .5f : 1 );
-//        chaseCam.setDefaultDistance( isZooming ? chaseCam.getMinDistance() : chaseCam.getMaxDistance() );
+
+    @Override
+    public void setSpatial(Spatial sp) {
+        super.setSpatial(sp);
+        if (spatial != null) {
+            this.chaseCam = spatial.getControl(ChaseCamera.class);
+            Objects.requireNonNull(chaseCam, "ChaseCamera is required to use this control");
+        }
     }
 
     @Override
     protected void controlUpdate(float tpf) {
-        
-        float distMin = chaseCam.getMinDistance();
-        float distMax = chaseCam.getMaxDistance();
-        float zSensitivity = chaseCam.getZoomSensitivity();
-        
-        if (isZooming) {
-            if (chaseCam.getDistanceToTarget() > distMin) {
-                chaseCam.onAnalog(CameraInput.CHASECAM_ZOOMIN, tpf * zSensitivity, tpf);
+
+        if (avoidObstacles) {
+
+            float maxDistance = chaseCam.getMaxDistance();
+            float zSensitivity = chaseCam.getZoomSensitivity();
+
+            targetLocation.set(spatial.getWorldTranslation()).addLocal(chaseCam.getLookAtOffset());
+            targetToCamDirection.set(camera.getLocation()).subtractLocal(targetLocation).normalizeLocal();
+
+            if (Raycast(targetLocation, targetToCamDirection, hitInfo, maxDistance, collideWithGroups)) {
+                if (chaseCam.getDistanceToTarget() + hitInfo.normal.length() > hitInfo.distance) {
+                    chaseCam.onAnalog(CameraInput.CHASECAM_ZOOMIN, tpf * zSensitivity, tpf);
+                }
+            } else if (chaseCam.getDistanceToTarget() < maxDistance) {
+                chaseCam.onAnalog(CameraInput.CHASECAM_ZOOMOUT, tpf * zSensitivity, tpf);
             }
-            return;
         }
-
-        targetLocation.set( spatial.getWorldTranslation() ).addLocal(chaseCam.getLookAtOffset());
-        targetToCamDirection.set( camera.getLocation() ).subtractLocal(targetLocation).normalizeLocal();
-
-        if (doRaycast(targetLocation, targetToCamDirection, distMax, hitInfo)) {
-            if (chaseCam.getDistanceToTarget() + hitInfo.normal.length() > hitInfo.distance) {
-                chaseCam.onAnalog(CameraInput.CHASECAM_ZOOMIN, tpf * zSensitivity, tpf);
-            }
-        } else if (chaseCam.getDistanceToTarget() < distMax) {
-            chaseCam.onAnalog(CameraInput.CHASECAM_ZOOMOUT, tpf * zSensitivity, tpf);
-        }
-    }
-    
-    /**
-     * perform simple raycast
-     */
-    private boolean doRaycast(Vector3f origin, Vector3f dir, float maxDistance, RaycastHit out) {
-        Ray ray = new Ray(origin, dir);
-        ray.setLimit(maxDistance); // FIXME: Bug!
-        
-        CollisionResults results = new CollisionResults();
-        scene.collideWith(ray, results);
-        
-        boolean hit = false;
-		if (results.size() > 0) {
-			CollisionResult closest = results.getClosestCollision();
-			out.userObject 	= closest.getGeometry();
-			out.normal 		= closest.getContactNormal();
-			out.point 		= closest.getContactPoint();
-			out.distance 	= closest.getDistance();
-
-			if (out.distance < maxDistance)
-				hit = true;
-		}
-        
-        return hit;
     }
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-        //To change body of generated methods, choose Tools | Templates.
+        //do nothing
+    }
+    
+    private boolean Raycast(Vector3f origin, Vector3f direction, RaycastHit hitInfo, float maxDistance, int layerMask) {
+
+        TempVars t = TempVars.get();
+        Vector3f beginVec = t.vect1.set(origin);
+        Vector3f finalVec = t.vect2.set(direction).multLocal(maxDistance).addLocal(origin);
+
+        PhysicsSpace.getPhysicsSpace().rayTest(beginVec, finalVec, collResults);
+
+        int i = 0;
+        float hf = maxDistance;
+        boolean collision = false;
+        
+        for (PhysicsRayTestResult ray : collResults) {
+            
+            PhysicsCollisionObject pco = ray.getCollisionObject();
+            Spatial userObj = (Spatial) pco.getUserObject();
+            
+            boolean isObstruction = between(ray.getHitFraction(), minDistanceFromTarget, hf)
+                    && filter(layerMask, pco.getCollisionGroup()) 
+                    && !hasTag(userObj, ignoreTag);
+            
+            if (isObstruction) {
+                
+                collision = true;
+                hf = ray.getHitFraction();
+                
+                hitInfo.rigidbody   = pco;
+                hitInfo.collider    = pco.getCollisionShape();
+                hitInfo.userObject  = userObj;
+                hitInfo.distance    = finalVec.subtract(beginVec, t.vect3).length() * hf;
+                hitInfo.point.interpolateLocal(beginVec, finalVec, hf);
+                ray.getHitNormalLocal(hitInfo.normal);
+            }
+            
+            if (++i == maxEffort) {
+                break;
+            }
+        }
+
+        if (!collision) {
+            hitInfo.clear();
+        }
+
+        t.release();
+        return collision;
+    }
+    
+    private boolean hasTag(Spatial sp, String tagName) {
+        return tagName.equals(sp.getUserData("TagName"));
+    }
+
+    // Check if a collisionGroup is in a layerMask
+    private boolean filter(int layerMask, int collisionGroup) {
+        return layerMask == (layerMask | collisionGroup);
+    }
+
+    // Determine if value is between a range
+    private boolean between(float value, float min, float max) {
+        return (value > min && value < max);
+    }
+
+    public int getCollideWithGroups() {
+        return collideWithGroups;
+    }
+
+    public void setCollideWithGroups(int collideWithGroups) {
+        this.collideWithGroups = collideWithGroups;
+    }
+
+    public String getIgnoreTag() {
+        return ignoreTag;
+    }
+
+    public void setIgnoreTag(String ignoreTag) {
+        this.ignoreTag = ignoreTag;
+    }
+
+    public boolean isAvoidObstacles() {
+        return avoidObstacles;
+    }
+
+    public void setAvoidObstacles(boolean avoidObstacles) {
+        this.avoidObstacles = avoidObstacles;
+    }
+
+    public int getMaxEffort() {
+        return maxEffort;
+    }
+
+    public void setMaxEffort(int maxEffort) {
+        this.maxEffort = maxEffort;
     }
 
 }
