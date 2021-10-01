@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.capdevon.anim;
 
 import com.jme3.animation.LoopMode;
@@ -71,20 +66,11 @@ public class Animation3 {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Animation3 other = (Animation3) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        return true;
+    	if (obj instanceof Animation3) {
+    		Animation3 other = (Animation3) obj;
+    		return Objects.equals(this.name, other.name);
+    	}
+        return false;
     }
     
 }
