@@ -19,6 +19,7 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.util.TempVars;
 
 /**
+ * requires ChaseCamera
  * 
  * @author capdevon
  */
@@ -41,7 +42,7 @@ public class CameraCollisionControl extends AbstractControl {
     private final Vector3f targetLocation = new Vector3f();
     private final Vector3f targetToCamDirection = new Vector3f();
     private final RaycastHit hitInfo = new RaycastHit();
-    private final List < PhysicsRayTestResult > collResults = new ArrayList < > (10);
+    private final List<PhysicsRayTestResult> collResults = new ArrayList<>(10);
 
     /**
      * 
