@@ -3,7 +3,7 @@ plugins {
     id 'java'
 }
 
-description = 'Archer Toolkit'
+description = 'Archer Game Template'
 
 // select one source-code (JDK) option
 sourceCompatibility = '1.8'
@@ -49,11 +49,9 @@ jar.manifest.attributes('Main-Class': mainClassName)
 repositories {
     //mavenLocal()
     mavenCentral()
-    //jcenter()
     //maven { url 'http://nifty-gui.sourceforge.net/nifty-maven-repo' }
     maven { url 'https://jitpack.io' }
-    maven { url 'https://jcenter.bintray.com/' } // for Lemur
-    flatDir { dirs file('lib') }
+    maven { url 'https://jcenter.bintray.com/' }
 
     // Read more about repositories here:
     //   https://docs.gradle.org/current/userguide/dependency_management.html#sec:repositories
@@ -63,7 +61,7 @@ dependencies {
     // You can read more about how to add dependencies here:
     //   https://docs.gradle.org/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
 
-    // from mavenCentral (or mavenLocal) repositories:
+    // Engine
     implementation 'org.jmonkeyengine:jme3-core:' + jmonkeyengineVersion
     implementation 'org.jmonkeyengine:jme3-desktop:' + jmonkeyengineVersion
     implementation 'org.jmonkeyengine:jme3-effects:' + jmonkeyengineVersion
@@ -90,7 +88,8 @@ dependencies {
     
     // Additional filters
     implementation 'com.github.polincdev:ShaderBlowEx:-SNAPSHOT'
-    runtimeOnly 'com.github.jayfella:jme-materialize:'
+    
+    runtimeOnly files('lib/jme-materialize.jar')
 }
 
 // cleanup tasks
