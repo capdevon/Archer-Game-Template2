@@ -43,5 +43,5 @@ I acknowledge the following artists and software developers:
 
 * "grizeldi" for creating the 3d scene, bow and arrow models and for improving the lighting effects and graphics of the demo. 
 * "stephengold" for his excellent work on updating and maintaining the "Minie" physics library and for his useful advice.
-* "polncdev" for creating the "ShaderBlowEx" library with additional scene filters.
+* "polincdev" for creating the "ShaderBlowEx" library with additional scene filters.
 * "jayfella" for creating the "jme-materialize" library.
