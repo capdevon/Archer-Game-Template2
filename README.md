@@ -9,13 +9,17 @@ The demo contains:
   - normal (The normal arrows stick to surfaces)
   - explosive
   - acid
-* A [materialize](https://store.jmonkeyengine.org/13e64183-01fb-4511-88a8-f6958f95a2c2) shader that simulates “materializing” an object in or out.
+* A materialize shader that simulates “materializing” an object in or out.
 * Animations (with gltf2 animations, file .blend included): 
     * "Idle", "Running", "Running_2", "Aim_Idle", "Aim_Overdraw", "Aim_Recoil", "Draw_Arrow", "Water_Idle", "Water_Moving", "Swimming"
 * Third Person Camera with collision detection
 * Dynamic update of camera FOV when aiming
+* Vertical rotation of the spine when aiming
 * Keyboard/Mouse support
 * Joystick support
+* Sounds
+* Particles Effects
+* Post Processing Filters
 
 # Youtube videos
 [Demo](https://www.youtube.com/watch?v=US9KNTqL2js&feature=emb_logo)
@@ -42,6 +46,6 @@ The demo contains:
 I acknowledge the following artists and software developers:
 
 * "grizeldi" for creating the 3d scene, bow and arrow models and for improving the lighting effects and graphics of the demo. 
-* "stephengold" for his excellent work on updating and maintaining the "Minie" physics library and for his useful advice.
-* "polincdev" for creating the "ShaderBlowEx" library with additional scene filters.
-* "jayfella" for creating the "jme-materialize" library.
+* "stephengold" for his excellent work on updating and maintaining the "[Minie](https://github.com/stephengold/Minie)" physics library and for his useful advice.
+* "polincdev" for creating the "[ShaderBlowEx](https://github.com/polincdev/ShaderBlowEx)" library with additional scene filters.
+* "jayfella" for creating the "[jme-materialize](https://github.com/capdevon/jme-materialize)" library.
