@@ -80,8 +80,6 @@ public class PlayerManager extends SimpleAppState {
         bpCamera.setMaxVerticalRotation(FastMath.DEG_TO_RAD * (30));
         bpCamera.setRotationSpeed(1f);
         bpCamera.setIgnoreTag("TagPlayer");
-        bpCamera.setDebugEnabled(false);
-        bpCamera.createDebugTools(assetManager);
         player.addControl(bpCamera);
 
         WeaponUIManager m_WeaponUIManager = new WeaponUIManager();
