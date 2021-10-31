@@ -1,16 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame.camera;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.capdevon.engine.DebugShape;
-import com.jme3.asset.AssetManager;
-import com.jme3.bullet.debug.DebugTools;
 import com.jme3.input.CameraInput;
 import com.jme3.input.InputManager;
 import com.jme3.input.Joystick;
@@ -26,12 +18,10 @@ import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.CameraNode;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.CameraControl;
-import com.jme3.util.TempVars;
 
 /**
  *
@@ -68,9 +58,6 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
     float targetDistance;
     private final Vector3f camOffset = new Vector3f(0, 0, 1);
     
-    DebugTools debugTools;
-    boolean debugEnabled = false;
-
     /**
      * 
      * @param camera
@@ -169,46 +156,8 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
         }
     }
     
-    DebugShape debugMesh;
-    Geometry wfGeo;
-    Geometry sphereGeo;
-
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-        if (debugTools != null && debugEnabled) {
-            TempVars t = TempVars.get();
-            
-            debugTools.setYellowArrow(yawNode.getWorldTranslation(), forward(yawNode, t.vect1).multLocal(5));
-            debugTools.setPinkArrow(pitchNode.getWorldTranslation(), forward(pitchNode, t.vect2).multLocal(5));
-            debugTools.setMagentaArrow(pitchNode.getWorldTranslation(), forward(pitchNode, t.vect3).multLocal(-maxDistance));
-            debugTools.show(rm, vp);
-            
-            if (wfGeo == null) {
-                wfGeo = debugMesh.createCameraFrustum(camera);
-            }
-            if (sphereGeo == null) {
-                sphereGeo = debugMesh.createDebugSphere(0.2f);
-            }
-            
-            wfGeo.setLocalTransform(camNode.getWorldTransform());
-            sphereGeo.setLocalTranslation(pitchNode.getWorldTranslation());
-            sphereGeo.setLocalRotation(pitchNode.getWorldRotation());
-            debugMesh.show(rm, vp);
-            
-            t.release();
-        }
-    }
-    
-    protected Vector3f forward(Spatial sp, Vector3f store) {
-        return sp.getWorldRotation().mult(Vector3f.UNIT_Z, store);
-    }
-    
-    public void createDebugTools(AssetManager assetManager) {
-        debugTools = new DebugTools(assetManager);
-        debugTools.debugNode.setName("DebugTools." + BPPlayerCamera.class.getName());
-        
-        debugMesh = new DebugShape(assetManager);
-        debugMesh.debugNode.setName("DebugShape." + BPPlayerCamera.class.getName());
     }
     
     /**
@@ -419,12 +368,4 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
         this.zoomSensitivity = zoomSensitivity;
     }
 
-    public boolean isDebugEnabled() {
-        return debugEnabled;
-    }
-
-    public void setDebugEnabled(boolean debugEnabled) {
-        this.debugEnabled = debugEnabled;
-    }
-    
 }
