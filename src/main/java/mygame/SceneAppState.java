@@ -1,6 +1,6 @@
 package mygame;
 
-import org.shaderblowex.filter.MipMapBloom.MipmapBloomFilter;
+import org.shaderblowex.filter.MipmapBloomFilter;
 
 import com.capdevon.engine.SimpleAppState;
 import com.jme3.audio.AudioData;
@@ -24,6 +24,10 @@ import com.jme3.scene.Spatial;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.util.SkyFactory;
 
+/**
+ * 
+ * @author capdevon
+ */
 public class SceneAppState extends SimpleAppState {
 
     private DirectionalLight sun;
