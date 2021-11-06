@@ -6,11 +6,11 @@ plugins {
 description = 'Archer Game Template'
 
 // select one source-code (JDK) option
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = '1.11'
+targetCompatibility = '1.11'
 
 // select one version of the Engine:
-ext.jmonkeyengineVersion = '3.4.0-stable' // from mavenCentral
+ext.jmonkeyengineVersion = '3.4.0-stable'
 
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile) { // compile-time options:
@@ -87,7 +87,7 @@ dependencies {
     //runtimeOnly 'org.codehaus.groovy:groovy-jsr223:3.0.7'
     
     // Additional filters
-    implementation 'com.github.polincdev:ShaderBlowEx:-SNAPSHOT'
+    runtimeOnly files('lib/shaderblow-ex-1.0.0.jar')
     
     runtimeOnly files('lib/jme-materialize.jar')
 }
