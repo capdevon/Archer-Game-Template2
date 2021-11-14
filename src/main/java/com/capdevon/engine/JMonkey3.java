@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.capdevon.engine;
 
 import java.util.ArrayList;
@@ -25,6 +20,7 @@ import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
@@ -40,24 +36,26 @@ import com.jme3.scene.debug.WireSphere;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Sphere;
+import com.jme3.scene.shape.Torus;
 import com.jme3.system.AppSettings;
 import com.jme3.texture.Texture;
 import com.jme3.util.SkyFactory;
 import com.jme3.util.SkyFactory.EnvMapType;
 
 /**
+ * 
  * @author capdevon
  */
 public class JMonkey3 {
 
-	protected static boolean initialized;
-	protected static AppSettings settings;
-	protected static AppStateManager stateManager;
-	protected static AssetManager assetManager;
-	protected static InputManager inputManager;
-	protected static Node rootNode;
-	protected static Node guiNode;
-	protected static Camera camera;
+    protected static boolean initialized;
+    protected static AppSettings settings;
+    protected static AppStateManager stateManager;
+    protected static AssetManager assetManager;
+    protected static InputManager inputManager;
+    protected static Node rootNode;
+    protected static Node guiNode;
+    protected static Camera camera;
 
     private JMonkey3() {
         // singleton constructor
@@ -66,13 +64,13 @@ public class JMonkey3 {
     public static void initEngine(SimpleApplication app) {
         if (!initialized) {
             initialized = true;
-            JMonkey3.settings     = app.getContext().getSettings();
-            JMonkey3.stateManager = app.getStateManager();
-            JMonkey3.assetManager = app.getAssetManager();
-            JMonkey3.inputManager = app.getInputManager();
-            JMonkey3.rootNode     = app.getRootNode();
-            JMonkey3.guiNode      = app.getGuiNode();
-            JMonkey3.camera       = app.getCamera();
+            JMonkey3.settings       = app.getContext().getSettings();
+            JMonkey3.stateManager   = app.getStateManager();
+            JMonkey3.assetManager   = app.getAssetManager();
+            JMonkey3.inputManager   = app.getInputManager();
+            JMonkey3.rootNode       = app.getRootNode();
+            JMonkey3.guiNode        = app.getGuiNode();
+            JMonkey3.camera         = app.getCamera();
         }
     }
 
@@ -127,9 +125,6 @@ public class JMonkey3 {
             return guiFont;
         }
 
-        public static Node getGuiNode() {
-            return guiNode;
-        }
     }
 
     /**
@@ -217,9 +212,9 @@ public class JMonkey3 {
          * @param points
          * @param node
          */
-        public static void drawPoints(List < Vector3f > points, Node node) {
+        public static void drawPoints(List< Vector3f> points, Node node) {
             MotionPath path = new MotionPath();
-            for (Vector3f p: points) {
+            for (Vector3f p : points) {
                 path.addWayPoint(p);
             }
             path.enableDebugShape(assetManager, node);
@@ -233,13 +228,31 @@ public class JMonkey3 {
      */
     public static class Primitive {
 
-        /**
-         * Get default axes.
-         *
-         * @param id
-         * @return 
-         */
-        public static Node createAxes(String id) {
+        public static Node createRotationWidget(String id) {
+            Quaternion ROLL090 = new Quaternion().fromAngleAxis(-FastMath.PI / 2, new Vector3f(0, 0, 1));
+            Quaternion YAW090 = new Quaternion().fromAngleAxis(-FastMath.PI / 2, new Vector3f(0, 1, 0));
+            Quaternion PITCH090 = new Quaternion().fromAngleAxis(FastMath.PI / 2, new Vector3f(1, 0, 0));
+
+            float s = 1 / 80f; // s = 2/80 = 0.025
+            Mesh circle = new Torus(64, 4, s, 1);
+            Geometry circleXY = new Geometry("circleXY", circle);
+            Geometry circleXZ = new Geometry("circleXZ", circle);
+            circleXZ.setLocalRotation(PITCH090);
+            Geometry circleYZ = new Geometry("circleYZ", circle);
+            circleYZ.setLocalRotation(YAW090);
+
+            Node axis = new Node(id);
+            axis.attachChild(circleXY);
+            axis.attachChild(circleXZ);
+            axis.attachChild(circleYZ);
+
+            axis.setModelBound(new BoundingBox());
+            axis.updateModelBound();
+
+            return axis;
+        }
+
+        public static Node createTransformWidget(String id) {
             Node node = new Node(id);
             node.attachChild(createArrow("X", Vector3f.UNIT_X, ColorRGBA.Red));
             node.attachChild(createArrow("Y", Vector3f.UNIT_Y, ColorRGBA.Green));
@@ -345,6 +358,7 @@ public class JMonkey3 {
 
         /**
          * Create a lighting material with diffuse color.
+         *
          * @param color
          * @return
          */
@@ -426,14 +440,14 @@ public class JMonkey3 {
         }
 
     }
-    
+
     /**
      * -------------------------------------------------------------------------
      * JMonkey3.GameObject
      * -------------------------------------------------------------------------
      */
     public static class GameObject {
-    	
+
         public static void setUserDataRecursive(Spatial sp, final String key, final Object data) {
             sp.depthFirstTraversal(new SceneGraphVisitorAdapter() {
                 @Override
@@ -444,11 +458,11 @@ public class JMonkey3 {
         }
 
         /**
-         * Finds a GameObject by name and returns it. 
-         * If no GameObject with name can be found, null is returned
-         * 
+         * Finds a GameObject by name and returns it. If no GameObject with name
+         * can be found, null is returned
+         *
          * @param name
-         * @return 
+         * @return
          */
         public static Node find(final String name) {
             final List<Node> lst = new ArrayList<>();
@@ -462,11 +476,11 @@ public class JMonkey3 {
             });
             return lst.isEmpty() ? null : lst.get(0);
         }
-        
+
         /**
-         * Returns one active GameObject tagged tag. 
-         * Returns null if no GameObject was found.
-         * 
+         * Returns one active GameObject tagged tag. Returns null if no
+         * GameObject was found.
+         *
          * @param tag
          * @return
          */
@@ -476,9 +490,9 @@ public class JMonkey3 {
         }
 
         /**
-         * Returns an array of active GameObjects tagged tag. 
-         * Returns empty array if no GameObject was found.
-         * 
+         * Returns an array of active GameObjects tagged tag. Returns empty
+         * array if no GameObject was found.
+         *
          * @param tag
          * @return
          */
@@ -497,9 +511,9 @@ public class JMonkey3 {
 
         /**
          * Returns the first active loaded object of Type type.
-         * 
+         *
          * @param clazz
-         * @return 
+         * @return
          */
         public static Node findObjectOfType(Class<? extends Control> clazz) {
             List<Node> lst = findObjectsOfType(clazz);
@@ -508,9 +522,9 @@ public class JMonkey3 {
 
         /**
          * Returns a list of all active loaded objects of Type type.
-         * 
+         *
          * @param clazz
-         * @return 
+         * @return
          */
         public static List<Node> findObjectsOfType(Class<? extends Control> clazz) {
             final List<Node> lst = new ArrayList<>();
@@ -526,7 +540,9 @@ public class JMonkey3 {
         }
 
         /**
-         * Returns the component of Type type in the GameObject or any of its children using depth first search.
+         * Returns the component of Type type in the GameObject or any of its
+         * children using depth first search.
+         *
          * @param <T>
          * @param spatial
          * @param clazz
@@ -549,13 +565,15 @@ public class JMonkey3 {
 
             return null;
         }
-        
+
         /**
-         * Retrieves the component of Type type in the GameObject or any of its parents.
+         * Retrieves the component of Type type in the GameObject or any of its
+         * parents.
+         *
          * @param <T>
          * @param spatial
          * @param clazz
-         * @return 
+         * @return
          */
         public static <T extends Control> T getComponentInParent(Spatial spatial, Class<T> clazz) {
             Node parent = spatial.getParent();
@@ -568,7 +586,7 @@ public class JMonkey3 {
             }
             return null;
         }
-    	
+
     }
 
     /**
@@ -578,12 +596,16 @@ public class JMonkey3 {
      */
     public static class Engine {
 
-        public static <T extends AppState> T getState(Class <T> clazz) {
+        public static <T extends AppState> T getState(Class<T> clazz) {
             return stateManager.getState(clazz);
         }
 
         public static Node getRootNode() {
             return rootNode;
+        }
+
+        public static Node getGuiNode() {
+            return guiNode;
         }
 
         public static Camera getMainCamera() {
