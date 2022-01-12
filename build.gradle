@@ -10,7 +10,7 @@ sourceCompatibility = '1.11'
 targetCompatibility = '1.11'
 
 // select one version of the Engine:
-ext.jmonkeyengineVersion = '3.4.0-stable'
+ext.jmonkeyengineVersion = '3.4.1-stable'
 
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile) { // compile-time options:
