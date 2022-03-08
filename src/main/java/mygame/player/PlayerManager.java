@@ -10,7 +10,6 @@ import com.capdevon.engine.JMonkey3.UIEditor;
 import com.capdevon.engine.SimpleAppState;
 import com.capdevon.engine.SoundManager;
 import com.capdevon.input.GInputAppState;
-import com.capdevon.util.AudioLib;
 import com.capdevon.util.LineRenderer;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.font.BitmapText;
