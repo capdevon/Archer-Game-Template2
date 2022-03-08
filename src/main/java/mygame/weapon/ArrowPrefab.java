@@ -27,13 +27,13 @@ public class ArrowPrefab extends RangedBullet {
 //		Node model = new Node();
 //
 //		Geometry g1 = new Geometry("Arrow.GeoMesh", new Sphere(16, 16, radius));
-//		Material mat1 = new Material(getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+//		Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
 //		mat1.setColor("Color", ColorRGBA.Green.clone());
 //		g1.setMaterial(mat1);
 //		model.attachChild(g1);
 //
 //		Geometry g2 = new Geometry("Axis.Z", new Arrow(Vector3f.UNIT_Z));
-//		Material mat2 = new Material(getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+//		Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
 //		mat2.setColor("Color", ColorRGBA.Blue.clone());
 //		mat2.getAdditionalRenderState().setLineWidth(2f);
 //		g2.setMaterial(mat2);
@@ -42,7 +42,7 @@ public class ArrowPrefab extends RangedBullet {
 //
 //		return model;
 
-		return getAssetManager().loadModel("Models/Arrow/arrow.glb");
+		return assetManager.loadModel("Models/Arrow/arrow.glb");
 	}
 
     @Override
@@ -55,14 +55,14 @@ public class ArrowPrefab extends RangedBullet {
 
         // Add Physics.
         SphereCollisionShape shape = new SphereCollisionShape(radius);
-        RigidBodyControl rgb = new RigidBodyControl(shape, mass);
-        model.addControl(rgb);
-        getPhysicsSpace().add(rgb);
+        RigidBodyControl rbc = new RigidBodyControl(shape, mass);
+        model.addControl(rbc);
+        getPhysicsSpace().add(rbc);
 
-        rgb.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-        rgb.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_01);
-        rgb.setCcdMotionThreshold(0.001f);
-        // rgb.setCcdSweptSphereRadius(0.001f);
+        rbc.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+        rbc.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_01);
+        rbc.setCcdMotionThreshold(0.001f);
+        // rbc.setCcdSweptSphereRadius(0.001f);
 
         ArrowControl arrow = new ArrowControl();
         model.addControl(arrow);

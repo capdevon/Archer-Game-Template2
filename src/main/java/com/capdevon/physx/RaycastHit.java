@@ -6,42 +6,43 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
 /**
-*
-* @author capdevon
-*/
+ *
+ * @author capdevon
+ */
 public class RaycastHit {
 
-	public PhysicsCollisionObject rigidbody;
-	public CollisionShape collider;
-	public Spatial userObject;
-	public float distance;
-	public Vector3f normal = new Vector3f();
-	public Vector3f point = new Vector3f();
+    public PhysicsCollisionObject rigidbody;
+    public CollisionShape collider;
+    public Spatial userObject;
+    public float distance;
+    public Vector3f normal = new Vector3f();
+    public Vector3f point = new Vector3f();
 
-	public void clear() {
-		rigidbody = null;
-		collider = null;
-		userObject = null;
-		distance = Float.NaN;
-		point.set(Vector3f.NAN);
-		normal.set(Vector3f.NAN);
-	}
-    
-	@Override
-	public String toString() {
-		return "RaycastHit [rigidbody=" + toHexString(rigidbody) 
-				+ ", collider=" + toHexString(collider)
-				+ ", userObject=" + userObject
-				+ ", distance=" + distance 
-				+ ", normal=" + normal 
-				+ ", point=" + point 
-				+ "]";
-	}
+    public void clear() {
+        rigidbody = null;
+        collider = null;
+        userObject = null;
+        distance = Float.NaN;
+        point.set(Vector3f.NAN);
+        normal.set(Vector3f.NAN);
+    }
 
-	private String toHexString(Object obj) {
-		if (obj != null)
-			return obj.getClass().getSimpleName() + '@' + Integer.toHexString(obj.hashCode());
-		return null;
-	}
+    @Override
+    public String toString() {
+        return "RaycastHit [rigidbody=" + toHexString(rigidbody)
+                + ", collider=" + toHexString(collider)
+                + ", userObject=" + toHexString(userObject)
+                + ", distance=" + distance
+                + ", normal=" + normal
+                + ", point=" + point
+                + "]";
+    }
+
+    private String toHexString(Object obj) {
+        if (obj != null) {
+            return obj.getClass().getSimpleName() + '@' + Integer.toHexString(obj.hashCode());
+        }
+        return null;
+    }
 
 }

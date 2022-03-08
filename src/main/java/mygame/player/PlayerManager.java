@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mygame;
+package mygame.player;
 
 import com.capdevon.anim.Animator;
 import com.capdevon.engine.JMonkey3.UIEditor;

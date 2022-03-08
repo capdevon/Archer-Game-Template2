@@ -1,4 +1,4 @@
-package mygame;
+package mygame.player;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -29,6 +29,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+import jme3utilities.math.MyVector3f;
 import mygame.camera.BPCameraCollider;
 import mygame.camera.MainCamera;
 import mygame.weapon.FireWeapon;
@@ -90,7 +91,7 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
         this.bpCamera = getComponent(BPCameraCollider.class);
         this.weaponUI = getComponent(WeaponUIManager.class);
         this.animator = getComponent(Animator.class);
-        this.lr = getComponent(LineRenderer.class);
+        this.lr       = getComponent(LineRenderer.class);
 
         _MainCamera = new MainCamera(camera, defaultFOV, nearClipPlane, farClipPlane);
 
@@ -122,7 +123,6 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
 
     @Override
     protected void controlUpdate(float tpf) {
-        // TODO Auto-generated method stub
         updateBoneIK(tpf);
         updateWeaponCharge(tpf);
         updateWeaponAiming(tpf);
@@ -192,7 +192,7 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
             } else if (currentWeapon instanceof RangedWeapon) {
                 RangedWeapon rWeapon = (RangedWeapon) currentWeapon;
                 rWeapon.handleShoot(origin, dir, m_CurrentLaunchForce);
-                logger.log(Level.INFO, "m_CurrentLaunchForce: " + m_CurrentLaunchForce);
+                logger.log(Level.INFO, "m_CurrentLaunchForce: {0}", m_CurrentLaunchForce);
             }
 
             shootSFX.playInstance();
@@ -305,9 +305,9 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
                 break;
 
             case Bow:
-                //spWeapon 		 = (Node) assetManager.loadModel(currentWeapon.fileModel);
+                //spWeapon       = (Node) assetManager.loadModel(currentWeapon.fileModel);
                 //Spatial arrow  = spWeapon.getChild("10490_arrow_v1");
-                //Spatial bow 	 = spWeapon.getChild("10490_bow_v1");
+                //Spatial bow    = spWeapon.getChild("10490_bow_v1");
                 //Spatial quiver = spWeapon.getChild("10490_quiver_v1");
                 //bindWeapon(r_wh, currentWeapon.ik[0], arrow);
                 //bindWeapon(l_wh, currentWeapon.ik[1], bow);
@@ -337,6 +337,12 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
     List<Vector3f> points = new LinkedList<>();
     boolean drawPoints = true;
 
+    /**
+     * point-of-impact prediction.
+     * 
+     * @param launchLocation
+     * @param launchVelocity
+     */
     private void predictPOI(Vector3f launchLocation, Vector3f launchVelocity) {
         Vector3f gravity = PhysicsSpace.getPhysicsSpace().getGravity(null);
         Vector3f velocity = launchVelocity.clone();
@@ -352,8 +358,8 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
         for (int stepIndex = 0; stepIndex < 100; ++stepIndex) {
 
             previousLocation.set(location);
-            accumulateScaled(location, velocity, timeStep);
-            accumulateScaled(velocity, gravity, timeStep);
+            MyVector3f.accumulateScaled(location, velocity, timeStep);
+            MyVector3f.accumulateScaled(velocity, gravity, timeStep);
 
             points.add(location.clone());
 
@@ -370,19 +376,6 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
         }
 
         //logger.log(Level.INFO, "End simulation.");
-    }
-
-    /**
-     * Accumulate a linear combination of vectors.
-     *
-     * @param total sum of the scaled inputs so far (not null, modified)
-     * @param input the vector to scale and add (not null, unaffected)
-     * @param scale scale factor to apply to the input
-     */
-    private void accumulateScaled(Vector3f total, Vector3f input, float scale) {
-        total.x += input.x * scale;
-        total.y += input.y * scale;
-        total.z += input.z * scale;
     }
 
 }

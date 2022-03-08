@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mygame;
+package mygame.player;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import com.capdevon.anim.Animation3;
 import com.capdevon.anim.Animator;
 import com.capdevon.control.AdapterControl;
+import com.capdevon.engine.FRotator;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.FastMath;
@@ -92,8 +93,9 @@ public class PlayerControl extends AdapterControl {
             if (walkDirection.lengthSquared() > 0) {
                 float angle = FastMath.atan2(walkDirection.x, walkDirection.z);
                 dr.fromAngleNormalAxis(angle, Vector3f.UNIT_Y);
-                spatial.getWorldRotation().slerp(dr, 1 - (tpf * m_TurnSpeed));
-                spatial.getWorldRotation().mult(Vector3f.UNIT_Z, viewDirection);
+                
+                float smoothTime = 1 - (tpf * m_TurnSpeed);
+                FRotator.smoothDamp(spatial.getWorldRotation(), dr, smoothTime, viewDirection);
                 bcc.setViewDirection(viewDirection);
             }
 

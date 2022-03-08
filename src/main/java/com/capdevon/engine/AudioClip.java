@@ -5,13 +5,17 @@
  */
 package com.capdevon.engine;
 
+/**
+ *
+ * @author capdevon
+ */
 public class AudioClip {
 
     public String file;
     public float volume = 1;
     public boolean looping = false;
     public boolean positional = false;
-    
+
     public AudioClip(String file) {
         this.file = file;
     }

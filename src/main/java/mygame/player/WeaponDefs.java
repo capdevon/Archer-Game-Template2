@@ -1,4 +1,4 @@
-package mygame;
+package mygame.player;
 
 import com.jme3.math.Transform;
 

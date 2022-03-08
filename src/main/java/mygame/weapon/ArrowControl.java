@@ -93,7 +93,7 @@ public class ArrowControl extends AdapterControl implements PhysicsCollisionList
                 hitPoint = event.getPositionWorldOnA();
             }
 
-            logger.log(Level.INFO, "Collided with: {0}", other.getUserObject().toString());
+            logger.log(Level.INFO, "Collided with: {0}", other.getUserObject());
             stick(other, hitPoint);
 
             spatial.addControl(new TimerControl(15f) {

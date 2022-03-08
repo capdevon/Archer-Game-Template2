@@ -25,12 +25,12 @@ public class ExplosiveArrowPrefab extends RangedBullet {
     public Spatial loadModel() {
         //		Mesh mesh = new Sphere(16, 16, 0.05f);
         //		Geometry geo = new Geometry("Arrow", mesh);
-        //		Material mat = new Material(getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        //		Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         //		mat.setColor("Color", ColorRGBA.Green.clone());
         //		geo.setMaterial(mat);
         //		return geo;
 
-        return getAssetManager().loadModel("Models/Arrow/arrow.glb");
+        return assetManager.loadModel("Models/Arrow/arrow.glb");
     }
 
     @Override

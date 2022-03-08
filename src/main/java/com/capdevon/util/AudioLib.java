@@ -8,8 +8,9 @@ package com.capdevon.util;
 import com.capdevon.engine.AudioClip;
 
 /**
- *
- */
+*
+* @author capdevon
+*/
 public interface AudioLib {
 
     AudioClip ENV_NATURE        = new AudioClip("Sound/Environment/Nature.ogg", 4f, true, false);

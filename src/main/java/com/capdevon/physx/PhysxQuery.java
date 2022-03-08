@@ -96,9 +96,9 @@ public class PhysxQuery {
         for (PhysicsRigidBody pco : PhysicsSpace.getPhysicsSpace().getRigidBodyList()) {
 
             if (applyMask(layerMask, pco.getCollisionGroup()) && func.apply(pco)) {
-                Vector3f distance = pco.getPhysicsLocation().subtract(position);
+                float sqrDistance = pco.getPhysicsLocation().distanceSquared(position);
 
-                if (distance.length() < radius) {
+                if (sqrDistance < radius * radius) {
                     results.add(pco);
                 }
             }
@@ -131,9 +131,9 @@ public class PhysxQuery {
         for (PhysicsRigidBody pco : PhysicsSpace.getPhysicsSpace().getRigidBodyList()) {
 
             if (applyMask(layerMask, pco.getCollisionGroup()) && func.apply(pco)) {
-                Vector3f distance = pco.getPhysicsLocation().subtract(position);
+                float sqrDistance = pco.getPhysicsLocation().distanceSquared(position);
 
-                if (distance.length() < radius) {
+                if (sqrDistance < radius * radius) {
                     results[numColliders++] = pco;
                     if (numColliders == results.length) {
                         break;

@@ -16,7 +16,7 @@ import com.jme3.scene.Node;
  */
 public abstract class Weapon {
 
-    private final Logger logger = Logger.getLogger(Weapon.class.getName());
+    private static final Logger logger = Logger.getLogger(Weapon.class.getName());
 
     public enum WeaponType {
         Bow,
@@ -77,7 +77,7 @@ public abstract class Weapon {
     }
 
     public void switchBullet() {
-        // default empty.
+        // do something...
     }
 
     public boolean canShooting() {

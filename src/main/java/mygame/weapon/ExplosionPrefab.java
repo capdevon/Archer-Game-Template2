@@ -25,7 +25,7 @@ public class ExplosionPrefab extends PrefabComponent {
 
     @Override
     public Spatial loadModel() {
-        return getAssetManager().loadModel(assetName);
+        return assetManager.loadModel(assetName);
     }
 
     @Override

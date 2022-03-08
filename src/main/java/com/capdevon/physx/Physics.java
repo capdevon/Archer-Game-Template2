@@ -27,9 +27,9 @@ public class Physics {
      * DefaultRaycastLayers
      */
     private static final int defaultRaycastLayers = ~0;
-    
+
     private Physics() {
-    	// private constructor.
+        // private constructor.
     }
 
     /**
@@ -116,6 +116,7 @@ public class Physics {
      */
     public static boolean doRaycast(Vector3f origin, Vector3f direction, RaycastHit hitInfo, float maxDistance, int layerMask) {
 
+        hitInfo.clear();
         boolean collision = false;
         float hf = maxDistance;
 
@@ -165,6 +166,7 @@ public class Physics {
      */
     public static boolean doLinecast(Vector3f beginVec, Vector3f finalVec, RaycastHit hitInfo, int layerMask) {
 
+        hitInfo.clear();
         boolean collision = false;
         float hf = Float.MAX_VALUE;
 

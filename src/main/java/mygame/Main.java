@@ -16,6 +16,8 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.system.AppSettings;
 
+import mygame.player.PlayerManager;
+
 /**
  *
  */
@@ -33,10 +35,8 @@ public class Main extends SimpleApplication {
         settings.setTitle("Archer-Game-Template-2");
         settings.setUseJoysticks(true);
         settings.setResolution(1280, 720);
-        settings.setVSync(true);
-        settings.setSamples(4);
+        //settings.setSamples(4);
         settings.setBitsPerPixel(32);
-        settings.setGammaCorrection(true);
 
         app.setSettings(settings);
         app.setShowSettings(true);

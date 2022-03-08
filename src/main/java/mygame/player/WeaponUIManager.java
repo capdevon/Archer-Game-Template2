@@ -1,4 +1,4 @@
-package mygame;
+package mygame.player;
 
 import com.capdevon.control.AdapterControl;
 import com.jme3.font.BitmapText;

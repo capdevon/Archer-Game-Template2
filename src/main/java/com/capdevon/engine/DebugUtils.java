@@ -28,7 +28,7 @@ import com.jme3.shadow.ShadowUtil;
 /**
  * @author capdevon
  */
-public class DebugShape {
+public class DebugUtils {
 
     protected final AssetManager assetManager;
 
@@ -37,7 +37,7 @@ public class DebugShape {
 
     public float lineWidth = 4f;
 
-    public DebugShape(AssetManager assetManager) {
+    public DebugUtils(AssetManager assetManager) {
         this.assetManager = assetManager;
     }
 

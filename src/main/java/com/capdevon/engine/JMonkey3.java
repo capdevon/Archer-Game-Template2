@@ -93,7 +93,7 @@ public class JMonkey3 {
 
         public static BitmapText getCrossHair(String text) {
             BitmapFont font = getGuiFont();
-            BitmapText ch = new BitmapText(font, false);
+            BitmapText ch = new BitmapText(font);
             ch.setSize(font.getCharSet().getRenderedSize() * 2);
             ch.setText(text);
             float width = settings.getWidth() / 2 - ch.getLineWidth() / 2;
@@ -108,7 +108,7 @@ public class JMonkey3 {
 
         public static BitmapText getText(float xPos, float yPos, boolean show) {
             BitmapFont font = getGuiFont();
-            BitmapText hud = new BitmapText(font, false);
+            BitmapText hud = new BitmapText(font);
             hud.setSize(font.getCharSet().getRenderedSize());
             hud.setLocalTranslation(xPos, yPos, 0);
             hud.setColor(color);
