@@ -6,9 +6,9 @@
 package mygame.player;
 
 import com.capdevon.anim.Animator;
+import com.capdevon.audio.SoundManager;
 import com.capdevon.engine.JMonkey3.UIEditor;
 import com.capdevon.engine.SimpleAppState;
-import com.capdevon.engine.SoundManager;
 import com.capdevon.input.GInputAppState;
 import com.capdevon.util.LineRenderer;
 import com.jme3.bullet.control.BetterCharacterControl;

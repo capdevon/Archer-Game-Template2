@@ -5,9 +5,9 @@
  */
 package mygame;
 
+import com.capdevon.audio.SoundManager;
 import com.capdevon.engine.Capture;
 import com.capdevon.engine.JMonkey3;
-import com.capdevon.engine.SoundManager;
 import com.capdevon.input.GInputAppState;
 import com.capdevon.physx.Physics;
 import com.capdevon.physx.PhysxDebugAppState;

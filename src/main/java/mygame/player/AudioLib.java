@@ -5,7 +5,7 @@
  */
 package mygame.player;
 
-import com.capdevon.engine.AudioClip;
+import com.capdevon.audio.AudioClip;
 
 /**
 *
