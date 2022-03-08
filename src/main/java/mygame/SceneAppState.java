@@ -25,7 +25,7 @@ import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.util.SkyFactory;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class SceneAppState extends SimpleAppState {
@@ -89,8 +89,8 @@ public class SceneAppState extends SimpleAppState {
 
     private void setupFilters() {
         // Shadows
-        //        DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(assetManager, 2048, 3);
-        //        dlsf.setLight(sun);
+//        DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(assetManager, 2048, 3);
+//        dlsf.setLight(sun);
 
         DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, 2048, 3);
         dlsr.setLight(sun);
@@ -100,10 +100,10 @@ public class SceneAppState extends SimpleAppState {
         LightScatteringFilter lsf = new LightScatteringFilter(sun.getDirection().mult(-300));
         lsf.setLightDensity(0.5f);
 
-        //        BloomFilter bloom = new BloomFilter();
-        //        bloom.setExposurePower(55);
-        //        bloom.setBloomIntensity(1.0f);
-
+//        BloomFilter bloom = new BloomFilter();
+//        bloom.setExposurePower(55);
+//        bloom.setBloomIntensity(1.0f);
+                
         MipmapBloomFilter bloom = new MipmapBloomFilter(MipmapBloomFilter.Quality.High, MipmapBloomFilter.GlowMode.Scene);
         bloom.setExposurePower(0.7f);
         bloom.setBloomIntensity(0.4f, 0.55f);
@@ -113,12 +113,12 @@ public class SceneAppState extends SimpleAppState {
         FXAAFilter fxaa = new FXAAFilter();
 
         fpp = new FilterPostProcessor(assetManager);
-        //        int numSamples = settings.getSamples();
-        //        if (numSamples > 0) {
-        //            fpp.setNumSamples(numSamples);
-        //        }
-
-        //        fpp.addFilter(dlsf);
+//        int numSamples = settings.getSamples();
+//        if (numSamples > 0) {
+//            fpp.setNumSamples(numSamples);
+//        }
+//
+//        fpp.addFilter(dlsf);
         fpp.addFilter(ssao);
         fpp.addFilter(bloom);
         fpp.addFilter(lsf);

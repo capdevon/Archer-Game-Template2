@@ -10,6 +10,8 @@ import com.jme3.scene.Spatial;
  * @author capdevon
  */
 public class FRotator {
+	
+    private FRotator() {}
 
     /**
      * Creates a rotation which rotates from fromDirection to toDirection.

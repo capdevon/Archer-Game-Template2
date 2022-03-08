@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.capdevon.control;
 
 import java.util.ArrayList;
@@ -21,24 +16,24 @@ import com.jme3.scene.control.Control;
  * @author capdevon
  */
 public class AdapterControl extends AbstractControl {
-    
+
     /**
      * @param <T>
      * @param key
-     * @return 
+     * @return
      */
     public <T> T getUserData(String key) {
         T objValue = spatial.getUserData(key);
         String message = "The component data %s could not be found";
         return Objects.requireNonNull(objValue, String.format(message, key));
     }
-    
+
     /**
      * Returns all components of Type type in the GameObject.
-     * 
+     *
      * @param <T>
      * @param clazz
-     * @return 
+     * @return
      */
     public <T extends Control> T[] getComponents(Class<T> clazz) {
         final List<Node> lst = new ArrayList<>(10);
@@ -52,7 +47,7 @@ public class AdapterControl extends AbstractControl {
         });
         return (T[]) lst.toArray();
     }
-    
+
     /**
      * Returns the component of Type type if the game object has one attached,
      * null if it doesn't.
@@ -65,7 +60,7 @@ public class AdapterControl extends AbstractControl {
         T control = spatial.getControl(clazz);
         return control;
     }
-    
+
     /**
      * Returns the component of Type type in the GameObject or any of its
      * children using depth first search.
@@ -74,11 +69,11 @@ public class AdapterControl extends AbstractControl {
      * @param clazz
      * @return
      */
-    public <T extends Control> T getComponentInChild(final Class<T> clazz) {
-        return getComponentInChild(spatial, clazz);
+    public <T extends Control> T getComponentInChildren(final Class<T> clazz) {
+        return getComponentInChildren(spatial, clazz);
     }
-    
-    private <T extends Control> T getComponentInChild(Spatial spatial, final Class<T> clazz) {
+
+    private <T extends Control> T getComponentInChildren(Spatial spatial, final Class<T> clazz) {
         T control = spatial.getControl(clazz);
         if (control != null) {
             return control;
@@ -86,7 +81,7 @@ public class AdapterControl extends AbstractControl {
 
         if (spatial instanceof Node) {
             for (Spatial child : ((Node) spatial).getChildren()) {
-                control = getComponentInChild(child, clazz);
+                control = getComponentInChildren(child, clazz);
                 if (control != null) {
                     return control;
                 }
@@ -95,7 +90,7 @@ public class AdapterControl extends AbstractControl {
 
         return null;
     }
-    
+
     /**
      * Retrieves the component of Type type in the GameObject or any of its
      * parents.
@@ -107,7 +102,7 @@ public class AdapterControl extends AbstractControl {
     public <T extends Control> T getComponentInParent(Class<T> clazz) {
         return getComponentInParent(spatial, clazz);
     }
-    
+
     private <T extends Control> T getComponentInParent(Spatial spatial, Class<T> clazz) {
         Node parent = spatial.getParent();
         while (parent != null) {
@@ -129,5 +124,5 @@ public class AdapterControl extends AbstractControl {
     protected void controlRender(RenderManager rm, ViewPort vp) {
         //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }

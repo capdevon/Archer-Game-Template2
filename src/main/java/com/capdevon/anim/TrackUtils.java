@@ -1,5 +1,6 @@
 package com.capdevon.anim;
 
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,9 +11,7 @@ import com.jme3.animation.AudioTrack;
 import com.jme3.animation.EffectTrack;
 import com.jme3.audio.AudioNode;
 import com.jme3.effect.ParticleEmitter;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.Control;
 
 /**
  *
@@ -21,9 +20,11 @@ import com.jme3.scene.control.Control;
 public class TrackUtils {
 
     private static final Logger logger = Logger.getLogger(TrackUtils.class.getName());
-    
+
+    /**
+     * A private constructor to inhibit instantiation of this class.
+     */
     private TrackUtils() {
-    	// private constructor.
     }
 
     public static void addAudioTrack(Spatial sp, AudioNode audio, String animName) {
@@ -76,43 +77,18 @@ public class TrackUtils {
         anim.addTrack(track);
     }
 
-    private static Animation getAnimation(Spatial sp, String animName) {
-        AnimControl control = findControl(sp, AnimControl.class);
-        if (control == null) {
-            throw new IllegalArgumentException("AnimControl not found: " + sp);
-        }
-        Animation anim = control.getAnim(animName);
-        if (anim == null) {
-            throw new IllegalArgumentException("Animation not found: " + sp);
-        }
-
-        logger.log(Level.INFO, "Anim: {0}, length: {1}", new Object[] {
-            animName,
-            anim.getLength()
-        });
-        return anim;
-    }
-
     /**
-     * @param <T>
+     *
      * @param sp
-     * @param clazz
+     * @param animName
      * @return
      */
-    private static <T extends Control> T findControl(Spatial sp, Class <T> clazz) {
-        T control = sp.getControl(clazz);
-        if (control != null) {
-            return control;
-        }
-        if (sp instanceof Node) {
-            for (Spatial child: ((Node) sp).getChildren()) {
-                control = findControl(child, clazz);
-                if (control != null) {
-                    return control;
-                }
-            }
-        }
-        return null;
+    private static Animation getAnimation(Spatial sp, String animName) {
+        AnimControl control = AnimUtils.getAnimControl(sp);
+        Animation anim = control.getAnim(animName);
+        Objects.requireNonNull(anim, "Animation not found: " + animName);
+        logger.log(Level.INFO, "Anim: {0}, length: {1}", new Object[]{animName, anim.getLength()});
+        return anim;
     }
 
 }

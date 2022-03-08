@@ -11,8 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
- */
+*
+* @author capdevon
+*/
 public class SoundManager {
     
     private static boolean initialized; 
@@ -81,7 +82,6 @@ public class SoundManager {
      */
     public static void stopAll() {
         for (Map.Entry<String, AudioNode> entry : soundsMap.entrySet()) {
-            String name = entry.getKey();
             AudioNode audioNode = entry.getValue();
             audioNode.stop();
         }

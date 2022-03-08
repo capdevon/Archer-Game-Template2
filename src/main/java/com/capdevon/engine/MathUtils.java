@@ -11,6 +11,8 @@ import com.jme3.math.FastMath;
  * @author capdevon
  */
 public class MathUtils {
+	
+    private MathUtils() {}
 
     /**
      * Clamps value between 0 and 1 and returns value. If the value is negative then

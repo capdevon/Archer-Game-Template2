@@ -5,6 +5,10 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
+/**
+*
+* @author capdevon
+*/
 public class RaycastHit {
 
 	public PhysicsCollisionObject rigidbody;
@@ -27,7 +31,7 @@ public class RaycastHit {
 	public String toString() {
 		return "RaycastHit [rigidbody=" + toHexString(rigidbody) 
 				+ ", collider=" + toHexString(collider)
-				+ ", userObject=" + toHexString(userObject)
+				+ ", userObject=" + userObject
 				+ ", distance=" + distance 
 				+ ", normal=" + normal 
 				+ ", point=" + point 

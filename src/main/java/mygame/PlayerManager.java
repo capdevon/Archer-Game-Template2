@@ -6,7 +6,6 @@
 package mygame;
 
 import com.capdevon.anim.Animator;
-import com.capdevon.control.TPSChaseCamera;
 import com.capdevon.engine.JMonkey3.UIEditor;
 import com.capdevon.engine.SimpleAppState;
 import com.capdevon.engine.SoundManager;
@@ -108,24 +107,6 @@ public class PlayerManager extends SimpleAppState {
         player.addControl(m_PlayerInput);
     }
 
-    @Deprecated
-    private void initCamera(Node target) {
-        TPSChaseCamera chaseCam = new TPSChaseCamera(camera, target);
-        chaseCam.registerWithInput(inputManager, settings.useJoysticks());
-        //chaseCam.setLookAtOffset(new Vector3f(0f, 2f, 0f));
-        chaseCam.setMaxDistance(2.5f);
-        chaseCam.setMinDistance(1.5f);
-        chaseCam.setDefaultDistance(chaseCam.getMaxDistance());
-        chaseCam.setMaxVerticalRotation(FastMath.QUARTER_PI);
-        chaseCam.setMinVerticalRotation(-FastMath.QUARTER_PI * 0.75f);
-        chaseCam.setRotationSensitivity(3f);
-        chaseCam.setZoomSensitivity(2f);
-        chaseCam.setDownRotateOnCloseViewOnly(false);
-
-        //Spatial scene = find("MainScene");
-        //CameraCollisionControl cameraCollision = new CameraCollisionControl(camera, target, scene);
-    }
-
     private Weapon createFireWeapon() {
         FireWeapon fWeapon = new FireWeapon();
         fWeapon.name = "SniperRifle";
@@ -189,7 +170,7 @@ public class PlayerManager extends SimpleAppState {
 
     /* A centered plus sign to help the player aim. */
     private BitmapText getCrossHair(String text) {
-        BitmapText ch = new BitmapText(guiFont, false);
+        BitmapText ch = new BitmapText(guiFont);
         ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
         ch.setText(text);
         float width = settings.getWidth() / 2 - ch.getLineWidth() / 2;

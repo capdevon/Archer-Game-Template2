@@ -6,7 +6,7 @@ import com.jme3.system.AppSettings;
 import java.io.File;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class Capture {
