@@ -44,11 +44,11 @@ public class PlayerManager extends SimpleAppState {
     @Override
     protected void simpleInit() {
         setupPlayer();
+        registerInput();
     }
 
-    @Override
-    protected void registerInput() {
-        GInputAppState ginput = stateManager.getState(GInputAppState.class);
+    private void registerInput() {
+        GInputAppState ginput = getState(GInputAppState.class);
         ginput.addActionListener(m_PlayerInput);
     }
 
@@ -66,7 +66,7 @@ public class PlayerManager extends SimpleAppState {
         // add Physics & Animation Control
         player.addControl(new Animator());
         player.addControl(new BetterCharacterControl(.4f, 1.8f, 80f));
-        physics.getPhysicsSpace().add(player);
+        getPhysicsSpace().add(player);
         rootNode.attachChild(player);
 
         BPCameraCollider bpCamera = new BPCameraCollider(camera, inputManager);
@@ -93,13 +93,13 @@ public class PlayerManager extends SimpleAppState {
         m_PlayerWeaponManager.camera = camera;
         m_PlayerWeaponManager.addWeapon(createRangedWeapon());
         m_PlayerWeaponManager.addWeapon(createFireWeapon());
-        m_PlayerWeaponManager.shootSFX = SoundManager.getAudioClip(AudioLib.ARROW_HIT);
-        m_PlayerWeaponManager.reloadSFX = SoundManager.getAudioClip(AudioLib.BOW_PULL);
+        m_PlayerWeaponManager.shootSFX = SoundManager.createAudioBuffer(AudioLib.ARROW_HIT);
+        m_PlayerWeaponManager.reloadSFX = SoundManager.createAudioBuffer(AudioLib.BOW_PULL);
         player.addControl(m_PlayerWeaponManager);
 
         PlayerControl m_PlayerControl = new PlayerControl();
         m_PlayerControl.camera = camera;
-        m_PlayerControl.footsteps = SoundManager.getAudioClip(AudioLib.GRASS_FOOTSTEPS);
+        m_PlayerControl.footsteps = SoundManager.createAudioBuffer(AudioLib.GRASS_FOOTSTEPS);
         player.addControl(m_PlayerControl);
 
         m_PlayerInput = new PlayerInput();

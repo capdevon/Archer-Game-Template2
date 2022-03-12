@@ -1,16 +1,12 @@
 package mygame;
 
-import java.util.Collection;
-
 import com.capdevon.engine.MathUtils;
 import com.capdevon.engine.SimpleAppState;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -65,7 +61,7 @@ public class CubeAppState extends SimpleAppState {
         CollisionShape shape = new BoxCollisionShape(bbox.getExtent(null));
         RigidBodyControl rgb = new RigidBodyControl(shape, mass);
         cube.addControl(rgb);
-        physics.getPhysicsSpace().add(rgb);
+        getPhysicsSpace().add(rgb);
 
         Damageable m_Damageable = new Damageable();
         cube.addControl(m_Damageable);

@@ -2,15 +2,17 @@ package com.capdevon.engine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.font.BitmapFont;
-import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -29,19 +31,17 @@ import com.jme3.system.AppSettings;
 public abstract class SimpleAppState extends AbstractAppState {
     
     // variables
-    public SimpleApplication app;
-    public BulletAppState    physics;
-    public AppSettings       settings;
-    public AppStateManager   stateManager;
-    public AssetManager      assetManager;
-    public InputManager      inputManager;
-    public RenderManager     renderManager;
-    public ViewPort          viewPort;
-    public Camera            camera;
-    public FlyByCamera       flyCam;
-    public Node              rootNode;
-    public Node              guiNode;
-    public BitmapFont        guiFont;
+    public Application      app;
+    public AppSettings      settings;
+    public AppStateManager  stateManager;
+    public AssetManager     assetManager;
+    public InputManager     inputManager;
+    public RenderManager    renderManager;
+    public ViewPort         viewPort;
+    public Camera           camera;
+    public Node             rootNode;
+    public Node             guiNode;
+    public BitmapFont       guiFont;
     
 //    public Node rootLocal = new Node("RootLocal");
 //    public Node guiLocal = new Node("GuiLocal");
@@ -54,21 +54,20 @@ public abstract class SimpleAppState extends AbstractAppState {
     }
     
     @Override
-    public void initialize(AppStateManager asm, Application appl) {
-        if (!(appl instanceof SimpleApplication)) {
+    public void initialize(AppStateManager asm, Application app) {
+        if (!(app instanceof SimpleApplication)) {
             throw new IllegalArgumentException("application should be a SimpleApplication");
         }
         
-        super.initialize(asm, appl);
-        this.app     = (SimpleApplication) appl;
-        this.physics = asm.getState(BulletAppState.class);
+        super.initialize(asm, app);
+        this.app = app;
         
         refreshCacheFields();
         simpleInit();
-        registerInput();
     }
     
     protected void refreshCacheFields() {
+        SimpleApplication sapp = (SimpleApplication) app;
         this.settings       = app.getContext().getSettings();
         this.stateManager   = app.getStateManager();
         this.assetManager   = app.getAssetManager();
@@ -76,32 +75,43 @@ public abstract class SimpleAppState extends AbstractAppState {
         this.renderManager  = app.getRenderManager();
         this.viewPort       = app.getViewPort();
         this.camera         = app.getCamera();
-        this.flyCam         = app.getFlyByCamera();
-        this.rootNode       = app.getRootNode();
-        this.guiNode        = app.getGuiNode();
+        this.rootNode       = sapp.getRootNode();
+        this.guiNode        = sapp.getGuiNode();
         this.guiFont        = assetManager.loadFont("Interface/Fonts/Default.fnt");
     }
     
     protected void simpleInit() {}
     
-    protected void registerInput() {}
+    public PhysicsSpace getPhysicsSpace() {
+        return getState(BulletAppState.class).getPhysicsSpace();
+    }
+    
+    public final <T extends AppState> T getState(Class<T> type) {
+        return getState(type, false);
+    }
+
+    public final <T extends AppState> T getState(Class<T> type, boolean failOnMiss) {
+        return stateManager.getState(type, failOnMiss);
+    }
 
     /**
+     * Finds a GameObject by name and returns it.
+     * 
      * @param childName
      * @return
      */
     public Spatial find(final String childName) {
         Spatial child = rootNode.getChild(childName);
-        if (child == null) {
-            String err = String.format("The spatial %s could not be found", childName);
-            throw new RuntimeException(err);
-        }
-        return child;
+        String errorMsg = String.format("The spatial %s could not be found", childName);
+        return Objects.requireNonNull(child, errorMsg);
     }
 
     /**
+     * Returns a list of GameObjects tagged tag. 
+     * Returns empty list if no GameObject was found.
+     * 
      * @param tagName
-     * @return 
+     * @return
      */
     public List<Spatial> findGameObjectsWithTag(final String tagName) {
         final List<Spatial> lst = new ArrayList<>();
@@ -117,24 +127,19 @@ public abstract class SimpleAppState extends AbstractAppState {
     }
 
     /**
+     * Returns one GameObject tagged tag. 
+     * Returns null if no GameObject was found.
+     * 
      * @param tagName
-     * @return 
+     * @return
      */
     public Spatial findWithTag(final String tagName) {
         List<Spatial> lst = findGameObjectsWithTag(tagName);
-        if (lst.isEmpty()) {
-            String err = String.format("The spatial %s could not be found", tagName);
-            throw new RuntimeException(err);
-        }
-        return lst.get(0);
+        return lst.isEmpty() ? null : lst.get(0);
     }
-    
+
     /**
-     * By default the parent of the new object is null
-     * @param model
-     * @param position
-     * @param rotation
-     * @return
+     * By default the parent of the new object is null.
      */
     public Spatial instantiate(Spatial model, Vector3f position, Quaternion rotation) {
         Spatial sp = model.clone();
@@ -142,19 +147,15 @@ public abstract class SimpleAppState extends AbstractAppState {
         sp.setLocalRotation(rotation);
         return sp;
     }
-    
+
     public Spatial instantiate(Spatial model, Vector3f position, Quaternion rotation, Node parent) {
-    	Spatial sp = instantiate(model, position, rotation);
+        Spatial sp = instantiate(model, position, rotation);
         parent.attachChild(sp);
         return sp;
     }
-    
+
     /**
-     * By default the parent of the new object is null
-     * @param assetName
-     * @param position
-     * @param rotation
-     * @return
+     * By default the parent of the new object is null.
      */
     public Spatial instantiate(String assetName, Vector3f position, Quaternion rotation) {
         Spatial sp = assetManager.loadModel(assetName);
@@ -162,11 +163,11 @@ public abstract class SimpleAppState extends AbstractAppState {
         sp.setLocalRotation(rotation);
         return sp;
     }
-    
+
     public Spatial instantiate(String assetName, Vector3f position, Quaternion rotation, Node parent) {
-    	Spatial sp = instantiate(assetName, position, rotation);
-    	parent.attachChild(sp);
-    	return sp;
+        Spatial sp = instantiate(assetName, position, rotation);
+        parent.attachChild(sp);
+        return sp;
     }
     
 }
