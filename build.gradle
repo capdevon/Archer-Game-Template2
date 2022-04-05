@@ -10,7 +10,7 @@ sourceCompatibility = '1.11'
 targetCompatibility = '1.11'
 
 // select one version of the Engine:
-ext.jmonkeyengineVersion = '3.5.0-stable'
+ext.jmonkeyengineVersion = '3.5.1-stable'
 
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile) { // compile-time options:
@@ -70,7 +70,7 @@ dependencies {
     //implementation 'org.jmonkeyengine:jme3-terrain:' + jmonkeyengineVersion
 
     // Minie
-    implementation 'com.github.stephengold:Minie:4.6.1+big3'
+    implementation 'com.github.stephengold:Minie:4.8.1+big3'
 
     // select one version of LWJGL (from mavenCentral or mavenLocal)
     runtimeOnly 'org.jmonkeyengine:jme3-lwjgl:' + jmonkeyengineVersion  // LWJGL 2.x
