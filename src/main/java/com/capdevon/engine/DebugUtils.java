@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.capdevon.engine;
 
 import com.jme3.asset.AssetManager;
@@ -28,6 +23,8 @@ import com.jme3.shadow.ShadowUtil;
 /**
  * @author capdevon
  */
+
+
 public class DebugUtils {
 
     protected final AssetManager assetManager;
@@ -51,12 +48,12 @@ public class DebugUtils {
      * @return
      */
     public Geometry createGrid(Vector3f pos, int size, ColorRGBA color) {
-        Geometry g = new Geometry("wireframe grid", new Grid(size, size, 0.2f));
+        Geometry geom = new Geometry("wireframe grid", new Grid(size, size, 0.2f));
         Material mat = createUnshadedMat(color);
-        g.setMaterial(mat);
-        g.center().move(pos);
-        debugNode.attachChild(g);
-        return g;
+        geom.setMaterial(mat);
+        geom.center().move(pos);
+        debugNode.attachChild(geom);
+        return geom;
     }
 
     /**
@@ -118,7 +115,7 @@ public class DebugUtils {
         debugNode.attachChild(geom);
         return geom;
     }
-    
+
     public Geometry createCameraFrustum(Camera cam) {
 
         Vector3f[] points = new Vector3f[8];
@@ -141,7 +138,7 @@ public class DebugUtils {
         debugNode.attachChild(frustumGeo);
         return frustumGeo;
     }
-    
+
     public Geometry createDebugSphere(float scale) {
         Geometry geom = BoundingSphereDebug.createDebugSphere(assetManager);
         geom.setShadowMode(RenderQueue.ShadowMode.Off);
@@ -149,9 +146,9 @@ public class DebugUtils {
         debugNode.attachChild(geom);
         return geom;
     }
-    
+
     private Material createUnshadedMat(ColorRGBA color) {
-    	Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", color);
         mat.getAdditionalRenderState().setWireframe(true);
         return mat;
