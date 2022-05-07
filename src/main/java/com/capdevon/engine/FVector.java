@@ -76,7 +76,7 @@ public class FVector {
     /**
      * Rotates this vector by the given angle in degrees around Y axis.
      */
-    public Vector3f rotate(final Vector3f v, float degrees) {
+    public static Vector3f rotate(final Vector3f v, float degrees) {
         return rotateRad(v, Vector3f.UNIT_Y, degrees * FastMath.DEG_TO_RAD);
     }
 

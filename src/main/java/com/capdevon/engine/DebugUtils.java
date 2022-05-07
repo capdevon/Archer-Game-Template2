@@ -50,11 +50,9 @@ public class DebugUtils {
      * @param color
      * @return
      */
-    public Geometry attachGrid(Vector3f pos, int size, ColorRGBA color) {
+    public Geometry createGrid(Vector3f pos, int size, ColorRGBA color) {
         Geometry g = new Geometry("wireframe grid", new Grid(size, size, 0.2f));
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.getAdditionalRenderState().setWireframe(true);
-        mat.setColor("Color", color);
+        Material mat = createUnshadedMat(color);
         g.setMaterial(mat);
         g.center().move(pos);
         debugNode.attachChild(g);
@@ -68,21 +66,19 @@ public class DebugUtils {
      *
      * @param pos
      */
-    public void attachCoordinateAxes(Vector3f pos) {
-        putShape(new Arrow(Vector3f.UNIT_X), ColorRGBA.Red).setLocalTranslation(pos);
-        putShape(new Arrow(Vector3f.UNIT_Y), ColorRGBA.Green).setLocalTranslation(pos);
-        putShape(new Arrow(Vector3f.UNIT_Z), ColorRGBA.Blue).setLocalTranslation(pos);
+    public void createCoordinateAxes(Vector3f pos) {
+        makeShape(new Arrow(Vector3f.UNIT_X), ColorRGBA.Red).setLocalTranslation(pos);
+        makeShape(new Arrow(Vector3f.UNIT_Y), ColorRGBA.Green).setLocalTranslation(pos);
+        makeShape(new Arrow(Vector3f.UNIT_Z), ColorRGBA.Blue).setLocalTranslation(pos);
     }
 
-    public Geometry putShape(Mesh shape, ColorRGBA color) {
-        Geometry g = new Geometry("Mesh.Geo", shape);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.getAdditionalRenderState().setWireframe(true);
+    public Geometry makeShape(Mesh shape, ColorRGBA color) {
+        Geometry geom = new Geometry("Mesh.Geo", shape);
+        Material mat = createUnshadedMat(color);
         mat.getAdditionalRenderState().setLineWidth(lineWidth);
-        mat.setColor("Color", color);
-        g.setMaterial(mat);
-        debugNode.attachChild(g);
-        return g;
+        geom.setMaterial(mat);
+        debugNode.attachChild(geom);
+        return geom;
     }
 
     /**
@@ -95,15 +91,13 @@ public class DebugUtils {
      * @param color
      * @return
      */
-    public Geometry attachWireBox(Vector3f pos, float size, ColorRGBA color) {
-        Geometry g = new Geometry("WireBox.Geo", new WireBox(size, size, size));
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.getAdditionalRenderState().setWireframe(true);
-        mat.setColor("Color", color);
-        g.setMaterial(mat);
-        g.setLocalTranslation(pos);
-        debugNode.attachChild(g);
-        return g;
+    public Geometry createWireBox(Vector3f pos, float size, ColorRGBA color) {
+        Geometry geom = new Geometry("WireBox.Geo", new WireBox(size, size, size));
+        Material mat = createUnshadedMat(color);
+        geom.setMaterial(mat);
+        geom.setLocalTranslation(pos);
+        debugNode.attachChild(geom);
+        return geom;
     }
 
     /**
@@ -116,15 +110,13 @@ public class DebugUtils {
      * @param color
      * @return
      */
-    public Geometry attachWireSphere(Vector3f pos, float size, ColorRGBA color) {
-        Geometry g = new Geometry("WireSphere.Geo", new WireSphere(size));
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.getAdditionalRenderState().setWireframe(true);
-        mat.setColor("Color", color);
-        g.setMaterial(mat);
-        g.setLocalTranslation(pos);
-        debugNode.attachChild(g);
-        return g;
+    public Geometry createWireSphere(Vector3f pos, float size, ColorRGBA color) {
+        Geometry geom = new Geometry("WireSphere.Geo", new WireSphere(size));
+        Material mat = createUnshadedMat(color);
+        geom.setMaterial(mat);
+        geom.setLocalTranslation(pos);
+        debugNode.attachChild(geom);
+        return geom;
     }
     
     public Geometry createCameraFrustum(Camera cam) {
@@ -141,8 +133,7 @@ public class DebugUtils {
         Mesh mesh = new WireFrustum(points);
 
         Geometry frustumGeo = new Geometry("Viewing.Frustum", mesh);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.White);
+        Material mat = createUnshadedMat(ColorRGBA.White);
         frustumGeo.setMaterial(mat);
         frustumGeo.setCullHint(Spatial.CullHint.Never);
         frustumGeo.setShadowMode(RenderQueue.ShadowMode.Off);
@@ -152,11 +143,18 @@ public class DebugUtils {
     }
     
     public Geometry createDebugSphere(float scale) {
-        Geometry geo = BoundingSphereDebug.createDebugSphere(assetManager);
-        geo.setShadowMode(RenderQueue.ShadowMode.Off);
-        geo.setLocalScale(scale);
-        debugNode.attachChild(geo);
-        return geo;
+        Geometry geom = BoundingSphereDebug.createDebugSphere(assetManager);
+        geom.setShadowMode(RenderQueue.ShadowMode.Off);
+        geom.setLocalScale(scale);
+        debugNode.attachChild(geom);
+        return geom;
+    }
+    
+    private Material createUnshadedMat(ColorRGBA color) {
+    	Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", color);
+        mat.getAdditionalRenderState().setWireframe(true);
+        return mat;
     }
 
     /**

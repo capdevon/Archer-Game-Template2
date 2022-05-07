@@ -5,6 +5,14 @@
  */
 package com.capdevon.physx;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
@@ -14,13 +22,6 @@ import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 
@@ -37,7 +38,7 @@ public class PhysxQuery {
     /**
      * IdentityFunction
      */
-    private static final Function<PhysicsRigidBody, Boolean> IdentityFunction = x -> true;
+    private static final Predicate<PhysicsRigidBody> IdentityFunction = x -> true;
 
     private PhysxQuery() {
     	// private constructor.
@@ -90,12 +91,12 @@ public class PhysxQuery {
      * @return Returns an array with all PhysicsRigidBody touching or inside the
      * sphere.
      */
-    public static List<PhysicsRigidBody> overlapSphere(Vector3f position, float radius, int layerMask, Function<PhysicsRigidBody, Boolean> func) {
+    public static List<PhysicsRigidBody> overlapSphere(Vector3f position, float radius, int layerMask, Predicate<PhysicsRigidBody> func) {
 
         List<PhysicsRigidBody> results = new ArrayList<>(10);
         for (PhysicsRigidBody pco : PhysicsSpace.getPhysicsSpace().getRigidBodyList()) {
 
-            if (applyMask(layerMask, pco.getCollisionGroup()) && func.apply(pco)) {
+            if (applyMask(layerMask, pco.getCollisionGroup()) && func.test(pco)) {
                 float sqrDistance = pco.getPhysicsLocation().distanceSquared(position);
 
                 if (sqrDistance < radius * radius) {
@@ -125,12 +126,12 @@ public class PhysxQuery {
      * @param func      - Specifies a function to filter colliders.
      * @return Returns the amount of colliders stored into the results buffer.
      */
-    public static int overlapSphereNonAlloc(Vector3f position, float radius, PhysicsRigidBody[] results, int layerMask, Function<PhysicsRigidBody, Boolean> func) {
+    public static int overlapSphereNonAlloc(Vector3f position, float radius, PhysicsRigidBody[] results, int layerMask, Predicate<PhysicsRigidBody> func) {
 
         int numColliders = 0;
         for (PhysicsRigidBody pco : PhysicsSpace.getPhysicsSpace().getRigidBodyList()) {
 
-            if (applyMask(layerMask, pco.getCollisionGroup()) && func.apply(pco)) {
+            if (applyMask(layerMask, pco.getCollisionGroup()) && func.test(pco)) {
                 float sqrDistance = pco.getPhysicsLocation().distanceSquared(position);
 
                 if (sqrDistance < radius * radius) {

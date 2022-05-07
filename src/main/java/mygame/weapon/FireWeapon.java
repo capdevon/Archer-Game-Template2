@@ -1,6 +1,6 @@
 package mygame.weapon;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,7 +63,7 @@ public class FireWeapon extends Weapon {
 
     private void applyExplosion(RaycastHit hit) {
         ColorRGBA color = ColorRGBA.randomColor();
-        Function<PhysicsRigidBody, Boolean> dynamicBodies = (x) -> x.getMass() > 0;
+        Predicate<PhysicsRigidBody> dynamicBodies = (x) -> x.getMass() > 0;
 
         int maxColliders = 10;
         PhysicsRigidBody[] hitColliders = new PhysicsRigidBody[maxColliders];
@@ -71,7 +71,6 @@ public class FireWeapon extends Weapon {
         System.out.println("numColliders=" + numColliders);
 
         for (int i = 0; i < numColliders; i++) {
-
             PhysicsRigidBody rb = hitColliders[i];
             Physics.addExplosionForce(rb, baseStrength, hit.point, explosionRadius);
 
