@@ -79,7 +79,7 @@ public class Physics {
             if (phRay.getHitFraction() < maxDistance && applyMask(layerMask, pco.getCollisionGroup())) {
 
                 RaycastHit hitInfo = new RaycastHit();
-                hitInfo.rigidbody   = pco;
+                hitInfo.rigidBody   = pco;
                 hitInfo.collider    = pco.getCollisionShape();
                 hitInfo.userObject  = (Spatial) pco.getUserObject();
                 hitInfo.distance    = finalVec.subtract(beginVec).length() * phRay.getHitFraction();
@@ -134,7 +134,7 @@ public class Physics {
                 collision = true;
                 hf = ray.getHitFraction();
 
-                hitInfo.rigidbody   = pco;
+                hitInfo.rigidBody   = pco;
                 hitInfo.collider    = pco.getCollisionShape();
                 hitInfo.userObject  = (Spatial) pco.getUserObject();
                 hitInfo.distance    = finalVec.subtract(beginVec).length() * hf;
@@ -180,7 +180,7 @@ public class Physics {
                 collision = true;
                 hf = ray.getHitFraction();
 
-                hitInfo.rigidbody   = pco;
+                hitInfo.rigidBody   = pco;
                 hitInfo.collider    = pco.getCollisionShape();
                 hitInfo.userObject  = (Spatial) pco.getUserObject();
                 hitInfo.distance    = finalVec.subtract(beginVec).length() * hf;

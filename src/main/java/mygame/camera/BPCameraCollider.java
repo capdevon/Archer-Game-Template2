@@ -95,7 +95,7 @@ public class BPCameraCollider extends BPPlayerCamera {
                 collision = true;
                 hf = ray.getHitFraction();
                 
-                hitInfo.rigidbody   = pco;
+                hitInfo.rigidBody   = pco;
                 hitInfo.collider    = pco.getCollisionShape();
                 hitInfo.userObject  = userObj;
                 hitInfo.distance    = finalVec.subtract(beginVec, t.vect3).length() * hf;

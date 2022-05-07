@@ -11,7 +11,7 @@ import com.jme3.scene.Spatial;
  */
 public class RaycastHit {
 
-    public PhysicsCollisionObject rigidbody;
+    public PhysicsCollisionObject rigidBody;
     public CollisionShape collider;
     public Spatial userObject;
     public float distance;
@@ -19,7 +19,7 @@ public class RaycastHit {
     public Vector3f point = new Vector3f();
 
     public void clear() {
-        rigidbody = null;
+        rigidBody = null;
         collider = null;
         userObject = null;
         distance = Float.NaN;
@@ -29,7 +29,7 @@ public class RaycastHit {
 
     @Override
     public String toString() {
-        return "RaycastHit [rigidbody=" + toHexString(rigidbody)
+        return "RaycastHit [rigidbody=" + toHexString(rigidBody)
                 + ", collider=" + toHexString(collider)
                 + ", userObject=" + toHexString(userObject)
                 + ", distance=" + distance
