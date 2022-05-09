@@ -23,8 +23,6 @@ import com.jme3.shadow.ShadowUtil;
 /**
  * @author capdevon
  */
-
-
 public class DebugUtils {
 
     protected final AssetManager assetManager;
@@ -49,7 +47,7 @@ public class DebugUtils {
      */
     public Geometry createGrid(Vector3f pos, int size, ColorRGBA color) {
         Geometry geom = new Geometry("wireframe grid", new Grid(size, size, 0.2f));
-        Material mat = createUnshadedMat(color);
+        Material mat = createWireMaterial(color);
         geom.setMaterial(mat);
         geom.center().move(pos);
         debugNode.attachChild(geom);
@@ -71,7 +69,7 @@ public class DebugUtils {
 
     public Geometry makeShape(Mesh shape, ColorRGBA color) {
         Geometry geom = new Geometry("Mesh.Geo", shape);
-        Material mat = createUnshadedMat(color);
+        Material mat = createWireMaterial(color);
         mat.getAdditionalRenderState().setLineWidth(lineWidth);
         geom.setMaterial(mat);
         debugNode.attachChild(geom);
@@ -90,7 +88,7 @@ public class DebugUtils {
      */
     public Geometry createWireBox(Vector3f pos, float size, ColorRGBA color) {
         Geometry geom = new Geometry("WireBox.Geo", new WireBox(size, size, size));
-        Material mat = createUnshadedMat(color);
+        Material mat = createWireMaterial(color);
         geom.setMaterial(mat);
         geom.setLocalTranslation(pos);
         debugNode.attachChild(geom);
@@ -109,7 +107,7 @@ public class DebugUtils {
      */
     public Geometry createWireSphere(Vector3f pos, float size, ColorRGBA color) {
         Geometry geom = new Geometry("WireSphere.Geo", new WireSphere(size));
-        Material mat = createUnshadedMat(color);
+        Material mat = createWireMaterial(color);
         geom.setMaterial(mat);
         geom.setLocalTranslation(pos);
         debugNode.attachChild(geom);
@@ -130,7 +128,7 @@ public class DebugUtils {
         Mesh mesh = new WireFrustum(points);
 
         Geometry frustumGeo = new Geometry("Viewing.Frustum", mesh);
-        Material mat = createUnshadedMat(ColorRGBA.White);
+        Material mat = createWireMaterial(ColorRGBA.White);
         frustumGeo.setMaterial(mat);
         frustumGeo.setCullHint(Spatial.CullHint.Never);
         frustumGeo.setShadowMode(RenderQueue.ShadowMode.Off);
@@ -147,7 +145,7 @@ public class DebugUtils {
         return geom;
     }
 
-    private Material createUnshadedMat(ColorRGBA color) {
+    private Material createWireMaterial(ColorRGBA color) {
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", color);
         mat.getAdditionalRenderState().setWireframe(true);
