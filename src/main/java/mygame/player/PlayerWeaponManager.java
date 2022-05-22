@@ -100,7 +100,7 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
         s_wh = createHook(HumanBodyBones.Spine2);
 
         animator.addAnimListener(this);
-        TrackUtils.addAudioTrack(spatial, reloadSFX, AnimDefs.Aim_Overdraw.getName());
+        TrackUtils.addAudioTrack(animator.getAnimation(AnimDefs.Aim_Overdraw.getName()), reloadSFX);
 
         switchWeapon();
         setupBoneIK();

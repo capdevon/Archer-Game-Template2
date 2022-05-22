@@ -105,8 +105,12 @@ public class Animator extends AdapterControl {
     public Spatial getRootMotion() {
         return animControl.getSpatial();
     }
+    
+    public Animation getAnimation(String name) {
+    	return animControl.getAnim(name);
+    }
 
-    public String getAnimationName() {
+    public String getCurrentAnimation() {
         return animChannel.getAnimationName();
     }
 
