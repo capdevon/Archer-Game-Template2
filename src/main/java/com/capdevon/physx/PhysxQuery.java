@@ -6,22 +6,13 @@
 package com.capdevon.physx;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.PhysicsCollisionEvent;
-import com.jme3.bullet.collision.PhysicsCollisionListener;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Spatial;
 
 /**
  * 
@@ -44,43 +35,6 @@ public class PhysxQuery {
     	// private constructor.
     }
     
-    /**
-     * Computes and stores colliders inside the sphere.
-     *
-     * @param position	- Center of the sphere.
-     * @param radius	- Radius of the sphere.
-     * @param layerMask	- A Layer mask defines which layers of colliders to include in the query.
-     * @return
-     */
-    public static Set<Spatial> contactTest(Vector3f position, float radius, int layerMask) {
-
-        Set<Spatial> overlappingObjects = new HashSet<>(5);
-        PhysicsGhostObject ghost = new PhysicsGhostObject(new SphereCollisionShape(radius));
-        ghost.setPhysicsLocation(position);
-
-        int numContacts = PhysicsSpace.getPhysicsSpace().contactTest(ghost, new PhysicsCollisionListener() {
-            @Override
-            public void collision(PhysicsCollisionEvent event) {
-
-                // ghost is not linked to any Spatial, so one of the two nodes A and B is null.
-                PhysicsCollisionObject pco = event.getNodeA() != null ? event.getObjectA() : event.getObjectB();
-                logger.log(Level.INFO, "NodeA={0}, NodeB={1}, CollGroup={2}", new Object[]{event.getNodeA(), event.getNodeB(), pco.getCollisionGroup()});
-
-                if (applyMask(layerMask, pco.getCollisionGroup())) {
-                    Spatial userObj = (Spatial) pco.getUserObject();
-                    overlappingObjects.add(userObj);
-                }
-            }
-        });
-
-        System.out.println("numContacts: " + numContacts);
-        return overlappingObjects;
-    }
-    
-    public static Set<Spatial> contactTest(Vector3f position, float radius) {
-        return contactTest(position, radius, DefaultRaycastLayers);
-    }
-
     /**
      * Computes and stores colliders inside the sphere.
      *
