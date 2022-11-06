@@ -57,7 +57,7 @@ public class DebugUtils {
     /**
      * The coordinate axes (com.jme3.scene.debug.Arrow) help you see the
      * cardinal directions (X,Y,Z) from their center point. Scale the arrows to
-     * use them as a “ruler” for a certain length.
+     * use them as a "ruler" for a certain length.
      *
      * @param pos
      */
