@@ -1,6 +1,5 @@
 package com.capdevon.engine;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,7 +19,6 @@ import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
-import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
@@ -43,8 +41,8 @@ public abstract class SimpleAppState extends AbstractAppState {
     public Node             guiNode;
     public BitmapFont       guiFont;
     
-//    public Node rootLocal = new Node("RootLocal");
-//    public Node guiLocal = new Node("GuiLocal");
+    //public Node rootLocal = new Node("RootLocal");
+    //public Node guiLocal = new Node("GuiLocal");
     
     public SimpleAppState() {
     }
@@ -83,7 +81,7 @@ public abstract class SimpleAppState extends AbstractAppState {
     protected void simpleInit() {}
     
     public PhysicsSpace getPhysicsSpace() {
-        return getState(BulletAppState.class).getPhysicsSpace();
+        return getState(BulletAppState.class, true).getPhysicsSpace();
     }
     
     public final <T extends AppState> T getState(Class<T> type) {
@@ -114,16 +112,7 @@ public abstract class SimpleAppState extends AbstractAppState {
      * @return
      */
     public List<Spatial> findGameObjectsWithTag(final String tagName) {
-        final List<Spatial> lst = new ArrayList<>();
-        rootNode.breadthFirstTraversal(new SceneGraphVisitor() {
-            @Override
-            public void visit(Spatial node) {
-                if (tagName.equals(node.getUserData("TagName"))) {
-                    lst.add(node);
-                }
-            }
-        });
-        return lst;
+    	return GameObject.findGameObjectsWithTag(rootNode, tagName);
     }
 
     /**
@@ -134,8 +123,7 @@ public abstract class SimpleAppState extends AbstractAppState {
      * @return
      */
     public Spatial findWithTag(final String tagName) {
-        List<Spatial> lst = findGameObjectsWithTag(tagName);
-        return lst.isEmpty() ? null : lst.get(0);
+    	return GameObject.findWithTag(rootNode, tagName);
     }
 
     /**
