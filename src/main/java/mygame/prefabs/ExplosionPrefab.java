@@ -27,14 +27,10 @@ public class ExplosionPrefab extends PrefabComponent {
         super(app);
     }
 
-    private Spatial loadModel() {
-        return assetManager.loadModel(assetName);
-    }
-
     @Override
     public Spatial instantiate(Vector3f position, Quaternion rotation, Node parent) {
 
-        Node model = (Node) loadModel();
+        Node model = (Node) assetManager.loadModel(assetName);
         model.setName("Explosion-" + nextSeqId());
         model.setLocalTranslation(position);
         parent.attachChild(model);

@@ -155,7 +155,10 @@ public class PlayerManager extends SimpleAppState {
         bullets[1] = pArrow;
         
         // 3.
-        bullets[2] = new ArrowPrefab(app, "Arrow");
+        ArrowPrefab arrow = new ArrowPrefab(app);
+        arrow.mass = 6f;
+        arrow.name = "Arrow";
+        bullets[2] = arrow;
         
         // set arrows
         rWeapon.setBullets(bullets);

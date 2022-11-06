@@ -12,6 +12,10 @@ import com.jme3.scene.Spatial;
 import mygame.weapon.ExplosiveArrowControl;
 import mygame.weapon.RangedBullet;
 
+/**
+ * 
+ * @author capdevon
+ */
 public class ExplosiveArrowPrefab extends RangedBullet {
 
     public float radius = 0.04f;
@@ -21,20 +25,18 @@ public class ExplosiveArrowPrefab extends RangedBullet {
         super(app);
     }
 
-    private Spatial loadModel() {
-        //		Mesh mesh = new Sphere(16, 16, 0.05f);
-        //		Geometry geo = new Geometry("Arrow", mesh);
-        //		Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        //		mat.setColor("Color", ColorRGBA.Green.clone());
-        //		geo.setMaterial(mat);
-        //		return geo;
-
-        return assetManager.loadModel("Models/Arrow/arrow.glb");
-    }
+//    private Spatial loadModel() {
+//        Mesh mesh = new Sphere(16, 16, 0.05f);
+//        Geometry geo = new Geometry("Arrow", mesh);
+//        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+//        mat.setColor("Color", ColorRGBA.Green.clone());
+//        geo.setMaterial(mat);
+//        return geo;
+//    }
 
     @Override
     public Spatial instantiate(Vector3f position, Quaternion rotation, Node parent) {
-        Spatial model = loadModel();
+        Spatial model = assetManager.loadModel("Models/Arrow/arrow.glb");
         model.setName(name + "-" + nextSeqId());
         model.setLocalTranslation(position);
         model.setLocalRotation(rotation);

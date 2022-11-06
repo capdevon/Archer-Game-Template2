@@ -19,37 +19,33 @@ public class ArrowPrefab extends RangedBullet {
 
     public float radius = 0.04f;
 
-    public ArrowPrefab(Application app, String name) {
+    public ArrowPrefab(Application app) {
         super(app);
-        this.mass = 6f;
-        this.name = name;
     }
 
-    private Spatial loadModel() {
-//		Node model = new Node();
+//    private Spatial loadModel() {
+//        Node model = new Node();
 //
-//		Geometry g1 = new Geometry("Arrow.GeoMesh", new Sphere(16, 16, radius));
-//		Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-//		mat1.setColor("Color", ColorRGBA.Green.clone());
-//		g1.setMaterial(mat1);
-//		model.attachChild(g1);
+//        Geometry g1 = new Geometry("Arrow.GeoMesh", new Sphere(16, 16, radius));
+//        Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+//        mat1.setColor("Color", ColorRGBA.Green.clone());
+//        g1.setMaterial(mat1);
+//        model.attachChild(g1);
 //
-//		Geometry g2 = new Geometry("Axis.Z", new Arrow(Vector3f.UNIT_Z));
-//		Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-//		mat2.setColor("Color", ColorRGBA.Blue.clone());
-//		mat2.getAdditionalRenderState().setLineWidth(2f);
-//		g2.setMaterial(mat2);
-//		g2.setLocalTranslation(FVector.forward(g1).negate());
-//		model.attachChild(g2);
+//        Geometry g2 = new Geometry("Axis.Z", new Arrow(Vector3f.UNIT_Z));
+//        Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+//        mat2.setColor("Color", ColorRGBA.Blue.clone());
+//        mat2.getAdditionalRenderState().setLineWidth(2f);
+//        g2.setMaterial(mat2);
+//        g2.setLocalTranslation(FVector.forward(g1).negate());
+//        model.attachChild(g2);
 //
-//		return model;
-
-		return assetManager.loadModel("Models/Arrow/arrow.glb");
-	}
+//        return model;
+//    }
 
     @Override
     public Spatial instantiate(Vector3f position, Quaternion rotation, Node parent) {
-        Spatial model = loadModel();
+        Spatial model = assetManager.loadModel("Models/Arrow/arrow.glb");
         model.setName(name + "-" + nextSeqId());
         model.setLocalTranslation(position);
         model.setLocalRotation(rotation);
