@@ -16,7 +16,7 @@ gradle.projectsEvaluated {
     tasks.withType(JavaCompile) { // compile-time options:
         options.compilerArgs << '-Xdiags:verbose'
         options.compilerArgs << '-Xlint:unchecked'
-        options.deprecation = true
+        //options.deprecation = true // to provide detailed deprecation warnings
         options.encoding = 'UTF-8'
     }
     tasks.withType(JavaExec) { // runtime options:
