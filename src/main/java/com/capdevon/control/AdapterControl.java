@@ -35,6 +35,7 @@ public class AdapterControl extends AbstractControl {
      * @param clazz
      * @return
      */
+    @SuppressWarnings("unchecked")
     public <T extends Control> T[] getComponents(Class<T> clazz) {
         final List<Node> lst = new ArrayList<>(10);
         spatial.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
