@@ -59,6 +59,4 @@ public abstract class PrefabComponent {
 
     public abstract Spatial instantiate(Vector3f position, Quaternion rotation, Node parent);
 
-    public abstract Spatial loadModel();
-
 }

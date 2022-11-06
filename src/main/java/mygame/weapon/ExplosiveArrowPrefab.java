@@ -11,18 +11,14 @@ import com.jme3.scene.Spatial;
 
 public class ExplosiveArrowPrefab extends RangedBullet {
 
-    private float radius = 0.04f;
-    private ExplosionPrefab explosionPrefab;
+    public float radius = 0.04f;
+    public ExplosionPrefab explosionPrefab;
 
-    public ExplosiveArrowPrefab(Application app, String name, float mass, ExplosionPrefab explosionPrefab) {
+    public ExplosiveArrowPrefab(Application app) {
         super(app);
-        this.name = name;
-        this.mass = mass;
-        this.explosionPrefab = explosionPrefab;
     }
 
-    @Override
-    public Spatial loadModel() {
+    private Spatial loadModel() {
         //		Mesh mesh = new Sphere(16, 16, 0.05f);
         //		Geometry geo = new Geometry("Arrow", mesh);
         //		Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");

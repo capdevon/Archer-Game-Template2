@@ -7,11 +7,11 @@ public abstract class RangedBullet extends PrefabComponent {
     /**
      * The name in GUI
      */
-    String name;
+    public String name;
     /**
      * Mass of the bullet being shot. Affects velocity.
      */
-    float mass = 0.1f;
+    public float mass = 0.1f;
 
     /**
      * A bullet for a RangedWeapon

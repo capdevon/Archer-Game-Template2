@@ -7,11 +7,11 @@ package mygame.player;
 
 import com.capdevon.anim.Animator;
 import com.capdevon.audio.SoundManager;
-import com.capdevon.engine.JMonkey3.UIEditor;
 import com.capdevon.engine.SimpleAppState;
 import com.capdevon.input.GInputAppState;
 import com.capdevon.util.LineRenderer;
 import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -81,7 +81,7 @@ public class PlayerManager extends SimpleAppState {
         player.addControl(bpCamera);
 
         WeaponUIManager m_WeaponUIManager = new WeaponUIManager();
-        m_WeaponUIManager.weaponText = UIEditor.getText(20, settings.getHeight() - 20);
+        m_WeaponUIManager.weaponText = createUIText(20, settings.getHeight() - 20, ColorRGBA.Red);
         player.addControl(m_WeaponUIManager);
 
         LineRenderer lr = new LineRenderer(app);
@@ -127,11 +127,31 @@ public class PlayerManager extends SimpleAppState {
         RangedBullet[] bullets = new RangedBullet[3];
         bullets[0] = new ArrowPrefab(app, "Arrow");
 
-        ExplosionPrefab eFlame = new ExplosionPrefab(app, "Scenes/jMonkey/Flame.j3o", ColorRGBA.Orange.clone(), 1.05f);
-        bullets[1] = new ExplosiveArrowPrefab(app, "FlameArrow", 6f, eFlame);
+        // 1.
+        ExplosionPrefab eFlame = new ExplosionPrefab(app);
+        eFlame.assetName = "Scenes/jMonkey/Flame.j3o";
+        eFlame.explosionColor = ColorRGBA.Orange.clone();
+        eFlame.lifeTimeVFX = 1.05f;
+        
+        ExplosiveArrowPrefab fArrow = new ExplosiveArrowPrefab(app);
+        fArrow.name = "FlameArrow";
+        fArrow.mass = 6f;
+        fArrow.explosionPrefab = eFlame;
+        bullets[1] = fArrow;
 
-        ExplosionPrefab ePoison = new ExplosionPrefab(app, "Scenes/jMonkey/Poison.j3o", new ColorRGBA(0, 1.0f, 0.452f, 1f), 8.85f);
-        bullets[2] = new ExplosiveArrowPrefab(app, "PoisonArrow", 6f, ePoison);
+        // 2.
+        ExplosionPrefab ePoison = new ExplosionPrefab(app);
+        eFlame.assetName = "Scenes/jMonkey/Poison.j3o";
+        eFlame.explosionColor = new ColorRGBA(0, 1.0f, 0.452f, 1f);
+        eFlame.lifeTimeVFX = 8.85f;
+        
+        ExplosiveArrowPrefab pArrow = new ExplosiveArrowPrefab(app);
+        pArrow.name = "PoisonArrow";
+        pArrow.mass = 6f;
+        pArrow.explosionPrefab = ePoison;
+        bullets[2] = fArrow;
+        
+        // set arrows
         rWeapon.setBullets(bullets);
 
         return rWeapon;
@@ -139,7 +159,7 @@ public class PlayerManager extends SimpleAppState {
 
     private Node createFakeRifleModel() {
         Node model = new Node("Rifle");
-        Geometry geo = createGeometry("Weapon.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Red);
+        Geometry geo = makeGeometry("Weapon.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Red);
         model.setCullHint(Spatial.CullHint.Never);
         model.attachChild(geo);
 
@@ -158,13 +178,23 @@ public class PlayerManager extends SimpleAppState {
 
         return model;
     }
-
-    private Geometry createGeometry(String name, Mesh mesh, ColorRGBA color) {
+    
+    private Geometry makeGeometry(String name, Mesh mesh, ColorRGBA color) {
         Geometry geo = new Geometry(name, mesh);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", color.clone());
+        mat.setColor("Color", color);
         geo.setMaterial(mat);
         return geo;
+    }
+    
+    private BitmapText createUIText(float xPos, float yPos, ColorRGBA color) {
+        BitmapFont font = assetManager.loadFont("Interface/Fonts/Default.fnt");
+        BitmapText hud = new BitmapText(font);
+        hud.setSize(font.getCharSet().getRenderedSize());
+        hud.setLocalTranslation(xPos, yPos, 0);
+        hud.setColor(color);
+        guiNode.attachChild(hud);
+        return hud;
     }
 
     /* A centered plus sign to help the player aim. */

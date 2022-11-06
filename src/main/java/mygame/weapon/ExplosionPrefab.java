@@ -12,19 +12,15 @@ import com.jme3.scene.Spatial;
 
 public class ExplosionPrefab extends PrefabComponent {
 
-    private String assetName;
-    private ColorRGBA explosionColor;
-    private float lifeTimeVFX = 5f;
+    public String assetName;
+    public ColorRGBA explosionColor;
+    public float lifeTimeVFX = 5f;
 
-    public ExplosionPrefab(Application app, String effectName, ColorRGBA effectColor, float effectDuration) {
+    public ExplosionPrefab(Application app) {
         super(app);
-        this.assetName = effectName;
-        this.explosionColor = effectColor;
-        this.lifeTimeVFX = effectDuration;
     }
 
-    @Override
-    public Spatial loadModel() {
+    private Spatial loadModel() {
         return assetManager.loadModel(assetName);
     }
 

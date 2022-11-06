@@ -22,8 +22,7 @@ public class ArrowPrefab extends RangedBullet {
         this.name = name;
     }
 
-    @Override
-	public Spatial loadModel() {
+    private Spatial loadModel() {
 //		Node model = new Node();
 //
 //		Geometry g1 = new Geometry("Arrow.GeoMesh", new Sphere(16, 16, radius));
