@@ -38,7 +38,7 @@ public abstract class PrefabComponent {
     }
 
     public final PhysicsSpace getPhysicsSpace() {
-        return stateManager.getState(BulletAppState.class).getPhysicsSpace();
+        return stateManager.getState(BulletAppState.class, true).getPhysicsSpace();
     }
 
     public Node getRootNode() {
