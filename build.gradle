@@ -87,7 +87,7 @@ dependencies {
     //runtimeOnly 'org.codehaus.groovy:groovy-jsr223:3.0.7'
     
     // Additional filters
-    runtimeOnly files('lib/shaderblow-ex-1.0.0.jar')
+    implementation files('lib/shaderblow-ex-1.0.0.jar')
     
     runtimeOnly files('lib/jme-materialize.jar')
 }
