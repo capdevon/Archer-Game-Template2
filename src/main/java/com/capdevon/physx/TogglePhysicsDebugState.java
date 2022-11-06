@@ -11,7 +11,7 @@ import com.jme3.input.controls.KeyTrigger;
 /**
  * @author capdevon
  */
-public class PhysxDebugAppState extends BaseAppState implements ActionListener {
+public class TogglePhysicsDebugState extends BaseAppState implements ActionListener {
 
     private final String TOGGLE_PHYSICS_DEBUG = "TOGGLE_PHYSICS_DEBUG";
 

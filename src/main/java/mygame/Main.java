@@ -3,7 +3,7 @@ package mygame;
 import com.capdevon.audio.SoundManager;
 import com.capdevon.input.GInputAppState;
 import com.capdevon.physx.Physics;
-import com.capdevon.physx.PhysxDebugAppState;
+import com.capdevon.physx.TogglePhysicsDebugState;
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
@@ -55,7 +55,7 @@ public class Main extends SimpleApplication {
 
         stateManager.attach(new SceneAppState());
         stateManager.attach(new CubeAppState());
-        stateManager.attach(new PhysxDebugAppState());
+        stateManager.attach(new TogglePhysicsDebugState());
         stateManager.attach(new GInputAppState());
         stateManager.attach(new PlayerManager());
 
