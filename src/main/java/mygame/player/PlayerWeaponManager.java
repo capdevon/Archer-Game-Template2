@@ -363,7 +363,7 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
 
             points.add(location.clone());
 
-            if (Physics.doLinecast(previousLocation, location, hitInfo)) {
+            if (Physics.linecast(previousLocation, location, hitInfo)) {
                 //logger.log(Level.INFO, hitInfo.toString());
                 //logger.log(Level.INFO, "Stop simulation. stepIndex=" + stepIndex);
                 break;

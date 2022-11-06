@@ -48,7 +48,7 @@ public class FireWeapon extends Weapon {
     }
 
     public void handleShoot(Vector3f origin, Vector3f direction) {
-        if (Physics.doRaycast(origin, direction, shootHit, distance)) {
+        if (Physics.raycast(origin, direction, shootHit, distance)) {
             logger.log(Level.INFO, " * You shot: " + shootHit);
             applyExplosion(shootHit);
 
@@ -67,7 +67,7 @@ public class FireWeapon extends Weapon {
 
         int maxColliders = 10;
         PhysicsRigidBody[] hitColliders = new PhysicsRigidBody[maxColliders];
-        int numColliders = PhysxQuery.overlapSphereNonAlloc(hit.point, explosionRadius, hitColliders, layerMask, dynamicBodies);
+        int numColliders = PhysxQuery.checkSphereNonAlloc(hit.point, explosionRadius, hitColliders, layerMask, dynamicBodies);
         System.out.println("numColliders=" + numColliders);
 
         for (int i = 0; i < numColliders; i++) {
@@ -80,14 +80,14 @@ public class FireWeapon extends Weapon {
     }
 
     private void applyImpulse(RaycastHit hit, Weapon weapon) {
-        RigidBodyControl rgb = hit.userObject.getControl(RigidBodyControl.class);
+        RigidBodyControl rgb = hit.gameObject.getControl(RigidBodyControl.class);
         if (rgb != null && rgb.getMass() > 0) {
 
             Vector3f force = rgb.getGravity(null).negateLocal().multLocal(rgb.getMass());
             rgb.applyImpulse(force, Vector3f.ZERO);
 
             ColorRGBA color = ColorRGBA.randomColor();
-            applyDamage(hit.userObject, color);
+            applyDamage(hit.gameObject, color);
         }
     }
 

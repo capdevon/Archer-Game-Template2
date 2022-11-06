@@ -61,7 +61,7 @@ public class BPCameraCollider extends BPPlayerCamera {
             pitchNode.getWorldRotation().mult(Vector3f.UNIT_Z, tempDirection).negateLocal();
             
             float distance = -getMaxDistance();
-            if (Raycast(origin, tempDirection, hitInfo, getMaxDistance(), collideWithGroups)) {
+            if (raycast(origin, tempDirection, hitInfo, getMaxDistance(), collideWithGroups)) {
                 distance = 0.01f - hitInfo.distance;
             }
             
@@ -69,7 +69,7 @@ public class BPCameraCollider extends BPPlayerCamera {
         }
     }
  
-    private boolean Raycast(Vector3f origin, Vector3f direction, RaycastHit hitInfo, float maxDistance, int layerMask) {
+    private boolean raycast(Vector3f origin, Vector3f direction, RaycastHit hitInfo, float maxDistance, int layerMask) {
 
         TempVars t = TempVars.get();
         Vector3f beginVec = t.vect1.set(origin);
@@ -97,7 +97,7 @@ public class BPCameraCollider extends BPPlayerCamera {
                 
                 hitInfo.rigidBody   = pco;
                 hitInfo.collider    = pco.getCollisionShape();
-                hitInfo.userObject  = userObj;
+                hitInfo.gameObject  = userObj;
                 hitInfo.distance    = finalVec.subtract(beginVec, t.vect3).length() * hf;
                 hitInfo.point.interpolateLocal(beginVec, finalVec, hf);
                 ray.getHitNormalLocal(hitInfo.normal);
