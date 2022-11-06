@@ -39,7 +39,7 @@ public class PlayerInput extends AdapterControl implements ActionListener {
             m_PlayerWeaponManager.setAiming(keyPressed);
         } else if (action.equals(KeyMapping.FIRE) && keyPressed) {
             m_PlayerWeaponManager.shooting();
-        } else if (action.equals(KeyMapping.SWITCH_WEAPON) && keyPressed) {
+        } else if (action.equals(KeyMapping.SWITCH_AMMO) && keyPressed) {
             m_PlayerWeaponManager.switchWeaponBullet();
         }
     }
