@@ -43,9 +43,9 @@ public class FireWeapon extends Weapon {
      * @param name
      * @param model
      */
-    public FireWeapon(String name, Node model) {
-        super(name, model);
-    }
+//    public FireWeapon(String name, Node model) {
+//        super(name, model);
+//    }
 
     public void handleShoot(Vector3f origin, Vector3f direction) {
         if (Physics.raycast(origin, direction, shootHit, distance)) {

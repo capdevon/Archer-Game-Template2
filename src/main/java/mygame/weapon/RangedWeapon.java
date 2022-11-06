@@ -36,9 +36,9 @@ public class RangedWeapon extends Weapon {
      * @param name
      * @param model
      */
-    public RangedWeapon(String name, Node model) {
-        super(name, model);
-    }
+//    public RangedWeapon(String name, Node model) {
+//        super(name, model);
+//    }
 
     /**
      * @return {@link RangedBullet} The bullet this weapon fires

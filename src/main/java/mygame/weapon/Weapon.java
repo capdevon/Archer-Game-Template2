@@ -3,6 +3,7 @@ package mygame.weapon;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+import com.capdevon.control.AdapterControl;
 import com.capdevon.engine.FVector;
 import com.jme3.audio.AudioNode;
 import com.jme3.math.FastMath;
@@ -14,19 +15,15 @@ import com.jme3.scene.Node;
  * 
  * @author capevon
  */
-public abstract class Weapon {
+public abstract class Weapon extends AdapterControl {
 
     private static final Logger logger = Logger.getLogger(Weapon.class.getName());
 
     public enum WeaponType {
-        Bow,
-        Normal,
-        Melee
+        Bow, Normal, Melee
     }
     public enum FireMode {
-        Single,
-        Automatic,
-        Charge
+        Single, Automatic, Charge
     }
 
     public WeaponType weaponType;
@@ -36,7 +33,7 @@ public abstract class Weapon {
     // Default data for the crosshair
     public CrosshairData crosshair;
     public Node weaponHook;
-    public Node model;
+//    public Node model;
     public String name;
     public String fileModel;
     public Transform[] ik;
@@ -71,10 +68,10 @@ public abstract class Weapon {
      * @param name
      * @param model
      */
-    public Weapon(String name, Node model) {
-        this.model = model;
-        this.name = name;
-    }
+//    public Weapon(String name, Node model) {
+//        this.model = model;
+//        this.name = name;
+//    }
 
     public void switchBullet() {
         // do something...

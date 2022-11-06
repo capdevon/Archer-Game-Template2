@@ -109,20 +109,24 @@ public class PlayerManager extends SimpleAppState {
     private Weapon createFireWeapon() {
         FireWeapon fWeapon = new FireWeapon();
         fWeapon.name = "SniperRifle";
-        fWeapon.model = createFakeRifleModel();
         fWeapon.weaponType = WeaponType.Normal;
         fWeapon.ik = IKPositions.RIFLE;
         fWeapon.crosshair = new CrosshairData(guiNode, getCrossHair("+"));
+        
+        Spatial rifle = createFakeRifleModel();
+        rifle.addControl(fWeapon);
+        
         return fWeapon;
     }
 
     private Weapon createRangedWeapon() {
         RangedWeapon rWeapon = new RangedWeapon();
         rWeapon.name = "Bow";
-        rWeapon.model = createFakeBowModel();
         rWeapon.weaponType = WeaponType.Bow;
         rWeapon.ik = IKPositions.ARCHER;
         rWeapon.crosshair = new CrosshairData(guiNode, getCrossHair("-.-"));
+        Spatial bow = createFakeBowModel();
+        bow.addControl(rWeapon);
 
         RangedBullet[] bullets = new RangedBullet[3];
         bullets[0] = new ArrowPrefab(app, "Arrow");
