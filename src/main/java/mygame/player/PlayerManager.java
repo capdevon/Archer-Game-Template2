@@ -23,10 +23,10 @@ import com.jme3.scene.shape.Sphere;
 
 import mygame.audio.SoundManager;
 import mygame.camera.BPCameraCollider;
-import mygame.weapon.ArrowPrefab;
+import mygame.prefabs.ArrowPrefab;
+import mygame.prefabs.ExplosionPrefab;
+import mygame.prefabs.ExplosiveArrowPrefab;
 import mygame.weapon.CrosshairData;
-import mygame.weapon.ExplosionPrefab;
-import mygame.weapon.ExplosiveArrowPrefab;
 import mygame.weapon.FireWeapon;
 import mygame.weapon.RangedBullet;
 import mygame.weapon.RangedWeapon;
@@ -129,8 +129,7 @@ public class PlayerManager extends SimpleAppState {
         bow.addControl(rWeapon);
 
         RangedBullet[] bullets = new RangedBullet[3];
-        bullets[0] = new ArrowPrefab(app, "Arrow");
-
+        
         // 1.
         ExplosionPrefab eFlame = new ExplosionPrefab(app);
         eFlame.assetName = "Scenes/jMonkey/Flame.j3o";
@@ -141,7 +140,7 @@ public class PlayerManager extends SimpleAppState {
         fArrow.name = "FlameArrow";
         fArrow.mass = 6f;
         fArrow.explosionPrefab = eFlame;
-        bullets[1] = fArrow;
+        bullets[0] = fArrow;
 
         // 2.
         ExplosionPrefab ePoison = new ExplosionPrefab(app);
@@ -153,7 +152,10 @@ public class PlayerManager extends SimpleAppState {
         pArrow.name = "PoisonArrow";
         pArrow.mass = 6f;
         pArrow.explosionPrefab = ePoison;
-        bullets[2] = pArrow;
+        bullets[1] = pArrow;
+        
+        // 3.
+        bullets[2] = new ArrowPrefab(app, "Arrow");
         
         // set arrows
         rWeapon.setBullets(bullets);

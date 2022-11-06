@@ -15,7 +15,7 @@ import com.jme3.scene.Node;
  * 
  * @author capevon
  */
-public abstract class Weapon extends AdapterControl {
+public class Weapon extends AdapterControl {
 
     private static final Logger logger = Logger.getLogger(Weapon.class.getName());
 

@@ -1,4 +1,4 @@
-package mygame.weapon;
+package mygame.prefabs;
 
 import com.capdevon.engine.PrefabComponent;
 import com.jme3.app.Application;
@@ -11,6 +11,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 import mygame.controls.TimerControl;
+import mygame.weapon.EmitterData;
 
 /**
  * 

@@ -1,4 +1,4 @@
-package mygame.weapon;
+package mygame.prefabs;
 
 import com.jme3.app.Application;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -9,12 +9,15 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+import mygame.weapon.ArrowControl;
+import mygame.weapon.RangedBullet;
+
 /**
  * @author capdevon
  */
 public class ArrowPrefab extends RangedBullet {
 
-    private float radius = 0.04f;
+    public float radius = 0.04f;
 
     public ArrowPrefab(Application app, String name) {
         super(app);

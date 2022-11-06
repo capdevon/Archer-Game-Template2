@@ -18,6 +18,8 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
+import mygame.prefabs.ExplosionPrefab;
+
 public class ExplosiveArrowControl extends AdapterControl implements PhysicsCollisionListener {
 
     private static final Logger logger = Logger.getLogger(ExplosiveArrowControl.class.getName());
@@ -26,13 +28,13 @@ public class ExplosiveArrowControl extends AdapterControl implements PhysicsColl
     private PhysicsGhostObject ghostObject;
     private PhysicsSpace m_PhysicsSpace;
 
-    private boolean hasCollided;
-    private float timer;
-    private float maxFlyingTime = 10f;
-    private float explosionForce = 20f;
-    private float explosionRadius = 5f;
-
-    ExplosionPrefab explosionPrefab;
+    private boolean m_HasCollided;
+    private float m_Timer;
+    
+    public float maxFlyingTime = 10f;
+    public float explosionForce = 20f;
+    public float explosionRadius = 5f;
+    public ExplosionPrefab explosionPrefab;
 
     public ExplosiveArrowControl() {
         createGhostObject();
@@ -54,11 +56,10 @@ public class ExplosiveArrowControl extends AdapterControl implements PhysicsColl
 
     @Override
     protected void controlUpdate(float tpf) {
-        // TODO Auto-generated method stub
-        timer += tpf;
-        if (!hasCollided) {
+        m_Timer += tpf;
+        if (!m_HasCollided) {
             // this is to cleanup old objects that hasn't collided yet (lived more than maxTime)
-            if (timer > maxFlyingTime) {
+            if (m_Timer > maxFlyingTime) {
                 rigidBody.setEnabled(false);
                 destroy();
                 logger.log(Level.INFO, "Timeout, Object Destroyed: {0}", spatial);
@@ -79,12 +80,12 @@ public class ExplosiveArrowControl extends AdapterControl implements PhysicsColl
 
     @Override
     public void collision(PhysicsCollisionEvent event) {
-        if (hasCollided) {
+        if (m_HasCollided) {
             return;
         }
 
         if (event.getObjectA() == rigidBody || event.getObjectB() == rigidBody) {
-            hasCollided = true;
+            m_HasCollided = true;
 
             // Stop the rigidBody in position
             rigidBody.setEnabled(false);

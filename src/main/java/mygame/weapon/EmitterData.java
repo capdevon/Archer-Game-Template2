@@ -11,13 +11,13 @@ import com.jme3.scene.Spatial;
  */
 public class EmitterData {
 
-    public Node emitter;
+    private Node emitter;
 
     public EmitterData(Node emitter) {
         this.emitter = emitter;
     }
 
-    protected void stop() {
+    public void stop() {
         for (Spatial sp: emitter.getChildren()) {
             if (sp instanceof AudioNode) {
                 ((AudioNode) sp).stop();
@@ -28,7 +28,7 @@ public class EmitterData {
         }
     }
 
-    protected void play() {
+    public void play() {
         for (Spatial sp: emitter.getChildren()) {
             if (sp instanceof AudioNode) {
                 ((AudioNode) sp).play();

@@ -16,33 +16,11 @@ import com.jme3.math.Transform;
 public class IKPositions {
 
     public static final Transform[] NONE = new Transform[1];
-    public static final Transform[] M4 = new Transform[1];
-    public static final Transform[] SHOTGUN = new Transform[1];
     public static final Transform[] RIFLE = new Transform[1];
     public static final Transform[] ARCHER = new Transform[3];
     
     static {
         NONE[0] = new Transform();
-    }
-
-    static {
-        // M4
-        float x = FastMath.DEG_TO_RAD * -85;
-        float y = FastMath.DEG_TO_RAD * -180;
-        M4[0] = new Transform();
-        M4[0].setRotation(new Quaternion().fromAngles(x, y, 0).normalizeLocal());
-        M4[0].setTranslation(-2, 34, 2.5f);
-        M4[0].setScale(3.6f);
-    }
-
-    static {
-        // Shotgun
-        float x = FastMath.DEG_TO_RAD * -85;
-        float y = FastMath.DEG_TO_RAD * -180;
-        SHOTGUN[0] = new Transform();
-        SHOTGUN[0].setRotation(new Quaternion().fromAngles(x, y, 0).normalizeLocal());
-        SHOTGUN[0].setTranslation(-2, 32, 0.8f);
-        SHOTGUN[0].setScale(3.6f);
     }
 
     static {

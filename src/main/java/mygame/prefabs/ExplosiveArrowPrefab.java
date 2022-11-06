@@ -1,4 +1,4 @@
-package mygame.weapon;
+package mygame.prefabs;
 
 import com.jme3.app.Application;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -8,6 +8,9 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+
+import mygame.weapon.ExplosiveArrowControl;
+import mygame.weapon.RangedBullet;
 
 public class ExplosiveArrowPrefab extends RangedBullet {
 
