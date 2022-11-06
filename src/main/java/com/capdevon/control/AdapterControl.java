@@ -1,13 +1,12 @@
 package com.capdevon.control;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.capdevon.engine.GameObject;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
-import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
@@ -15,13 +14,16 @@ import com.jme3.scene.control.Control;
 /**
  * @author capdevon
  */
-public class AdapterControl extends AbstractControl {
+public abstract class AdapterControl extends AbstractControl {
 
     /**
-     * @param <T>
-     * @param key
-     * @return
+     * Returns the first child found with exactly the given name.
      */
+    public Spatial getChild(String name) {
+        Spatial child = ((Node) spatial).getChild(name);
+        return Objects.requireNonNull(child, name + " not found");
+    }
+    
     public <T> T getUserData(String key) {
         T objValue = spatial.getUserData(key);
         String message = "The component data %s could not be found";
@@ -30,90 +32,41 @@ public class AdapterControl extends AbstractControl {
 
     /**
      * Returns all components of Type type in the GameObject.
-     *
-     * @param <T>
-     * @param clazz
-     * @return
      */
-    @SuppressWarnings("unchecked")
-    public <T extends Control> T[] getComponents(Class<T> clazz) {
-        final List<Node> lst = new ArrayList<>(10);
-        spatial.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
-            @Override
-            public void visit(Node node) {
-                if (node.getControl(clazz) != null) {
-                    lst.add(node);
-                }
-            }
-        });
-        return (T[]) lst.toArray();
+    public List<Node> getComponents(Class<? extends Control> clazz) {
+        return GameObject.getComponents(spatial, clazz);
     }
 
     /**
      * Returns the component of Type type if the game object has one attached,
      * null if it doesn't.
-     *
-     * @param <T>
-     * @param clazz
-     * @return
      */
     public <T extends Control> T getComponent(Class<T> clazz) {
-        T control = spatial.getControl(clazz);
-        return control;
+        return GameObject.getComponent(spatial, clazz);
+    }
+    
+    /**
+     * Returns all components of Type type in the GameObject or any of its
+     * children children using depth first search. Works recursively.
+     */
+    public <T> List<T> getComponentsInChildren(Spatial sp, Class<? extends Control> clazz) {
+    	return GameObject.getComponentsInChildren(sp, clazz);
     }
 
     /**
      * Returns the component of Type type in the GameObject or any of its
      * children using depth first search.
-     *
-     * @param <T>
-     * @param clazz
-     * @return
      */
-    public <T extends Control> T getComponentInChildren(final Class<T> clazz) {
-        return getComponentInChildren(spatial, clazz);
-    }
-
-    private <T extends Control> T getComponentInChildren(Spatial spatial, final Class<T> clazz) {
-        T control = spatial.getControl(clazz);
-        if (control != null) {
-            return control;
-        }
-
-        if (spatial instanceof Node) {
-            for (Spatial child : ((Node) spatial).getChildren()) {
-                control = getComponentInChildren(child, clazz);
-                if (control != null) {
-                    return control;
-                }
-            }
-        }
-
-        return null;
+    public <T extends Control> T getComponentInChildren(Class<T> clazz) {
+        return GameObject.getComponentInChildren(spatial, clazz);
     }
 
     /**
      * Retrieves the component of Type type in the GameObject or any of its
      * parents.
-     *
-     * @param <T>
-     * @param clazz
-     * @return
      */
     public <T extends Control> T getComponentInParent(Class<T> clazz) {
-        return getComponentInParent(spatial, clazz);
-    }
-
-    private <T extends Control> T getComponentInParent(Spatial spatial, Class<T> clazz) {
-        Node parent = spatial.getParent();
-        while (parent != null) {
-            T control = parent.getControl(clazz);
-            if (control != null) {
-                return control;
-            }
-            parent = parent.getParent();
-        }
-        return null;
+        return GameObject.getComponentInParent(spatial, clazz);
     }
 
     @Override
