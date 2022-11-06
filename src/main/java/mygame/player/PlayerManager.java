@@ -6,7 +6,6 @@
 package mygame.player;
 
 import com.capdevon.anim.Animator;
-import com.capdevon.audio.SoundManager;
 import com.capdevon.engine.SimpleAppState;
 import com.capdevon.input.GInputAppState;
 import com.capdevon.util.LineRenderer;
@@ -22,6 +21,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 
+import mygame.audio.SoundManager;
 import mygame.camera.BPCameraCollider;
 import mygame.weapon.ArrowPrefab;
 import mygame.weapon.CrosshairData;
@@ -141,15 +141,15 @@ public class PlayerManager extends SimpleAppState {
 
         // 2.
         ExplosionPrefab ePoison = new ExplosionPrefab(app);
-        eFlame.assetName = "Scenes/jMonkey/Poison.j3o";
-        eFlame.explosionColor = new ColorRGBA(0, 1.0f, 0.452f, 1f);
-        eFlame.lifeTimeVFX = 8.85f;
+        ePoison.assetName = "Scenes/jMonkey/Poison.j3o";
+        ePoison.explosionColor = new ColorRGBA(0, 1.0f, 0.452f, 1f);
+        ePoison.lifeTimeVFX = 8.85f;
         
         ExplosiveArrowPrefab pArrow = new ExplosiveArrowPrefab(app);
         pArrow.name = "PoisonArrow";
         pArrow.mass = 6f;
         pArrow.explosionPrefab = ePoison;
-        bullets[2] = fArrow;
+        bullets[2] = pArrow;
         
         // set arrows
         rWeapon.setBullets(bullets);

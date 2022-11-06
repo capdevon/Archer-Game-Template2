@@ -4,7 +4,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.capdevon.control.AdapterControl;
-import com.capdevon.control.TimerControl;
 import com.jme3.anim.SkinningControl;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.animation.BoneLink;
@@ -17,7 +16,10 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+import mygame.controls.TimerControl;
+
 /**
+ * 
  * @author capdevon
  */
 public class ArrowControl extends AdapterControl implements PhysicsCollisionListener {
@@ -45,7 +47,6 @@ public class ArrowControl extends AdapterControl implements PhysicsCollisionList
 
     @Override
     protected void controlUpdate(float tpf) {
-        // TODO Auto-generated method stub
         timer += tpf;
 
         if (!hasCollided) {

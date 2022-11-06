@@ -1,4 +1,4 @@
-package mygame;
+package mygame.states;
 
 import com.capdevon.engine.MathUtils;
 import com.capdevon.engine.SimpleAppState;

@@ -1,4 +1,4 @@
-package mygame;
+package mygame.states;
 
 import org.shaderblowex.filter.MipmapBloomFilter;
 
@@ -33,7 +33,7 @@ public class SceneAppState extends SimpleAppState {
     private DirectionalLight sun;
     private FilterPostProcessor fpp;
 
-    private boolean lightProbeEnabled = true;
+    private boolean lightProbeEnabled = false;
 
     @Override
     public void simpleInit() {

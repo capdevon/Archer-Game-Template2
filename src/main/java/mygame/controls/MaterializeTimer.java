@@ -1,4 +1,4 @@
-package com.capdevon.control;
+package mygame.controls;
 
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;

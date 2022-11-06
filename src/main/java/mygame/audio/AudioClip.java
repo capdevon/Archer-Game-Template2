@@ -1,4 +1,4 @@
-package com.capdevon.audio;
+package mygame.audio;
 
 /**
  *

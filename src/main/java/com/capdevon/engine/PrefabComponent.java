@@ -1,4 +1,4 @@
-package mygame.weapon;
+package com.capdevon.engine;
 
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;

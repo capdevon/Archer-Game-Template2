@@ -1,6 +1,6 @@
 package mygame.weapon;
 
-import com.capdevon.control.TimerControl;
+import com.capdevon.engine.PrefabComponent;
 import com.jme3.app.Application;
 import com.jme3.light.Light;
 import com.jme3.light.PointLight;
@@ -10,6 +10,12 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+import mygame.controls.TimerControl;
+
+/**
+ * 
+ * @author capdevon
+ */
 public class ExplosionPrefab extends PrefabComponent {
 
     public String assetName;

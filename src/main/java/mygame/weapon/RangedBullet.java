@@ -1,5 +1,6 @@
 package mygame.weapon;
 
+import com.capdevon.engine.PrefabComponent;
 import com.jme3.app.Application;
 
 public abstract class RangedBullet extends PrefabComponent {

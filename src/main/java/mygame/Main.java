@@ -1,6 +1,5 @@
 package mygame;
 
-import com.capdevon.audio.SoundManager;
 import com.capdevon.input.GInputAppState;
 import com.capdevon.physx.Physics;
 import com.capdevon.physx.TogglePhysicsDebugState;
@@ -9,7 +8,10 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.system.AppSettings;
 
+import mygame.audio.SoundManager;
 import mygame.player.PlayerManager;
+import mygame.states.CubeAppState;
+import mygame.states.SceneAppState;
 
 /**
  * @author capdevon

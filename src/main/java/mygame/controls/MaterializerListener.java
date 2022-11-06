@@ -1,4 +1,4 @@
-package com.capdevon.control;
+package mygame.controls;
 
 /**
  * 

@@ -1,4 +1,4 @@
-package com.capdevon.audio;
+package mygame.audio;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioData;

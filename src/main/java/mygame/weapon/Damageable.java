@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.capdevon.control.AdapterControl;
-import com.capdevon.control.MaterializeTimer;
-import com.capdevon.control.MaterializerListener;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.scene.Spatial;
+
+import mygame.controls.MaterializeTimer;
+import mygame.controls.MaterializerListener;
 
 /**
  * 
