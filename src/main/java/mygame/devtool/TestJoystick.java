@@ -1,4 +1,4 @@
-package com.capdevon.input;
+package mygame.devtool;
 
 import java.io.FileWriter;
 import java.io.IOException;
