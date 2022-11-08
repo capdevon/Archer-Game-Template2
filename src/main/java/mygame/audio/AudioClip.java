@@ -45,7 +45,10 @@ public class AudioClip implements Loadable {
      */
     @Override
     public void load(AssetManager assetManager) {
-        AudioKey key = new AudioKey(file, true, true); // TODO check this!
+        // Assume the clip will be buffered, not streamed. TODO
+        boolean stream = false;
+        boolean streamCache = true;
+        AudioKey key = new AudioKey(file, stream, streamCache);
         assetManager.loadAudio(key);
     }
 
