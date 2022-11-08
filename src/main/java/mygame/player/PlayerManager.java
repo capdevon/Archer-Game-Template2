@@ -1,10 +1,8 @@
 package mygame.player;
 
-import com.capdevon.anim.Animator;
 import com.capdevon.engine.SimpleAppState;
 import com.capdevon.input.GInputAppState;
 import com.capdevon.util.LineRenderer;
-import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.material.Material;
@@ -55,13 +53,8 @@ public class PlayerManager extends SimpleAppState {
     }
 
     private void setupPlayer() {
-        // Create a node for the character model
-        player = (Node) assetManager.loadModel("Models/Archer/Erika.j3o");
-        player.setName("Player");
-
-        // add Physics & Animation Control
-        player.addControl(new Animator());
-        player.addControl(new BetterCharacterControl(.4f, 1.8f, 80f));
+        PlayerModel model = new PlayerModel();
+        player = model.instantiate(assetManager);
         getPhysicsSpace().add(player);
         rootNode.attachChild(player);
 
