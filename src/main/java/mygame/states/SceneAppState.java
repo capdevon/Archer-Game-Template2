@@ -87,7 +87,7 @@ public class SceneAppState extends SimpleAppState {
             
         } else {
             // add a PBR probe.
-            Spatial probeModel = assetManager.loadModel("Models/defaultProbe.j3o");
+            Spatial probeModel = assetManager.loadModel("Scenes/defaultProbe.j3o");
             LightProbe lightProbe = (LightProbe) probeModel.getLocalLightList().get(0);
             lightProbe.getArea().setRadius(100);
             rootNode.addLight(lightProbe);

@@ -57,9 +57,9 @@ public class Main extends SimpleApplication {
 
         stateManager.attach(new SceneAppState());
         stateManager.attach(new CubeAppState());
-        stateManager.attach(new TogglePhysicsDebugState());
         stateManager.attach(new GInputAppState());
         stateManager.attach(new PlayerManager());
+        stateManager.attach(new TogglePhysicsDebugState());
 
         //String dirName = System.getProperty("user.dir") + "/video";
         //Capture.captureVideo(this, 0.5f, dirName);
