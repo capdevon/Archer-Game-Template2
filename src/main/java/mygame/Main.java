@@ -3,13 +3,20 @@ package mygame;
 import com.capdevon.input.GInputAppState;
 import com.capdevon.physx.Physics;
 import com.capdevon.physx.TogglePhysicsDebugState;
+import com.github.stephengold.jmepower.JmeLoadingState;
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.AppState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.system.AppSettings;
 
+import jme3utilities.Loadable;
 import mygame.audio.SoundManager;
 import mygame.player.PlayerManager;
+import mygame.player.PlayerModel;
+import mygame.prefabs.ArrowPrefab;
+import mygame.prefabs.ExplosionPrefab;
+import mygame.prefabs.ExplosiveArrowPrefab;
 import mygame.states.CubeAppState;
 import mygame.states.SceneAppState;
 
@@ -40,21 +47,62 @@ public class Main extends SimpleApplication {
         app.start();
     }
 
+    /**
+     * Start the loading screen.
+     */
     @Override
     public void simpleInitApp() {
-        // disable the default 1st-person flyCam!
-        stateManager.detach(stateManager.getState(FlyCamAppState.class));
-        flyCam.setEnabled(false);
-
-        SoundManager.init(assetManager);
-
-        /** Initialize the physics simulation */
+        // Initialize the physics simulation.
         BulletAppState physics = new BulletAppState();
         physics.setThreadingType(BulletAppState.ThreadingType.SEQUENTIAL);
         stateManager.attach(physics);
         physics.getPhysicsSpace().setGravity(Physics.DEFAULT_GRAVITY);
         physics.setDebugEnabled(false);
 
+        ExplosionPrefab eFlame = new ExplosionPrefab(this);
+        eFlame.assetName = "Scenes/jMonkey/Flame.j3o";
+
+        ExplosionPrefab ePoison = new ExplosionPrefab(this);
+        ePoison.assetName = "Scenes/jMonkey/Poison.j3o";
+
+        Loadable[] preloadArray = new Loadable[]{
+            eFlame,
+            ePoison,
+            AudioLib.ARROW_HIT,
+            AudioLib.BOW_PULL,
+            AudioLib.GRASS_FOOTSTEPS,
+            new ArrowPrefab(this),
+            new ExplosiveArrowPrefab(this),
+            new PlayerModel(),
+            //new MonsterPrefab(this) // WIP...
+        };
+        JmeLoadingState loading = new JmeLoadingState(preloadArray);
+        stateManager.attach(loading);
+    }
+
+    /**
+     * Check for completion of the loading screen.
+     *
+     * @param tpf ignored
+     */
+    @Override
+    public void simpleUpdate(float tpf) {
+        AppState loading = stateManager.getState(JmeLoadingState.class);
+        if (loading != null && !loading.isEnabled()) {
+            getStateManager().detach(loading);
+            startGame();
+        }
+    }
+
+    /**
+     * After the loading screen has completed, initialize the game.
+     */
+    private void startGame() {
+        // disable the default 1st-person flyCam!
+        stateManager.detach(stateManager.getState(FlyCamAppState.class));
+        flyCam.setEnabled(false);
+
+        SoundManager.init(assetManager);
         stateManager.attach(new SceneAppState());
         stateManager.attach(new CubeAppState());
         stateManager.attach(new GInputAppState());
