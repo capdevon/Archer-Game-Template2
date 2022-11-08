@@ -29,9 +29,9 @@ public class Main extends SimpleApplication {
         AppSettings settings = new AppSettings(true);
         settings.setTitle("Archer-Game-Template-2");
         settings.setUseJoysticks(true);
-        //settings.setResolution(1280, 720);
-        //settings.setSamples(4);
-        //settings.setBitsPerPixel(32);
+        settings.setResolution(1280, 720);
+        settings.setSamples(4);
+        settings.setBitsPerPixel(32);
         //settings.setFrameRate(60);
 
         app.setSettings(settings);

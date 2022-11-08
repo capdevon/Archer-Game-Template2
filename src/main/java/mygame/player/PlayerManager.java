@@ -56,7 +56,7 @@ public class PlayerManager extends SimpleAppState {
 
     private void setupPlayer() {
         // Create a node for the character model
-        player = (Node) assetManager.loadModel("Models/Erika.j3o");
+        player = (Node) assetManager.loadModel("Models/Archer/Erika.j3o");
         player.setName("Player");
 
         // add Physics & Animation Control

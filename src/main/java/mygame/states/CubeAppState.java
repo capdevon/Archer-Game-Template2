@@ -15,8 +15,8 @@ public class CubeAppState extends SimpleAppState {
     @Override
     protected void simpleInit() {
 
-        Node cubeSpawner = new Node("CubeSpwaner");
-        rootNode.attachChild(cubeSpawner);
+        Node cubes = new Node("CubeSpwaner");
+        rootNode.attachChild(cubes);
 
         Spawner spawner = new Spawner();
         spawner.maxObjects = 10;
@@ -24,7 +24,7 @@ public class CubeAppState extends SimpleAppState {
         spawner.height = 5f;
         spawner.spawnTime = 3f;
         spawner.prefab = new MyCubePrefab(app);
-        cubeSpawner.addControl(spawner);
+        cubes.addControl(spawner);
     }
 
 }

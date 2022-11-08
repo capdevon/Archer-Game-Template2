@@ -33,7 +33,7 @@ public class SceneAppState extends SimpleAppState {
     private DirectionalLight sun;
     private FilterPostProcessor fpp;
 
-    private boolean lightProbeEnabled = false;
+    private boolean generateLightProbe = false;
 
     @Override
     public void simpleInit() {
@@ -77,13 +77,20 @@ public class SceneAppState extends SimpleAppState {
         sun.setColor(ColorRGBA.White);
         rootNode.addLight(sun);
 
-        if (lightProbeEnabled) {
+        if (generateLightProbe) {
             EnvironmentCamera envCam = new EnvironmentCamera(); // Make an env camera
             stateManager.attach(envCam);
             envCam.initialize(stateManager, app); // Manually initialize so we can add a probe before the next update happens
             LightProbe probe = LightProbeFactory.makeProbe(envCam, rootNode);
             probe.getArea().setRadius(100); // Set the probe's radius in world units
             rootNode.addLight(probe);
+            
+        } else {
+            // add a PBR probe.
+            Spatial probeModel = assetManager.loadModel("Models/defaultProbe.j3o");
+            LightProbe lightProbe = (LightProbe) probeModel.getLocalLightList().get(0);
+            lightProbe.getArea().setRadius(100);
+            rootNode.addLight(lightProbe);
         }
     }
 
