@@ -6,17 +6,15 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.capdevon.anim.ActionAnimEventListener;
 import com.capdevon.anim.Animator;
 import com.capdevon.anim.HumanBodyBones;
-import com.capdevon.anim.TrackUtils;
 import com.capdevon.control.AdapterControl;
 import com.capdevon.physx.Physics;
 import com.capdevon.physx.RaycastHit;
 import com.capdevon.util.LineRenderer;
-import com.jme3.animation.AnimChannel;
-import com.jme3.animation.AnimControl;
-import com.jme3.animation.AnimEventListener;
-import com.jme3.animation.Bone;
+import com.jme3.anim.AnimComposer;
+import com.jme3.anim.Joint;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.PhysicsSpace;
@@ -30,6 +28,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 import jme3utilities.math.MyVector3f;
+import mygame.AnimDefs.Archer;
 import mygame.camera.BPCameraCollider;
 import mygame.camera.MainCamera;
 import mygame.weapon.FireWeapon;
@@ -39,7 +38,7 @@ import mygame.weapon.Weapon;
 /**
  * @author capdevon
  */
-public class PlayerWeaponManager extends AdapterControl implements AnimEventListener {
+public class PlayerWeaponManager extends AdapterControl implements ActionAnimEventListener {
 
     private static final Logger logger = Logger.getLogger(PlayerWeaponManager.class.getName());
 
@@ -48,11 +47,11 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
     AudioNode shootSFX;
     AudioNode reloadSFX;
 
+    private WeaponUIManager weaponUI;
     private BPCameraCollider bpCamera;
     private Animator animator;
-    private WeaponUIManager weaponUI;
 
-    private MainCamera _MainCamera;
+    private MainCamera mainCamera;
     public float nearClipPlane = 0.01f;
     public float farClipPlane = 100f;
     private float fov = 0;
@@ -65,7 +64,6 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
     // weapon hook
     private Node r_wh; // right hand
     private Node l_wh; // left hand
-    private Node s_wh; // spine
     // runtime weapon
     private Weapon currentWeapon;
     // current weapon index
@@ -73,8 +71,8 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
     // weapons list
     private List<Weapon> lstWeapons = new ArrayList<>();
 
-    private final String pfxMixamo = "Armature_mixamorig:";
-    private Bone spineBone;
+    private final String pfxMixamo = "mixamorig:";
+    private Joint spineBone;
     private Quaternion tempRotation = new Quaternion();
     private float[] angles = new float[3];
 
@@ -82,43 +80,46 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
         if (spatial != null) {
-            awake();
+            this.bpCamera = getComponent(BPCameraCollider.class);
+            this.weaponUI = getComponent(WeaponUIManager.class);
+            this.animator = getComponent(Animator.class);
+            this.lr = getComponent(LineRenderer.class);
+
+            mainCamera = new MainCamera(camera, defaultFOV, nearClipPlane, farClipPlane);
+
+            r_wh = createHook(HumanBodyBones.RightHand);
+            l_wh = createHook(HumanBodyBones.LeftHand);
+            spineBone = setupBoneIK(HumanBodyBones.Spine1);
+
+            configureAnimClips();
+            switchWeapon();
+
             logger.log(Level.INFO, "Initialized");
         }
     }
 
-    private void awake() {
-        this.bpCamera = getComponent(BPCameraCollider.class);
-        this.weaponUI = getComponent(WeaponUIManager.class);
-        this.animator = getComponent(Animator.class);
-        this.lr       = getComponent(LineRenderer.class);
-
-        _MainCamera = new MainCamera(camera, defaultFOV, nearClipPlane, farClipPlane);
-
-        r_wh = createHook(HumanBodyBones.RightHand);
-        l_wh = createHook(HumanBodyBones.LeftHand);
-        s_wh = createHook(HumanBodyBones.Spine2);
-
-        animator.addAnimListener(this);
-        TrackUtils.addAudioTrack(animator.getAnimation(AnimDefs.Aim_Overdraw.getName()), reloadSFX);
-
-        switchWeapon();
-        setupBoneIK();
-
-        logger.log(Level.INFO, "Initialized");
+    private void configureAnimClips() {
+        animator.actionCycleDone(Archer.Idle);
+        animator.actionCycleDone(Archer.Running);
+        animator.actionCycleDone(Archer.Sprinting);
+        animator.actionCycleDone(Archer.AimIdle);
+        animator.actionCycleDone(Archer.AimOverdraw);
+        animator.actionCycleDone(Archer.AimRecoil);
+        animator.actionCycleDone(Archer.DrawArrow);
+        animator.addListener(this);
     }
 
-    private Node createHook(String boneName) {
-        Node wh = new Node();
-        wh.setName("Ref-" + boneName);
-        animator.getAttachments(pfxMixamo + boneName).attachChild(wh);
+    private Node createHook(String jointName) {
+        Node wh = new Node("Ref-" + jointName);
+        animator.getAttachments(pfxMixamo + jointName).attachChild(wh);
         System.out.println("--Setup Hook: " + wh);
         return wh;
     }
 
-    private void setupBoneIK() {
-        spineBone = animator.getBone(pfxMixamo + HumanBodyBones.Spine1);
-        System.out.println("--Setup BoneIK: " + spineBone.getName());
+    private Joint setupBoneIK(String jointName) {
+    	Joint joint = animator.getJoint(pfxMixamo + jointName);
+        System.out.println("--Setup BoneIK: " + joint.getId() + " " + joint.getName());
+        return joint;
     }
 
     @Override
@@ -129,17 +130,18 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
     }
 
     private void updateBoneIK(float tpf) {
-        if (isAiming) {
-            camera.getRotation().toAngles(angles);
-            float rx = FastMath.clamp(angles[0], -0.1f, 0.75f);
-            //System.out.println("updateBoneIK: " + angles[0] + " " + rx);
-            tempRotation.fromAngles(0, 0, -rx);
-            spineBone.setUserControl(true);
-            spineBone.setUserTransforms(Vector3f.ZERO, tempRotation, Vector3f.UNIT_XYZ);
-
-        } else {
-            spineBone.setUserControl(false);
-        }
+    	//TODO: To be converted into the new animation system (How ???).
+//        if (isAiming) {
+//            camera.getRotation().toAngles(angles);
+//            float rx = FastMath.clamp(angles[0], -0.1f, 0.75f);
+//            //System.out.println("updateBoneIK: " + angles[0] + " " + rx);
+//            tempRotation.fromAngles(0, 0, -rx);
+//            spineBone.setUserControl(true);
+//            spineBone.setUserTransforms(Vector3f.ZERO, tempRotation, Vector3f.UNIT_XYZ);
+//
+//        } else {
+//            spineBone.setUserControl(false);
+//        }
     }
 
     private void updateWeaponCharge(float tpf) {
@@ -158,7 +160,7 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
         }
 
         fov = FastMath.clamp(fov, 0, 1);
-        _MainCamera.setFieldOfView(FastMath.interpolateLinear(fov, defaultFOV, aimFOV));
+        mainCamera.setFieldOfView(FastMath.interpolateLinear(fov, defaultFOV, aimFOV));
     }
 
     private void resetWeaponCharge() {
@@ -175,7 +177,7 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
         bpCamera.setAvoidObstacles(!isAiming);
         bpCamera.setRotationSpeed(isAiming ? 0.5f : 1);
         currentWeapon.crosshair.setEnabled(isAiming);
-        animator.setAnimation(AnimDefs.Draw_Arrow);
+        animator.setAnimation(Archer.DrawArrow);
     }
 
     public void shooting() {
@@ -196,34 +198,35 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
             }
 
             shootSFX.playInstance();
-            animator.setAnimation(AnimDefs.Aim_Recoil);
+            animator.setAnimation(Archer.AimRecoil);
         }
     }
 
     @Override
-    public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
-        //To change body of generated methods, choose Tools | Templates.
-        if (animName.equals(AnimDefs.Aim_Recoil.name)) {
-            animator.setAnimation(AnimDefs.Draw_Arrow);
+    public void onAnimCycleDone(AnimComposer control, String animName, boolean loop) {
+        if (animName.equals(Archer.AimRecoil.name)) {
+            animator.setAnimation(Archer.DrawArrow);
 
-        } else if (animName.equals(AnimDefs.Draw_Arrow.name)) {
-            animator.setAnimation(AnimDefs.Aim_Overdraw);
+        } else if (animName.equals(Archer.DrawArrow.name)) {
+            animator.setAnimation(Archer.AimOverdraw);
+            
+        } else if (!loop) {
+        	control.removeCurrentAction();
         }
     }
 
     @Override
-    public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
-        // To change body of generated methods, choose Tools | Templates.
+    public void onAnimChange(AnimComposer control, String animName) {
         showRightHandItem(false);
 
-        if (animName.equals(AnimDefs.Aim_Recoil.name)) {
+        if (animName.equals(Archer.AimRecoil.name)) {
             setWeaponCharging();
 
-        } else if (animName.equals(AnimDefs.Draw_Arrow.name)) {
+        } else if (animName.equals(Archer.DrawArrow.name)) {
             setWeaponCharging();
             showRightHandItem(true);
 
-        } else if (animName.equals(AnimDefs.Aim_Overdraw.name)) {
+        } else if (animName.equals(Archer.AimOverdraw.name)) {
             setWeaponReady();
             showRightHandItem(true);
         }
@@ -232,13 +235,13 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
     private void setWeaponReady() {
         canShooting = true;
         currentWeapon.crosshair.setColor(ColorRGBA.White);
-        //reloadSFX.play();
+        reloadSFX.play();
     }
 
     private void setWeaponCharging() {
         canShooting = false;
         currentWeapon.crosshair.setColor(ColorRGBA.Red);
-        //reloadSFX.stop();
+        reloadSFX.stop();
         resetWeaponCharge();
     }
 
@@ -280,7 +283,7 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
 
     public void switchWeaponBullet() {
         currentWeapon.switchBullet();
-        onChangeWeapon();
+        onWeaponChanged();
     }
 
     public void switchWeapon() {
@@ -299,25 +302,22 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
 
         switch (currentWeapon.weaponType) {
             case Normal:
-                //spWeapon = (Node) assetManager.loadModel(activeWeapon.fileModel);
+                //spWeapon = currentWeapon.getSpatial();
                 bindWeapon(r_wh, currentWeapon.ik[0], null);
                 bindWeapon(l_wh, Transform.IDENTITY, null);
                 break;
 
             case Bow:
-                //spWeapon       = (Node) assetManager.loadModel(currentWeapon.fileModel);
-                //Spatial arrow  = spWeapon.getChild("10490_arrow_v1");
-                //Spatial bow    = spWeapon.getChild("10490_bow_v1");
-                //Spatial quiver = spWeapon.getChild("10490_quiver_v1");
+                //spWeapon       = currentWeapon.getSpatial();
+                //Spatial arrow  = spWeapon.getChild("Arrow");
+                //Spatial bow    = spWeapon.getChild("Bow");
                 //bindWeapon(r_wh, currentWeapon.ik[0], arrow);
                 //bindWeapon(l_wh, currentWeapon.ik[1], bow);
-                //bindWeapon(s_wh, currentWeapon.ik[2], quiver);
 
-                //spWeapon = currentWeapon.model;
                 Spatial arrow = assetManager.loadModel("Models/Arrow/arrow.glb");
                 Spatial bow = assetManager.loadModel("Models/Bow/bow.gltf");
-                bindWeapon(r_wh, IKPositions.ARCHER[0], arrow);
-                bindWeapon(l_wh, IKPositions.ARCHER[1], bow);
+                bindWeapon(r_wh, IKPositions.Arrow.getTransform(), arrow);
+                bindWeapon(l_wh, IKPositions.Bow.getTransform(), bow);
                 break;
 
             default:
@@ -325,17 +325,17 @@ public class PlayerWeaponManager extends AdapterControl implements AnimEventList
                 break;
         }
 
-        onChangeWeapon();
+        onWeaponChanged();
     }
 
-    private void onChangeWeapon() {
+    private void onWeaponChanged() {
         weaponUI.changeWeapon(currentWeapon);
     }
 
-    RaycastHit hitInfo = new RaycastHit();
-    LineRenderer lr;
-    List<Vector3f> points = new LinkedList<>();
-    boolean drawPoints = true;
+    private RaycastHit hitInfo = new RaycastHit();
+    private LineRenderer lr;
+    private List<Vector3f> points = new LinkedList<>();
+    private boolean drawPoints = true;
 
     /**
      * point-of-impact prediction.

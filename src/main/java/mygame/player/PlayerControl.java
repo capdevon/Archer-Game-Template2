@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame.player;
 
 import java.util.logging.Level;
@@ -21,7 +16,10 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
 
+import mygame.AnimDefs.Archer;
+
 /**
+ * 
  * @author capdevon
  */
 public class PlayerControl extends AdapterControl {
@@ -29,7 +27,7 @@ public class PlayerControl extends AdapterControl {
     private final Logger logger = Logger.getLogger(PlayerControl.class.getName());
 
     Camera camera;
-    AudioNode footsteps;
+    AudioNode footstepsSFX;
 
     private Animator animator;
     private BetterCharacterControl bcc;
@@ -43,12 +41,12 @@ public class PlayerControl extends AdapterControl {
     private final Vector3f camLeft = new Vector3f();
     private final Vector2f velocity = new Vector2f();
 
-    float m_RunSpeed = 5.5f;
-    float m_MoveSpeed = 4.5f;
-    float m_TurnSpeed = 10f;
-
     boolean _MoveForward, _MoveBackward, _MoveLeft, _MoveRight;
     boolean isRunning;
+    
+    public float runSpeed = 5.5f;
+    public float moveSpeed = 4.5f;
+    public float turnSpeed = 10f;
 
     @Override
     public void setSpatial(Spatial sp) {
@@ -73,7 +71,7 @@ public class PlayerControl extends AdapterControl {
         if (m_PlayerWeaponManager.isAiming) {
             bcc.setWalkDirection(walkDirection);
             bcc.setViewDirection(camDir);
-            footsteps.stop();
+            footstepsSFX.stop();
 
         } else {
             if (_MoveForward) {
@@ -94,12 +92,12 @@ public class PlayerControl extends AdapterControl {
                 float angle = FastMath.atan2(walkDirection.x, walkDirection.z);
                 dr.fromAngleNormalAxis(angle, Vector3f.UNIT_Y);
                 
-                float smoothTime = 1 - (tpf * m_TurnSpeed);
+                float smoothTime = 1 - (tpf * turnSpeed);
                 FRotator.smoothDamp(spatial.getWorldRotation(), dr, smoothTime, viewDirection);
                 bcc.setViewDirection(viewDirection);
             }
 
-            float xSpeed = isRunning ? m_RunSpeed : m_MoveSpeed;
+            float xSpeed = isRunning ? runSpeed : moveSpeed;
             bcc.setWalkDirection(walkDirection.multLocal(xSpeed));
 
             Vector3f v = bcc.getVelocity(null);
@@ -107,20 +105,20 @@ public class PlayerControl extends AdapterControl {
             boolean isMoving = (velocity.length() / xSpeed) > .2f;
 
             if (isMoving) {
-                setAnimTrigger(isRunning ? AnimDefs.Running_2 : AnimDefs.Running);
-                footsteps.setVolume(isRunning ? 2f : .4f);
-                footsteps.setPitch(isRunning ? 1f : .85f);
-                footsteps.play();
+                setAnimTrigger(isRunning ? Archer.Sprinting : Archer.Running);
+                footstepsSFX.setVolume(isRunning ? 2f : .4f);
+                footstepsSFX.setPitch(isRunning ? 1f : .85f);
+                footstepsSFX.play();
 
             } else {
-                setAnimTrigger(AnimDefs.Idle);
-                footsteps.stop();
+                setAnimTrigger(Archer.Idle);
+                footstepsSFX.stop();
             }
         }
     }
 
     private void setAnimTrigger(Animation3 newAnim) {
-        if (checkTransition(newAnim, AnimDefs.Running, AnimDefs.Running_2)) {
+        if (checkTransition(newAnim, Archer.Running, Archer.Sprinting)) {
             animator.crossFade(newAnim);
         } else {
             animator.setAnimation(newAnim);

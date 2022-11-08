@@ -1,23 +1,23 @@
 package com.capdevon.anim;
 
-import java.util.logging.Level;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import com.capdevon.control.AdapterControl;
-import com.jme3.animation.AnimChannel;
-import com.jme3.animation.AnimControl;
-import com.jme3.animation.AnimEventListener;
-import com.jme3.animation.Animation;
-import com.jme3.animation.Bone;
-import com.jme3.animation.LoopMode;
-import com.jme3.animation.SkeletonControl;
-import com.jme3.animation.Track;
+import com.jme3.anim.AnimClip;
+import com.jme3.anim.AnimComposer;
+import com.jme3.anim.Armature;
+import com.jme3.anim.Joint;
+import com.jme3.anim.SkinningControl;
+import com.jme3.anim.tween.Tween;
+import com.jme3.anim.tween.Tweens;
+import com.jme3.anim.tween.action.Action;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.debug.SkeletonDebugger;
+import com.jme3.scene.debug.custom.ArmatureDebugger;
 
 /**
  *
@@ -27,115 +27,112 @@ public class Animator extends AdapterControl {
 
     private static final Logger logger = Logger.getLogger(Animator.class.getName());
 
-    private AnimControl animControl;
-    private AnimChannel animChannel;
-    private SkeletonControl skControl;
-    private SkeletonDebugger debugger;
+    private AnimComposer animComposer;
+    private SkinningControl skinningControl;
+    private String currentAnim;
+    private ArrayList<ActionAnimEventListener> listeners = new ArrayList<>();
+    private ArmatureDebugger debugger;
 
     @Override
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
+
         if (spatial != null) {
-            this.skControl = getComponentInChildren(SkeletonControl.class);
-            this.animControl = getComponentInChildren(AnimControl.class);
-            this.animChannel = animControl.createChannel();
+            animComposer = getComponentInChildren(AnimComposer.class);
+            skinningControl = getComponentInChildren(SkinningControl.class);
 
-            printInfo();
+            printAnimInfo();
         }
     }
 
-    protected void printInfo() {
-        StringBuilder sb = new StringBuilder();
-        String r = String.format("Owner: %s, AnimRoot: %s", spatial, animControl.getSpatial());
-        sb.append(r);
-
-        for (String name : animControl.getAnimationNames()) {
-            Animation anim = animControl.getAnim(name);
-            Track[] tracks = anim.getTracks();
-            String s = String.format("%n * %s (%d), Length: %f", anim.getName(), tracks.length, anim.getLength());
-            sb.append(s);
-        }
-        logger.log(Level.INFO, sb.toString());
-    }
-
-    public void setAnimation(String animName, LoopMode loopMode) {
-        if (hasAnimation(animName)) {
-            if (!animName.equals(animChannel.getAnimationName())) {
-                animChannel.setAnim(animName, .15f);
-                animChannel.setSpeed(1);
-                animChannel.setLoopMode(loopMode);
-            }
+    private void printAnimInfo() {
+        System.out.printf("Owner: %s, AnimRoot: %s", spatial, getAnimRoot());
+        for (AnimClip clip : animComposer.getAnimClips()) {
+            System.out.printf("%n * Clip=%s Tracks=%d, Length=%.2f sec",
+                    clip.getName(), clip.getTracks().length, clip.getLength());
         }
     }
 
-    public void setAnimation(Animation3 animation) {
-        if (hasAnimation(animation.name)) {
-            if (!animation.name.equals(animChannel.getAnimationName())) {
-                animChannel.setAnim(animation.name, animation.blendTime);
-                animChannel.setSpeed(animation.speed);
-                animChannel.setLoopMode(animation.loopMode);
-            }
+    public void createDefaultActions() {
+        for (AnimClip clip : animComposer.getAnimClips()) {
+            actionCycleDone(clip.getName(), true);
+        }
+    }
+
+    /**
+     * @param anim (not null)
+     */
+    public void actionCycleDone(Animation3 anim) {
+        String animName = anim.getName();
+        boolean isLooping = anim.isLooping();
+        actionCycleDone(animName, isLooping).setSpeed(anim.speed);
+    }
+
+    public Action actionCycleDone(String animName, boolean loop) {
+        // Get action registered with specified name. It will make a new action if there isn't any.
+        Action action = animComposer.action(animName);
+        Tween doneTween = Tweens.callMethod(this, "notifyAnimCycleDone", animName, loop);
+        // Register custom action with specified name.
+        return animComposer.actionSequence(animName, action, doneTween);
+    }
+
+    /**
+     * Run an action on the default layer.
+     */
+    public void setAnimation(Animation3 anim) {
+        setAnimation(anim.getName());
+    }
+
+    /**
+     * Run an action on the default layer.
+     */
+    public void setAnimation(String animName) {
+        if (!animName.equals(currentAnim)) {
+            currentAnim = animName;
+            animComposer.setCurrentAction(currentAnim);
+            notifyAnimChange(currentAnim);
         }
     }
 
     public void crossFade(Animation3 newAnim) {
-        float dt = animChannel.getTime();
-        animChannel.setAnim(newAnim.name, newAnim.blendTime);
-        animChannel.setSpeed(newAnim.speed);
-        animChannel.setLoopMode(newAnim.loopMode);
-        animChannel.setTime(dt);
+        crossFade(newAnim.getName());
     }
 
-    private boolean hasAnimation(String animName) {
-        boolean result = animControl.getAnimationNames().contains(animName);
-        if (!result) {
-            logger.log(Level.WARNING, "Cannot find animation named: {0}", animName);
-        }
-        return result;
-    }
-
-    public Bone getBone(String boneName) {
-        return skControl.getSkeleton().getBone(boneName);
-    }
-
-    public Node getAttachments(String boneName) {
-        return skControl.getAttachmentsNode(boneName);
-    }
-
-    public Spatial getRootMotion() {
-        return animControl.getSpatial();
-    }
-    
-    public Animation getAnimation(String name) {
-    	return animControl.getAnim(name);
+    public void crossFade(String animName) {
+        currentAnim = animName;
+        double dt = animComposer.getTime();
+        animComposer.setCurrentAction(currentAnim);
+        animComposer.setTime(dt);
+        notifyAnimChange(currentAnim);
     }
 
     public String getCurrentAnimation() {
-        return animChannel.getAnimationName();
+        return currentAnim;
     }
 
-    public float getDeltaTime() {
-        return animChannel.getTime() / animChannel.getAnimMaxTime();
+    public Spatial getAnimRoot() {
+        return animComposer.getSpatial();
     }
 
-    public void addAnimListener(AnimEventListener listener) {
-        animControl.addListener(listener);
+    public Joint getJoint(String name) {
+        return skinningControl.getArmature().getJoint(name);
     }
 
-    public void removeAnimListener(AnimEventListener listener) {
-        animControl.removeListener(listener);
+    public Node getAttachments(String jointName) {
+        return skinningControl.getAttachmentsNode(jointName);
     }
 
-    public void disableSkeletonDebug() {
+    public void disableArmatureDebug() {
         debugger.removeFromParent();
         debugger = null;
     }
 
-    public void enableSkeletonDebug(AssetManager asm) {
+    public void enableArmatureDebug(AssetManager asm) {
         if (debugger == null) {
-            Node animRoot = (Node) skControl.getSpatial();
-            String name = animRoot.getName() + "_Skeleton";
-            debugger = new SkeletonDebugger(name, skControl.getSkeleton());
+            Node animRoot = (Node) skinningControl.getSpatial();
+            String name = animRoot.getName() + "_Armature";
+            Armature armature = skinningControl.getArmature();
+            debugger = new ArmatureDebugger(name, armature, armature.getJointList());
             debugger.setMaterial(createWireMaterial(asm));
             animRoot.attachChild(debugger);
         }
@@ -147,6 +144,45 @@ public class Animator extends AdapterControl {
         mat.getAdditionalRenderState().setWireframe(true);
         mat.getAdditionalRenderState().setDepthTest(false);
         return mat;
+    }
+
+    /**
+     * Adds a new listener to receive animation related events.
+     */
+    public void addListener(ActionAnimEventListener listener) {
+        if (listeners.contains(listener)) {
+            throw new IllegalArgumentException("The given listener is already registered at this Animator");
+        }
+
+        listeners.add(listener);
+    }
+
+    /**
+     * Removes the given listener from listening to events.
+     */
+    public void removeListener(ActionAnimEventListener listener) {
+        if (!listeners.remove(listener)) {
+            throw new IllegalArgumentException("The given listener is not registered at this Animator");
+        }
+    }
+
+    /**
+     * Clears all the listeners added to this <code>Animator</code>
+     */
+    public void clearListeners() {
+        listeners.clear();
+    }
+
+    void notifyAnimChange(String name) {
+        for (ActionAnimEventListener listener : listeners) {
+            listener.onAnimChange(animComposer, name);
+        }
+    }
+
+    void notifyAnimCycleDone(String name, boolean loop) {
+        for (ActionAnimEventListener listener : listeners) {
+            listener.onAnimCycleDone(animComposer, name, loop);
+        }
     }
 
 }

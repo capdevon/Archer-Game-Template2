@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame.player;
 
 import com.capdevon.anim.Animator;
@@ -21,6 +16,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 
+import mygame.AudioLib;
 import mygame.audio.SoundManager;
 import mygame.camera.BPCameraCollider;
 import mygame.prefabs.ArrowPrefab;
@@ -60,7 +56,7 @@ public class PlayerManager extends SimpleAppState {
 
     private void setupPlayer() {
         // Create a node for the character model
-        player = (Node) assetManager.loadModel(AnimDefs.MODEL);
+        player = (Node) assetManager.loadModel("Models/Erika.j3o");
         player.setName("Player");
 
         // add Physics & Animation Control
@@ -99,7 +95,7 @@ public class PlayerManager extends SimpleAppState {
 
         PlayerControl m_PlayerControl = new PlayerControl();
         m_PlayerControl.camera = camera;
-        m_PlayerControl.footsteps = SoundManager.createAudioBuffer(AudioLib.GRASS_FOOTSTEPS);
+        m_PlayerControl.footstepsSFX = SoundManager.createAudioBuffer(AudioLib.GRASS_FOOTSTEPS);
         player.addControl(m_PlayerControl);
 
         m_PlayerInput = new PlayerInput();
@@ -110,7 +106,6 @@ public class PlayerManager extends SimpleAppState {
         FireWeapon fWeapon = new FireWeapon();
         fWeapon.name = "SniperRifle";
         fWeapon.weaponType = WeaponType.Normal;
-        fWeapon.ik = IKPositions.RIFLE;
         fWeapon.crosshair = new CrosshairData(guiNode, getCrossHair("+"));
         
         Spatial rifle = createFakeRifleModel();
@@ -123,7 +118,6 @@ public class PlayerManager extends SimpleAppState {
         RangedWeapon rWeapon = new RangedWeapon();
         rWeapon.name = "Bow";
         rWeapon.weaponType = WeaponType.Bow;
-        rWeapon.ik = IKPositions.ARCHER;
         rWeapon.crosshair = new CrosshairData(guiNode, getCrossHair("-.-"));
         Spatial bow = createFakeBowModel();
         bow.addControl(rWeapon);
@@ -177,13 +171,13 @@ public class PlayerManager extends SimpleAppState {
 
     private Node createFakeBowModel() {
         Node model = new Node("ArcherToolkit");
-        //        Geometry bow = createGeometry("Bow.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Red);
-        //        Geometry arrow = createGeometry("Arrow", new Sphere(8, 8, .05f), ColorRGBA.Green);
-        //        Geometry quiver = createGeometry("Quiver", new Sphere(8, 8, .05f), ColorRGBA.Green);
-        //        model.setCullHint(Spatial.CullHint.Never);
-        //        model.attachChild(bow);
-        //        model.attachChild(arrow);
-        //        model.attachChild(quiver);
+//        Geometry bow = createGeometry("Bow.GeoMesh", new Sphere(8, 8, .05f), ColorRGBA.Red);
+//        Geometry arrow = createGeometry("Arrow", new Sphere(8, 8, .05f), ColorRGBA.Green);
+//        Geometry quiver = createGeometry("Quiver", new Sphere(8, 8, .05f), ColorRGBA.Green);
+//        model.setCullHint(Spatial.CullHint.Never);
+//        model.attachChild(bow);
+//        model.attachChild(arrow);
+//        model.attachChild(quiver);
 
         return model;
     }

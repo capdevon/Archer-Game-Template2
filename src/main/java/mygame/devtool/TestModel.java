@@ -38,6 +38,8 @@ import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.system.AppSettings;
 import com.jme3.util.SkyFactory;
 
+import mygame.player.IKPositions;
+
 /**
  * @author capdevon
  */
@@ -68,7 +70,6 @@ public class TestModel extends SimpleApplication implements ActionListener {
 
 //        String fileName = String.format("image_%d_", System.currentTimeMillis() / 1000);
 //        stateManager.attach(new ScreenshotAppState("", fileName, 0));
-
         armatureDebug = new ArmatureDebugAppState();
         stateManager.attach(armatureDebug);
 
@@ -164,10 +165,10 @@ public class TestModel extends SimpleApplication implements ActionListener {
         armatureDebug.addArmatureFrom(skinningControl);
 
         Node rightHand = createBoneHook(HumanBodyBones.RightHand);
-        //bindWeapon(rightHand, "Models/Arrow/arrow.glb", Transform.IDENTITY);
+        bindWeapon(rightHand, "Models/Arrow/arrow.glb", IKPositions.Arrow.getTransform());
 
         Node leftHand = createBoneHook(HumanBodyBones.LeftHand);
-        //bindWeapon(leftHand, "Models/Bow/bow.gltf", Transform.IDENTITY);
+        bindWeapon(leftHand, "Models/Bow/bow.gltf", IKPositions.Bow.getTransform());
     }
 
     private void bindWeapon(Node parent, String assetName, Transform tr) {
