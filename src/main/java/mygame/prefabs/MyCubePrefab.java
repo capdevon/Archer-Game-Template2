@@ -29,6 +29,7 @@ public class MyCubePrefab extends PrefabComponent {
 
     public float size = 0.5f;
     public float mass = 30f;
+    final static String TEXTURE_ASSET_PATH = "Textures/github-logo.png";
 
     public MyCubePrefab(Application app) {
         super(app);
@@ -63,7 +64,7 @@ public class MyCubePrefab extends PrefabComponent {
     private Material getPBRLighting() {
         Material mat = new Material(assetManager, "Common/MatDefs/Light/PBRLighting.j3md");
         mat.setName("PBRLighting");
-        mat.setTexture("BaseColorMap", assetManager.loadTexture("Textures/github-logo.png"));
+        mat.setTexture("BaseColorMap", assetManager.loadTexture(TEXTURE_ASSET_PATH));
         mat.setFloat("Metallic", 0);
         mat.setFloat("Roughness", 0.4f);
         return mat;
@@ -72,7 +73,7 @@ public class MyCubePrefab extends PrefabComponent {
     private Material getMaterializePBR() {
         Material mat = new Material(assetManager, "MatDefs/Materialize/MaterializePBR.j3md");
         mat.setName("MaterializePBR");
-        mat.setTexture("BaseColorMap", assetManager.loadTexture("Textures/github-logo.png"));
+        mat.setTexture("BaseColorMap", assetManager.loadTexture(TEXTURE_ASSET_PATH));
         mat.setFloat("Roughness", 0.2f);
         mat.setFloat("Metallic", 0.001f);
         mat.setColor("EdgeColor", ColorRGBA.Red.mult(0.7f));
@@ -89,6 +90,6 @@ public class MyCubePrefab extends PrefabComponent {
      */
     @Override
     public void load(AssetManager assetManager) {
-        // do nothing
+        assetManager.loadTexture(TEXTURE_ASSET_PATH);
     }
 }

@@ -17,6 +17,7 @@ import mygame.player.PlayerModel;
 import mygame.prefabs.ArrowPrefab;
 import mygame.prefabs.ExplosionPrefab;
 import mygame.prefabs.ExplosiveArrowPrefab;
+import mygame.prefabs.MyCubePrefab;
 import mygame.states.CubeAppState;
 import mygame.states.SceneAppState;
 
@@ -72,6 +73,7 @@ public class Main extends SimpleApplication {
             AudioLib.BOW_PULL,
             AudioLib.GRASS_FOOTSTEPS,
             new ArrowPrefab(this),
+            new MyCubePrefab(this),
             new PlayerModel(),
             //new MonsterPrefab(this) // WIP...
         };
