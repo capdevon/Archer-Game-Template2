@@ -1,6 +1,7 @@
 package mygame.prefabs;
 
 import com.jme3.app.Application;
+import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -18,6 +19,7 @@ import mygame.weapon.RangedBullet;
 public class ArrowPrefab extends RangedBullet {
 
     public float radius = 0.04f;
+    final static String ASSET_PATH = "Models/Arrow/arrow.glb";
 
     public ArrowPrefab(Application app) {
         super(app);
@@ -45,7 +47,7 @@ public class ArrowPrefab extends RangedBullet {
 
     @Override
     public Spatial instantiate(Vector3f position, Quaternion rotation, Node parent) {
-        Spatial model = assetManager.loadModel("Models/Arrow/arrow.glb");
+        Spatial model = assetManager.loadModel(ASSET_PATH);
         model.setName(name + "-" + nextSeqId());
         model.setLocalTranslation(position);
         model.setLocalRotation(rotation);
@@ -68,4 +70,13 @@ public class ArrowPrefab extends RangedBullet {
         return model;
     }
 
+    /**
+     * Preload the assets used in this prefab.
+     *
+     * @param assetManager for loading assets (not null)
+     */
+    @Override
+    public void load(AssetManager assetManager) {
+        assetManager.loadModel(ASSET_PATH);
+    }
 }

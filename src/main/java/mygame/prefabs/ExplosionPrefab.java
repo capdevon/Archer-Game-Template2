@@ -2,7 +2,7 @@ package mygame.prefabs;
 
 import com.capdevon.engine.PrefabComponent;
 import com.jme3.app.Application;
-import com.jme3.light.Light;
+import com.jme3.asset.AssetManager;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -67,5 +67,15 @@ public class ExplosionPrefab extends PrefabComponent {
         emitter.play();
 
         return model;
+    }
+
+    /**
+     * Preload the assets used in this prefab.
+     *
+     * @param assetManager for loading assets (not null)
+     */
+    @Override
+    public void load(AssetManager assetManager) {
+        assetManager.loadModel(assetName);
     }
 }

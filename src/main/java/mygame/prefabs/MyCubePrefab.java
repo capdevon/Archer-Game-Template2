@@ -2,6 +2,7 @@ package mygame.prefabs;
 
 import com.capdevon.engine.PrefabComponent;
 import com.jme3.app.Application;
+import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -81,4 +82,13 @@ public class MyCubePrefab extends PrefabComponent {
         return mat;
     }
 
+    /**
+     * Preload the assets used in this prefab.
+     *
+     * @param assetManager for loading assets (not null)
+     */
+    @Override
+    public void load(AssetManager assetManager) {
+        // do nothing
+    }
 }

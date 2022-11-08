@@ -12,12 +12,13 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
+import jme3utilities.Loadable;
 
 /**
  * 
  * @author capdevon
  */
-public abstract class PrefabComponent {
+public abstract class PrefabComponent implements Loadable {
 
     public final Application app;
     public final AssetManager assetManager;

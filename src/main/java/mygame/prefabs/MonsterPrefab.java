@@ -3,6 +3,7 @@ package mygame.prefabs;
 import com.capdevon.anim.Animator;
 import com.capdevon.engine.PrefabComponent;
 import com.jme3.app.Application;
+import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -30,6 +31,7 @@ import mygame.weapon.Damageable;
  */
 public class MonsterPrefab extends PrefabComponent {
 
+    final static String ASSET_PATH = "Models/Drake.glb"; // WIP...
     public boolean usePhysics;
     public float radius = 0.4f;
     public float height = 1.6f;
@@ -44,7 +46,7 @@ public class MonsterPrefab extends PrefabComponent {
     @Override
     public Spatial instantiate(Vector3f position, Quaternion rotation, Node parent) {
 
-        Node enemy = (Node) assetManager.loadModel("Models/Drake.glb"); // WIP...
+        Node enemy = (Node) assetManager.loadModel(ASSET_PATH);
         enemy.setName("Monster-" + nextSeqId());
         enemy.setLocalTranslation(position);
         enemy.setLocalRotation(rotation);
@@ -115,4 +117,13 @@ public class MonsterPrefab extends PrefabComponent {
         return rbc;
     }
 
+    /**
+     * Preload the assets used in this prefab.
+     *
+     * @param assetManager for loading assets (not null)
+     */
+    @Override
+    public void load(AssetManager assetManager) {
+        assetManager.loadModel(ASSET_PATH);
+    }
 }
