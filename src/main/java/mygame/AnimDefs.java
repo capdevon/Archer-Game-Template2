@@ -29,22 +29,10 @@ public interface AnimDefs {
 
     }
     
-//    static {
-//        try {
-//            String json = "Models/Archer/archer-anim-config.json";
-//            URL resource = getClass().getClassLoader().getResource(json);
-//            File file = new File(resource.toURI());
-//            System.out.println("Reading json from file " + file.getAbsolutePath());
-//
-//            ObjectMapper mapper = new ObjectMapper();
-//            Animation3[] array = mapper.readValue(file, Animation3[].class);
-//
-//            for (int i = 0; i < array.length; i++) {
-//                System.out.println(array[i]);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public interface Monster {
+    	
+        final Animation3 Idle               = new Animation3("TBD", true);
+        final Animation3 Death              = new Animation3("TBD", false);
+    }
     
 }
