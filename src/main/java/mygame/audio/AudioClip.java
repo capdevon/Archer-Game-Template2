@@ -1,10 +1,15 @@
 package mygame.audio;
 
+import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioData;
+import com.jme3.audio.AudioKey;
+import jme3utilities.Loadable;
+
 /**
  *
  * @author capdevon
  */
-public class AudioClip {
+public class AudioClip implements Loadable {
 
     public String file;
     public float volume = 1;
@@ -31,6 +36,17 @@ public class AudioClip {
         this.volume = volume;
         this.looping = looping;
         this.positional = positional;
+    }
+
+    /**
+     * Preload the assets used in this clip.
+     *
+     * @param assetManager for loading assets (not null)
+     */
+    @Override
+    public void load(AssetManager assetManager) {
+        AudioKey key = new AudioKey(file, true, true); // TODO check this!
+        assetManager.loadAudio(key);
     }
 
     @Override
