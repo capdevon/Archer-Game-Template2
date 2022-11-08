@@ -14,6 +14,7 @@ public interface KeyMapping {
     final String AIMING         = "AIMING";
     final String FIRE           = "FIRE";
     final String SWITCH_AMMO    = "SWITCH_WEAPON";
+    final String TOGGLE_CROUCH  = "TOGGLE_CROUCH";
     final String EMPTY          = "EMPTY";
 
 }

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.capdevon.input;
 
 import com.jme3.input.Joystick;
@@ -27,6 +23,7 @@ public class GInputAppState extends AbstractInputAppState {
         addMapping(KeyMapping.MOVE_RIGHT,       new KeyTrigger(KeyInput.KEY_D));
         addMapping(KeyMapping.AIMING,           new KeyTrigger(KeyInput.KEY_E));
         addMapping(KeyMapping.SWITCH_AMMO,      new KeyTrigger(KeyInput.KEY_R));
+        addMapping(KeyMapping.TOGGLE_CROUCH,    new KeyTrigger(KeyInput.KEY_Z));
         addMapping(KeyMapping.RUNNING,          new KeyTrigger(KeyInput.KEY_LSHIFT));
         addMapping(KeyMapping.FIRE,             new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
     }
@@ -40,7 +37,7 @@ public class GInputAppState extends AbstractInputAppState {
 
             // And let the dpad be up and down
             assignButton(joypad, JoystickButton.BUTTON_0, KeyMapping.EMPTY);
-            assignButton(joypad, JoystickButton.BUTTON_1, KeyMapping.EMPTY);
+            assignButton(joypad, JoystickButton.BUTTON_1, KeyMapping.TOGGLE_CROUCH);
             assignButton(joypad, JoystickButton.BUTTON_2, KeyMapping.EMPTY);
             assignButton(joypad, JoystickButton.BUTTON_4, KeyMapping.RUNNING);
             assignButton(joypad, JoystickButton.BUTTON_5, KeyMapping.EMPTY);
