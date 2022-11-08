@@ -9,9 +9,7 @@ The demo contains:
   - normal (The normal arrows stick to surfaces)
   - explosive
   - acid
-* A materialize shader that simulates “materializing” an object in or out.
-* Animations (with gltf2 animations, file .blend included): 
-    * "Idle", "Running", "Running_2", "Aim_Idle", "Aim_Overdraw", "Aim_Recoil", "Draw_Arrow", "Water_Idle", "Water_Moving", "Swimming"
+* A materialize shader that simulates "materializing" an object in or out.
 * Third Person Camera with collision detection
 * Dynamic update of camera FOV when aiming
 * Vertical rotation of the spine when aiming
