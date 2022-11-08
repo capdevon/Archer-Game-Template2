@@ -72,7 +72,6 @@ public class Main extends SimpleApplication {
             AudioLib.BOW_PULL,
             AudioLib.GRASS_FOOTSTEPS,
             new ArrowPrefab(this),
-            new ExplosiveArrowPrefab(this),
             new PlayerModel(),
             //new MonsterPrefab(this) // WIP...
         };
