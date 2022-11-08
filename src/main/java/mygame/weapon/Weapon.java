@@ -35,7 +35,7 @@ public class Weapon extends AdapterControl {
     public Node weaponHook;
 //    public Node model;
     public String name;
-    public String fileModel;
+//    public String fileModel;
     public Transform[] ik;
     public float range;
     public float damage;
