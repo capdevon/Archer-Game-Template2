@@ -73,3 +73,7 @@ You can run the demo application:
 You can restore the project to a pristine state:
 + using Bash or PowerShell or Zsh: `./gradlew clean`
 + using Windows Command Prompt: `.\gradlew clean`
+
+
+[adoptium]: https://adoptium.net/releases.html "Adoptium Project"
+[gradle]: https://gradle.org "Gradle Project"
