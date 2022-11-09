@@ -16,7 +16,6 @@ import mygame.player.PlayerManager;
 import mygame.player.PlayerModel;
 import mygame.prefabs.ArrowPrefab;
 import mygame.prefabs.ExplosionPrefab;
-import mygame.prefabs.ExplosiveArrowPrefab;
 import mygame.prefabs.MyCubePrefab;
 import mygame.states.CubeAppState;
 import mygame.states.SceneAppState;
@@ -67,15 +66,15 @@ public class Main extends SimpleApplication {
         ePoison.assetName = "Scenes/jMonkey/Poison.j3o";
 
         Loadable[] preloadArray = new Loadable[]{
+            new PlayerModel(),
+            //new MonsterPrefab(this),
+            new ArrowPrefab(this),
             eFlame,
             ePoison,
+            new MyCubePrefab(this),
             AudioLib.ARROW_HIT,
             AudioLib.BOW_PULL,
-            AudioLib.GRASS_FOOTSTEPS,
-            new ArrowPrefab(this),
-            new MyCubePrefab(this),
-            new PlayerModel(),
-            //new MonsterPrefab(this) // WIP...
+            AudioLib.GRASS_FOOTSTEPS
         };
         JmeLoadingState loading = new JmeLoadingState(preloadArray);
         stateManager.attach(loading);
