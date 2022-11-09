@@ -89,7 +89,7 @@ dependencies {
     // Additional filters
     implementation files('lib/shaderblow-ex-1.0.0.jar')
 
-    implementation 'com.github.stephengold:JmePower:1.0.0' // loading screen
+    implementation 'com.github.stephengold:JmePower:1.1.0' // loading screen
     runtimeOnly files('lib/jme-materialize.jar')
 }
 
