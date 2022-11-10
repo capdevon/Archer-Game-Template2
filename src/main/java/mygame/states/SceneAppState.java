@@ -3,6 +3,7 @@ package mygame.states;
 import org.shaderblowex.filter.MipmapBloomFilter;
 
 import com.capdevon.engine.SimpleAppState;
+import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.PhysicsSpace;
@@ -23,12 +24,18 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.util.SkyFactory;
+import jme3utilities.Loadable;
 
 /**
  *
  * @author capdevon
  */
-public class SceneAppState extends SimpleAppState {
+public class SceneAppState extends SimpleAppState implements Loadable {
+
+    final public static String AUDIO_ASSET_PATH = "Sound/Environment/Nature.ogg";
+    final public static String LIGHT_ASSET_PATH = "Scenes/defaultProbe.j3o";
+    final public static String MODEL_ASSET_PATH = "Scenes/level_rough.gltf";
+    final public static String SKY_ASSET_PATH = "Scenes/Beach/FullskiesSunset0068.dds";
 
     private DirectionalLight sun;
     private FilterPostProcessor fpp;
@@ -43,14 +50,29 @@ public class SceneAppState extends SimpleAppState {
         setupFilters();
     }
 
+    /**
+     * Preload the assets used in this model.
+     *
+     * @param assetManager for loading assets (not null)
+     */
+    @Override
+    public void load(AssetManager assetManager) {
+        new AudioNode(assetManager, AUDIO_ASSET_PATH, AudioData.DataType.Stream);
+        if (!generateLightProbe) {
+            assetManager.loadModel(LIGHT_ASSET_PATH);
+        }
+        assetManager.loadModel(MODEL_ASSET_PATH);
+        SkyFactory.createSky(assetManager, SKY_ASSET_PATH, SkyFactory.EnvMapType.CubeMap);
+    }
+
     private void setupSkyBox() {
-        Spatial sky = SkyFactory.createSky(assetManager, "Scenes/Beach/FullskiesSunset0068.dds", SkyFactory.EnvMapType.CubeMap);
+        Spatial sky = SkyFactory.createSky(assetManager, SKY_ASSET_PATH, SkyFactory.EnvMapType.CubeMap);
         sky.setShadowMode(RenderQueue.ShadowMode.Off);
         rootNode.attachChild(sky);
     }
 
     private void setupScene() {
-        Spatial scene = assetManager.loadModel("Scenes/level_rough.gltf");
+        Spatial scene = assetManager.loadModel(MODEL_ASSET_PATH);
         scene.setName("MainScene");
         scene.move(0, -5, 0);
         CollisionShape shape = CollisionShapeFactory.createMeshShape(scene);
@@ -62,7 +84,7 @@ public class SceneAppState extends SimpleAppState {
         rootNode.setQueueBucket(RenderQueue.Bucket.Opaque);
 
         /* nature sound - keeps playing in a loop. */
-        AudioNode audio = new AudioNode(assetManager, "Sound/Environment/Nature.ogg", AudioData.DataType.Stream);
+        AudioNode audio = new AudioNode(assetManager, AUDIO_ASSET_PATH, AudioData.DataType.Stream);
         audio.setLooping(true);
         audio.setPositional(false);
         audio.setVolume(2);
@@ -87,7 +109,7 @@ public class SceneAppState extends SimpleAppState {
             
         } else {
             // add a PBR probe.
-            Spatial probeModel = assetManager.loadModel("Scenes/defaultProbe.j3o");
+            Spatial probeModel = assetManager.loadModel(LIGHT_ASSET_PATH);
             LightProbe lightProbe = (LightProbe) probeModel.getLocalLightList().get(0);
             lightProbe.getArea().setRadius(100);
             rootNode.addLight(lightProbe);

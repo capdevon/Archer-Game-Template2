@@ -77,10 +77,11 @@ public class Main extends SimpleApplication {
 
         Loadable[] preloadArray = new Loadable[]{
             new PlayerModel(),
+            new SceneAppState(),
             //new MonsterPrefab(this),
-            new ArrowPrefab(this),
             eFlame,
             ePoison,
+            new ArrowPrefab(this),
             new MyCubePrefab(this),
             AudioLib.ARROW_HIT,
             AudioLib.BOW_PULL,
