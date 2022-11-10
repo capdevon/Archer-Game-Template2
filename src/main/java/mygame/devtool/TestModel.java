@@ -57,7 +57,7 @@ public class TestModel extends SimpleApplication implements ActionListener {
         app.start();
     }
 
-    private final String ARCHER = "Models/Erika.j3o";
+    private final String ARCHER = "Models/Archer/Erika.j3o";
     private Node myModel;
     private SkinningControl skinningControl;
     private AnimComposer animComposer;
@@ -111,7 +111,7 @@ public class TestModel extends SimpleApplication implements ActionListener {
         rootNode.addLight(ambient);
 
         // add a PBR probe.
-        Spatial probeModel = assetManager.loadModel("Models/defaultProbe.j3o");
+        Spatial probeModel = assetManager.loadModel("Scenes/defaultProbe.j3o");
         LightProbe lightProbe = (LightProbe) probeModel.getLocalLightList().get(0);
         lightProbe.getArea().setRadius(100);
         rootNode.addLight(lightProbe);
