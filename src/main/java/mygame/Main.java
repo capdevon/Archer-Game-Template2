@@ -4,9 +4,12 @@ import com.capdevon.input.GInputAppState;
 import com.capdevon.physx.Physics;
 import com.capdevon.physx.TogglePhysicsDebugState;
 import com.github.stephengold.jmepower.JmeLoadingState;
-import com.jme3.app.FlyCamAppState;
+import com.jme3.app.DebugKeysAppState;
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppState;
+import com.jme3.app.state.ConstantVerifierState;
+import com.jme3.audio.AudioListenerState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.system.AppSettings;
 
@@ -24,6 +27,13 @@ import mygame.states.SceneAppState;
  * @author capdevon
  */
 public class Main extends SimpleApplication {
+
+    /**
+     * Construct the application instance but don't attach any appstates.
+     */
+    private Main() {
+        super((AppState[]) null);
+    }
 
     /**
      * Start the jMonkeyEngine application
@@ -98,9 +108,16 @@ public class Main extends SimpleApplication {
      * After the loading screen has completed, initialize the game.
      */
     private void startGame() {
-        // disable the default 1st-person flyCam!
-        stateManager.detach(stateManager.getState(FlyCamAppState.class));
-        flyCam.setEnabled(false);
+        /*
+         * Attach the appstates that SimpleApplication attaches by default,
+         * except for FlyCamAppState.
+         */
+        stateManager.attachAll(
+                new AudioListenerState(),
+                new ConstantVerifierState(),
+                new DebugKeysAppState(),
+                new StatsAppState()
+        );
 
         SoundManager.init(assetManager);
         stateManager.attach(new SceneAppState());
