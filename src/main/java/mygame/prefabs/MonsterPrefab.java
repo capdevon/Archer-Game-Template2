@@ -4,7 +4,6 @@ import com.capdevon.anim.Animator;
 import com.capdevon.engine.PrefabComponent;
 import com.jme3.app.Application;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
@@ -21,18 +20,19 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.BillboardControl;
 
+import mygame.AnimDefs;
 import mygame.ai.AIControl;
-import mygame.weapon.Damageable;
+import mygame.controls.Damageable;
 
 /**
  * 
  * @author capdevon
  */
 public class MonsterPrefab extends PrefabComponent {
-
-    public boolean usePhysics;
+	
+    public boolean usePhysicsCharacter = true;
     public float radius = 0.4f;
-    public float height = 1.6f;
+    public float height = 1.8f;
 
     private PhysicsSpace phySpace;
 
@@ -44,26 +44,24 @@ public class MonsterPrefab extends PrefabComponent {
     @Override
     public Spatial instantiate(Vector3f position, Quaternion rotation, Node parent) {
 
-        Node enemy = (Node) assetManager.loadModel("Models/Drake.glb"); // WIP...
+        Node enemy = (Node) assetManager.loadModel(AnimDefs.Monster.ASSET_PATH);
         enemy.setName("Monster-" + nextSeqId());
         enemy.setLocalTranslation(position);
         enemy.setLocalRotation(rotation);
+        enemy.setLocalScale(1.1f);
         
         enemy.addControl(new Animator());
 
-        if (usePhysics) {
+        if (usePhysicsCharacter) {
             BetterCharacterControl bcc = new BetterCharacterControl(radius, height, 10f);
             enemy.addControl(bcc);
             phySpace.add(bcc);
-            bcc.getRigidBody().setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
             bcc.setPhysicsDamping(1f);
 
         } else {
             RigidBodyControl rbc = createRigidBody(radius, height);
             enemy.addControl(rbc);
             phySpace.add(rbc);
-            rbc.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-            //rbc.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_01);
         }
 
         BitmapText hud = createBitmapText(ColorRGBA.White, "label-placeholder", .1f);

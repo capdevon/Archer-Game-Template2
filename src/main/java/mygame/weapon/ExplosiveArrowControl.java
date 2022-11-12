@@ -18,6 +18,8 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
+import mygame.ai.AIControl;
+import mygame.controls.Damageable;
 import mygame.prefabs.ExplosionPrefab;
 
 public class ExplosiveArrowControl extends AdapterControl implements PhysicsCollisionListener {
@@ -33,7 +35,7 @@ public class ExplosiveArrowControl extends AdapterControl implements PhysicsColl
     
     public float maxFlyingTime = 10f;
     public float explosionForce = 20f;
-    public float explosionRadius = 5f;
+    public float explosionRadius = 2f;
     public ExplosionPrefab explosionPrefab;
 
     public ExplosiveArrowControl() {
@@ -121,15 +123,22 @@ public class ExplosiveArrowControl extends AdapterControl implements PhysicsColl
             if (pco instanceof PhysicsRigidBody) {
                 PhysicsRigidBody rb = (PhysicsRigidBody) pco;
                 if (rb.getMass() > 0) {
-                    logger.log(Level.INFO, "addExplosionForce to: " + pco.getUserObject().toString());
+                    logger.log(Level.INFO, "addExplosionForce to: {0}", pco.getUserObject().toString());
                     Physics.addExplosionForce(rb, explosionForce, rigidBody.getPhysicsLocation(), explosionRadius);
                 }
 
                 if (pco.getUserObject() instanceof Spatial) {
+                	System.out.println(pco.getUserObject());
+                	
                     Spatial gameObject = (Spatial) pco.getUserObject();
                     Damageable damageable = gameObject.getControl(Damageable.class);
                     if (damageable != null) {
                         damageable.applyDamage();
+                    }
+                    
+                    AIControl aiControl = gameObject.getControl(AIControl.class);
+                    if (aiControl != null) {
+                        aiControl.kill();
                     }
                 }
             }

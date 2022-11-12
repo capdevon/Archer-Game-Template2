@@ -9,6 +9,8 @@ import com.capdevon.anim.Animation3;
 public interface AnimDefs {
 	
     public interface Archer {
+    	
+        final String ASSET_PATH = "Models/Archer/Erika.j3o";
 
         final Animation3 Idle               = new Animation3("Idle", true);
         final Animation3 Running            = new Animation3("Running", true);
@@ -31,8 +33,23 @@ public interface AnimDefs {
     
     public interface Monster {
     	
-        final Animation3 Idle               = new Animation3("TBD", true);
-        final Animation3 Death              = new Animation3("TBD", false);
+        final String ASSET_PATH = "Models/Drake/Drake.j3o";
+
+        final Animation3 Idle           = new Animation3("Idle", true);
+        final Animation3 OrcIdle        = new Animation3("OrcIdle", true);
+        final Animation3 OrcIdle2       = new Animation3("OrcIdle2", true);
+        final Animation3 Running        = new Animation3("Running", true);
+        final Animation3 Running2       = new Animation3("Running2", true);
+        final Animation3 Walk           = new Animation3("Walk", true);
+        final Animation3 Scream         = new Animation3("Scream", true);
+        final Animation3 Death          = new Animation3("Death", false);
+        final Animation3 Dying          = new Animation3("Dying", false);
+        final Animation3 ReactionHit    = new Animation3("ReactionHit", false);
+        final Animation3 ReactionHit3   = new Animation3("ReactionHit3", false);
+        final Animation3 ReactionHit2   = new Animation3("ReactionHit2", false);
+        final Animation3 Attack         = new Animation3("Attack", false);
+        final Animation3 Attack2        = new Animation3("Attack2", false);
+        final Animation3 Punching       = new Animation3("Punching", false);
     }
     
 }

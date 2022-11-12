@@ -8,6 +8,7 @@ import com.capdevon.control.AdapterControl;
 import com.jme3.anim.AnimComposer;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.font.BitmapText;
+import com.jme3.math.FastMath;
 import com.jme3.scene.Spatial;
 
 import mygame.AnimDefs.Monster;
@@ -20,15 +21,23 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
 
     private static final Logger logger = Logger.getLogger(AIControl.class.getName());
 
+    public enum AIState {
+        IDLE, CHASE, ATTACK, HIT, DEAD, WAIT, AWARE
+    }
+
     public Spatial player;
     public BitmapText hud;
 
     private BetterCharacterControl bcc;
     private Animator animator;
-    private boolean isDead;
     private boolean isAnimDone;
+
+    private boolean invincible;
+    private boolean isDead;
     private float maxHealth = 100f;
     private float health = maxHealth;
+    private AIState currentState;
+    private float stateTimer = 0;
 
     @Override
     public void setSpatial(Spatial sp) {
@@ -37,40 +46,130 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
             this.bcc = getComponent(BetterCharacterControl.class);
             this.animator = getComponentInChildren(Animator.class);
 
-            updateHealthbar();
             animator.createDefaultActions();
-            animator.setAnimation(Monster.Idle);
+            animator.addListener(this);
+            changeState(AIState.IDLE);
         }
     }
 
     @Override
     protected void controlUpdate(float tpf) {
-        // do something...
-    }
+        stateTimer += tpf;
 
-    public void takeDamage(float damage) {
-        health -= damage;
-        updateHealthbar();
-
-        if (health <= 0) {
-            // set death animation...
-        } else {
-            // set hit animation...
+        switch (currentState) {
+            case IDLE:
+                break;
+            case WAIT:
+                break;
+            case AWARE:
+                break;
+            case CHASE:
+                break;
+            case ATTACK:
+                break;
+            case HIT:
+                if (isAnimDone) {
+                    changeState(AIState.AWARE);
+                }
+                break;
+            case DEAD:
+                if (isAnimDone) {
+                    spatial.removeFromParent();
+                }
+                break;
+            default:
+                break;
         }
     }
 
-    private void updateHealthbar() {
-        hud.setText(spatial.getName() + "\n" + health);
+    private void updateAnimations() {
+        switch (currentState) {
+            case ATTACK:
+                animator.setAnimation(Monster.Attack2);
+                break;
+            case AWARE:
+                animator.setAnimation(Monster.Scream);
+                break;
+            case CHASE:
+                animator.setAnimation(Monster.Running);
+                break;
+            case DEAD:
+                animator.setAnimation(Monster.Dying);
+                break;
+            case HIT:
+                animator.setAnimation(Monster.ReactionHit);
+                break;
+            case IDLE:
+                animator.setAnimation(Monster.OrcIdle);
+                break;
+            case WAIT:
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void changeState(AIState newState) {
+        stateTimer = 0;
+        currentState = newState;
+        updateAnimations();
+        updateHudText();
+    }
+
+    private boolean timeout(float timeToWait) {
+        return stateTimer > timeToWait;
+    }
+
+    public void takeDamage(float damage) {
+        if (invincible) {
+            return;
+        }
+
+        float healthBefore = health;
+        health -= damage;
+        health = FastMath.clamp(health, 0f, maxHealth);
+
+        float trueDamageAmount = healthBefore - health;
+        if (trueDamageAmount > 0f) {
+            changeState(AIState.HIT);
+        }
+
+        handleDeath();
+    }
+
+    public void kill() {
+        health = 0f;
+        changeState(AIState.HIT);
+
+        handleDeath();
+    }
+
+    private void handleDeath() {
+        if (isDead) {
+            return;
+        }
+
+        if (health <= 0f) {
+            isDead = true;
+            bcc.setEnabled(false);
+            changeState(AIState.DEAD);
+        }
+    }
+
+    private void updateHudText() {
+        String status = String.format("%s - %s%n %.2f ",
+                spatial.getName(), currentState, health);
+        hud.setText(status);
     }
 
     @Override
     public void onAnimCycleDone(AnimComposer animComposer, String animName, boolean loop) {
-        // TODO Auto-generated method stub
+        isAnimDone = true;
     }
 
     @Override
     public void onAnimChange(AnimComposer animComposer, String animName) {
-        // TODO Auto-generated method stub
+        isAnimDone = false;
     }
 
 }

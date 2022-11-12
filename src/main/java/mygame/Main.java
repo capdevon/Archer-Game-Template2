@@ -11,6 +11,7 @@ import com.jme3.system.AppSettings;
 import mygame.audio.SoundManager;
 import mygame.player.PlayerManager;
 import mygame.states.CubeAppState;
+import mygame.states.MonsterAppState;
 import mygame.states.SceneAppState;
 
 /**
@@ -47,18 +48,21 @@ public class Main extends SimpleApplication {
         flyCam.setEnabled(false);
 
         SoundManager.init(assetManager);
+        
+        // preload models
+        assetManager.loadModel(AnimDefs.Archer.ASSET_PATH);
+        assetManager.loadModel(AnimDefs.Monster.ASSET_PATH);
 
         /** Initialize the physics simulation */
         BulletAppState physics = new BulletAppState();
-        physics.setThreadingType(BulletAppState.ThreadingType.SEQUENTIAL);
         stateManager.attach(physics);
         physics.getPhysicsSpace().setGravity(Physics.DEFAULT_GRAVITY);
-        physics.setDebugEnabled(false);
 
         stateManager.attach(new SceneAppState());
-        stateManager.attach(new CubeAppState());
         stateManager.attach(new GInputAppState());
         stateManager.attach(new PlayerManager());
+        stateManager.attach(new CubeAppState());
+        //stateManager.attach(new MonsterAppState());
         stateManager.attach(new TogglePhysicsDebugState());
 
         //String dirName = System.getProperty("user.dir") + "/video";

@@ -16,6 +16,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+import mygame.ai.AIControl;
 import mygame.controls.TimerControl;
 
 /**
@@ -119,6 +120,11 @@ public class ArrowControl extends AdapterControl implements PhysicsCollisionList
             gameObject.worldToLocal(hitPoint, hitPoint);
             gameObject.attachChild(spatial);
             spatial.setLocalTranslation(hitPoint);
+            
+            AIControl aiControl = gameObject.getControl(AIControl.class);
+            if (aiControl != null) {
+                aiControl.takeDamage(25f);
+            }
 
         } else if (other.getUserObject() instanceof BoneLink) {
             BoneLink link = (BoneLink) other.getUserObject();
@@ -131,7 +137,7 @@ public class ArrowControl extends AdapterControl implements PhysicsCollisionList
             spatial.setLocalTranslation(hitPoint);
 
         } else {
-            logger.log(Level.WARNING, "Unable to attach the arrow to the hit object: " + other.getUserObject());
+            logger.log(Level.WARNING, "Unable to attach the arrow to the hit object: {0}", other.getUserObject());
         }
     }
 
