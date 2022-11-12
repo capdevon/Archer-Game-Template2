@@ -1,6 +1,7 @@
 package mygame.player;
 
 import com.capdevon.anim.Animator;
+import com.capdevon.engine.GameObject;
 import com.capdevon.engine.SimpleAppState;
 import com.capdevon.input.GInputAppState;
 import com.capdevon.util.LineRenderer;
@@ -16,9 +17,11 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 
+import mygame.AnimDefs;
 import mygame.AudioLib;
 import mygame.audio.SoundManager;
 import mygame.camera.BPCameraCollider;
+import mygame.controls.RespawnPlayer;
 import mygame.prefabs.ArrowPrefab;
 import mygame.prefabs.ExplosionPrefab;
 import mygame.prefabs.ExplosiveArrowPrefab;
@@ -35,7 +38,7 @@ import mygame.weapon.Weapon.WeaponType;
 public class PlayerManager extends SimpleAppState {
 
     private Node player;
-    private PlayerInput m_PlayerInput;
+    private PlayerInput playerInput;
 
     @Override
     protected void simpleInit() {
@@ -44,8 +47,8 @@ public class PlayerManager extends SimpleAppState {
     }
 
     private void registerInput() {
-        GInputAppState ginput = getState(GInputAppState.class);
-        ginput.addActionListener(m_PlayerInput);
+        GInputAppState gInputManager = getState(GInputAppState.class);
+        gInputManager.addActionListener(playerInput);
     }
 
     @Override
@@ -55,51 +58,55 @@ public class PlayerManager extends SimpleAppState {
     }
 
     private void setupPlayer() {
-        // Create a node for the character model
-        player = (Node) assetManager.loadModel("Models/Archer/Erika.j3o");
+        // setup character model
+        player = (Node) assetManager.loadModel(AnimDefs.Archer.ASSET_PATH);
+        player.setUserData(GameObject.TAG_NAME, "TagPlayer");
         player.setName("Player");
-
-        // add Physics & Animation Control
-        player.addControl(new Animator());
-        player.addControl(new BetterCharacterControl(.4f, 1.8f, 80f));
-        getPhysicsSpace().add(player);
         rootNode.attachChild(player);
+        
+        // configure Physics Character
+        BetterCharacterControl bcc = new BetterCharacterControl(.4f, 1.8f, 20f);
+        player.addControl(bcc);
+        getPhysicsSpace().add(bcc);
 
+        player.addControl(new Animator());
+        player.addControl(new RespawnPlayer());
+        
         BPCameraCollider bpCamera = new BPCameraCollider(camera, inputManager);
-        bpCamera.setXOffset(-0.5f);
+        bpCamera.setXOffset(-0.4f);
         bpCamera.setYHeight(1.8f);
         bpCamera.setMinDistance(1f);
         bpCamera.setMaxDistance(3f);
-        bpCamera.setMinVerticalRotation(-FastMath.DEG_TO_RAD * (20));
-        bpCamera.setMaxVerticalRotation(FastMath.DEG_TO_RAD * (30));
+        bpCamera.setMinVerticalRotation(-FastMath.DEG_TO_RAD * 20);
+        bpCamera.setMaxVerticalRotation(FastMath.DEG_TO_RAD * 30);
         bpCamera.setRotationSpeed(1f);
         bpCamera.setIgnoreTag("TagPlayer");
         player.addControl(bpCamera);
 
-        WeaponUIManager m_WeaponUIManager = new WeaponUIManager();
-        m_WeaponUIManager.weaponText = createUIText(20, settings.getHeight() - 20, ColorRGBA.Red);
-        player.addControl(m_WeaponUIManager);
+        WeaponUIManager weaponUI = new WeaponUIManager();
+        weaponUI.weaponText = createUIText(20, settings.getHeight() - 20, ColorRGBA.Red);
+        player.addControl(weaponUI);
 
         LineRenderer lr = new LineRenderer(app);
         lr.setLineWidth(3f);
         player.addControl(lr);
 
-        PlayerWeaponManager m_PlayerWeaponManager = new PlayerWeaponManager();
-        m_PlayerWeaponManager.assetManager = assetManager;
-        m_PlayerWeaponManager.camera = camera;
-        m_PlayerWeaponManager.addWeapon(createRangedWeapon());
-        m_PlayerWeaponManager.addWeapon(createFireWeapon());
-        m_PlayerWeaponManager.shootSFX = SoundManager.createAudioBuffer(AudioLib.ARROW_HIT);
-        m_PlayerWeaponManager.reloadSFX = SoundManager.createAudioBuffer(AudioLib.BOW_PULL);
-        player.addControl(m_PlayerWeaponManager);
+        PlayerWeaponManager weaponManager = new PlayerWeaponManager();
+        weaponManager.assetManager = assetManager;
+        weaponManager.camera = camera;
+        weaponManager.addWeapon(createRangedWeapon());
+        weaponManager.addWeapon(createFireWeapon());
+        weaponManager.shootSFX = SoundManager.createAudioBuffer(AudioLib.ARROW_HIT);
+        weaponManager.reloadSFX = SoundManager.createAudioBuffer(AudioLib.BOW_PULL);
+        player.addControl(weaponManager);
 
-        PlayerControl m_PlayerControl = new PlayerControl();
-        m_PlayerControl.camera = camera;
-        m_PlayerControl.footstepsSFX = SoundManager.createAudioBuffer(AudioLib.GRASS_FOOTSTEPS);
-        player.addControl(m_PlayerControl);
+        PlayerControl playerControl = new PlayerControl();
+        playerControl.camera = camera;
+        playerControl.footstepsSFX = SoundManager.createAudioBuffer(AudioLib.GRASS_FOOTSTEPS);
+        player.addControl(playerControl);
 
-        m_PlayerInput = new PlayerInput();
-        player.addControl(m_PlayerInput);
+        playerInput = new PlayerInput();
+        player.addControl(playerInput);
     }
 
     private Weapon createFireWeapon() {
