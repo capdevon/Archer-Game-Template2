@@ -40,9 +40,9 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
     float xOffset = 0f;
     float yHeight = 1.5f;
     float minDistance = 1f;
-    float maxDistance = 40f;
-    float rotationSpeed = 4f;
-    float zoomSensitivity = 10f;
+    float maxDistance = 10f;
+    float rotationSpeed = 1f;
+    float zoomSensitivity = 12f;
     float minVerticalRotation = 0f;
     float maxVerticalRotation = FastMath.PI / 2;
     boolean invertYaxis = false;
@@ -64,13 +64,6 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
      * @param inputManager 
      */
     public BPPlayerCamera(Camera camera, InputManager inputManager) {
-        yawNode = new Node("Yaw");
-        pitchNode = new Node("Pitch");
-        camNode = new CameraNode("MainCamera", camera);
-
-        yawNode.attachChild(pitchNode);
-        pitchNode.attachChild(camNode);
-        
         this.camera = camera;
         this.upVector = camera.getUp().clone();
         this.leftVector = camera.getLeft().clone();
@@ -87,6 +80,13 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
     }
         
     private void initCamera() {
+        yawNode = new Node("Yaw");
+        pitchNode = new Node("Pitch");
+        camNode = new CameraNode("MainCamera", camera);
+
+        yawNode.attachChild(pitchNode);
+        pitchNode.attachChild(camNode);
+        
         targetDistance = -maxDistance;
 
         yawNode.setLocalTranslation(spatial.getWorldTranslation());
@@ -108,12 +108,15 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
         if (name.equals(CameraInput.CHASECAM_MOVELEFT)) {
             horizontalRotation -= value * rotationSpeed;
             rotateCamera();
+            
         } else if (name.equals(CameraInput.CHASECAM_MOVERIGHT)) {
             horizontalRotation += value * rotationSpeed;
             rotateCamera();
+            
         } else if (name.equals(CameraInput.CHASECAM_UP)) {
             verticalRotation += value * rotationSpeed;
             rotateCamera();
+            
         } else if (name.equals(CameraInput.CHASECAM_DOWN)) {
             verticalRotation -= value * rotationSpeed;
             rotateCamera();
@@ -133,6 +136,7 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
         qHRotation.fromAngleNormalAxis(horizontalRotation, upVector);
         yawNode.setLocalRotation(qHRotation);
     }
+    
 
     @Override
     protected void controlUpdate(float tpf) {

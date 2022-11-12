@@ -1,17 +1,24 @@
 package mygame.camera;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import com.capdevon.engine.GameObject;
 import com.capdevon.physx.RaycastHit;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
+import com.jme3.bullet.collision.PhysicsSweepTestResult;
+import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.input.InputManager;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
 import com.jme3.util.TempVars;
+
+import jme3utilities.math.MyVector3f;
 
 /**
  *
@@ -30,9 +37,9 @@ public class BPCameraCollider extends BPPlayerCamera {
     // Obstacles closer to the target than this will be ignored
     private float minDistanceFromTarget = 0.05f;
     
-    private final Vector3f tempDirection = new Vector3f(0, 0, 1);
     private final RaycastHit hitInfo = new RaycastHit();
-    private final List<PhysicsRayTestResult> collResults = new ArrayList<>(10);
+    private final List<PhysicsRayTestResult> rayTestResults = new ArrayList<>(10);
+    private final List<PhysicsSweepTestResult> sweepTestResults = new LinkedList<>();
 
     /**
      * 
@@ -45,7 +52,7 @@ public class BPCameraCollider extends BPPlayerCamera {
     
     @Override
     protected void controlUpdate(float tpf) {
-        testSightLine(tpf);
+        testSightLine();
         updateCamera(tpf);
     }
     
@@ -53,47 +60,87 @@ public class BPCameraCollider extends BPPlayerCamera {
      * handle collisions
      * @param tpf 
      */
-    protected void testSightLine(float tpf) {
+    protected void testSightLine() {
 
         if (avoidObstacles) {
 
             Vector3f origin = pitchNode.getWorldTranslation();
-            pitchNode.getWorldRotation().mult(Vector3f.UNIT_Z, tempDirection).negateLocal();
+            Vector3f dirToCamera = pitchNode.getWorldRotation().mult(Vector3f.UNIT_Z).negateLocal();
             
             float distance = -getMaxDistance();
-            if (raycast(origin, tempDirection, hitInfo, getMaxDistance(), collideWithGroups)) {
-                distance = 0.01f - hitInfo.distance;
+            if (sphereCast(origin, 0.1f, dirToCamera, hitInfo, getMaxDistance(), collideWithGroups)) {
+                distance = 0.05f - hitInfo.distance;
             }
             
             setDistanceToTarget(distance);
         }
     }
- 
-    private boolean raycast(Vector3f origin, Vector3f direction, RaycastHit hitInfo, float maxDistance, int layerMask) {
+    
+    private boolean sphereCast(Vector3f origin, float radius, Vector3f direction, RaycastHit hitInfo, float maxDistance, int layerMask) {
 
         TempVars t = TempVars.get();
         Vector3f beginVec = t.vect1.set(origin);
-        Vector3f finalVec = t.vect2.set(direction).multLocal(maxDistance).addLocal(origin);
+        Vector3f finalVec = t.vect2.set(direction).scaleAdd(maxDistance, origin);
 
-        PhysicsSpace.getPhysicsSpace().rayTest(beginVec, finalVec, collResults);
-
-        int i = 0;
-        float hf = maxDistance;
         boolean collision = false;
+        hitInfo.clear();
         
-        for (PhysicsRayTestResult ray : collResults) {
+        float penetration = 0f; // physics-space units
+
+        SphereCollisionShape shape = new SphereCollisionShape(radius);
+        PhysicsSpace physicsSpace = PhysicsSpace.getPhysicsSpace();
+        physicsSpace.sweepTest(shape, new Transform(beginVec), new Transform(finalVec), sweepTestResults, penetration);
+
+        for (PhysicsSweepTestResult tr : sweepTestResults) {
+        	
+            PhysicsCollisionObject pco = tr.getCollisionObject();
+            Spatial userObj = (Spatial) pco.getUserObject();
+            
+            boolean isObstruction = applyMask(layerMask, pco.getCollisionGroup()) 
+                  && !GameObject.compareTag(userObj, ignoreTag);
+
+            if (isObstruction) {
+            	
+            	hitInfo.rigidBody = pco;
+            	hitInfo.collider = pco.getCollisionShape();
+            	hitInfo.gameObject = (Spatial) pco.getUserObject();
+                MyVector3f.lerp(tr.getHitFraction(), beginVec, finalVec, hitInfo.point);
+                tr.getHitNormalLocal(hitInfo.normal);
+                hitInfo.distance = beginVec.distance(hitInfo.point);
+                
+                collision = true;
+                break;
+            }
+        }
+        
+        t.release();
+        return collision;
+    }
+ 
+    @Deprecated
+    private boolean raycast(Vector3f origin, Vector3f direction, RaycastHit hitInfo, float maxDistance, int layerMask) {
+
+        boolean collision = false;
+        hitInfo.clear();
+        
+        TempVars t = TempVars.get();
+        Vector3f beginVec = t.vect1.set(origin);
+        Vector3f finalVec = t.vect2.set(direction).scaleAdd(maxDistance, origin);
+        
+        PhysicsSpace.getPhysicsSpace().rayTest(beginVec, finalVec, rayTestResults);
+        
+        for (PhysicsRayTestResult ray : rayTestResults) {
             
             PhysicsCollisionObject pco = ray.getCollisionObject();
             Spatial userObj = (Spatial) pco.getUserObject();
             
-            boolean isObstruction = between(ray.getHitFraction(), minDistanceFromTarget, hf)
-                    && filter(layerMask, pco.getCollisionGroup()) 
-                    && !hasTag(userObj, ignoreTag);
+            boolean isObstruction = applyMask(layerMask, pco.getCollisionGroup()) 
+                    && !GameObject.compareTag(userObj, ignoreTag);
             
             if (isObstruction) {
                 
                 collision = true;
-                hf = ray.getHitFraction();
+                float hf = ray.getHitFraction();
                 
                 hitInfo.rigidBody   = pco;
                 hitInfo.collider    = pco.getCollisionShape();
@@ -101,15 +148,10 @@ public class BPCameraCollider extends BPPlayerCamera {
                 hitInfo.distance    = finalVec.subtract(beginVec, t.vect3).length() * hf;
                 hitInfo.point.interpolateLocal(beginVec, finalVec, hf);
                 ray.getHitNormalLocal(hitInfo.normal);
-            }
-            
-            if (++i == maxEffort) {
+                
                 break;
             }
-        }
-
-        if (!collision) {
-            hitInfo.clear();
+            
         }
 
         t.release();
@@ -121,7 +163,7 @@ public class BPCameraCollider extends BPPlayerCamera {
     }
     
     // Check if a collisionGroup is in a layerMask
-    private boolean filter(int layerMask, int collisionGroup) {
+    private boolean applyMask(int layerMask, int collisionGroup) {
         return layerMask == (layerMask | collisionGroup);
     }
     
