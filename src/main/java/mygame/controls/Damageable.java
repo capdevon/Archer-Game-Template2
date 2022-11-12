@@ -1,4 +1,4 @@
-package mygame.weapon;
+package mygame.controls;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +9,6 @@ import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.scene.Spatial;
-
-import mygame.controls.MaterializeTimer;
-import mygame.controls.MaterializerListener;
 
 /**
  * 
