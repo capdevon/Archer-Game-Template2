@@ -5,9 +5,9 @@ import org.shaderblowex.filter.MipmapBloomFilter;
 import com.capdevon.engine.SimpleAppState;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.objects.PhysicsBody;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.environment.EnvironmentCamera;
 import com.jme3.environment.LightProbeFactory;
@@ -20,6 +20,8 @@ import com.jme3.post.filters.FXAAFilter;
 import com.jme3.post.filters.LightScatteringFilter;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.util.SkyFactory;
@@ -50,14 +52,22 @@ public class SceneAppState extends SimpleAppState {
     }
 
     private void setupScene() {
-        Spatial scene = assetManager.loadModel("Scenes/level_rough.gltf");
+        Spatial scene = assetManager.loadModel("Scenes/level_rough.glb");
         scene.setName("MainScene");
         scene.move(0, -5, 0);
-        CollisionShape shape = CollisionShapeFactory.createMeshShape(scene);
-        RigidBodyControl rgb = new RigidBodyControl(shape, 0f);
-        scene.addControl(rgb);
-        PhysicsSpace.getPhysicsSpace().add(rgb);
         rootNode.attachChild(scene);
+        
+        scene.depthFirstTraversal(new SceneGraphVisitorAdapter() {
+            @Override
+            public void visit(Geometry geom) {
+                System.out.println("--Add RigidBodyControl: " + geom);
+                CollisionShape shape = CollisionShapeFactory.createMeshShape(geom);
+                RigidBodyControl rgb = new RigidBodyControl(shape, PhysicsBody.massForStatic);
+                geom.addControl(rgb);
+                getPhysicsSpace().add(rgb);
+            }
+        });
+        
         rootNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         rootNode.setQueueBucket(RenderQueue.Bucket.Opaque);
 
@@ -116,6 +126,7 @@ public class SceneAppState extends SimpleAppState {
         bloom.setBloomIntensity(0.4f, 0.55f);
 
         SSAOFilter ssao = new SSAOFilter(5f, 10f, 0.8f, 0.70f);
+        ssao.setApproximateNormals(true);
 
         FXAAFilter fxaa = new FXAAFilter();
 
