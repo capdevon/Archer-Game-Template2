@@ -158,20 +158,11 @@ public class BPCameraCollider extends BPPlayerCamera {
         return collision;
     }
     
-    private boolean hasTag(Spatial sp, String tagName) {
-        return tagName.equals(sp.getUserData("TagName"));
-    }
-    
     // Check if a collisionGroup is in a layerMask
     private boolean applyMask(int layerMask, int collisionGroup) {
         return layerMask == (layerMask | collisionGroup);
     }
     
-    // Determine if value is between a range
-    private boolean between(float value, float min, float max) {
-        return (value > min && value < max);
-    }
-
     public int getCollideWithGroups() {
         return collideWithGroups;
     }
