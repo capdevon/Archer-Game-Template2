@@ -35,7 +35,7 @@ public class ExplosiveArrowControl extends AdapterControl implements PhysicsColl
     
     public float maxFlyingTime = 10f;
     public float explosionForce = 20f;
-    public float explosionRadius = 2f;
+    public float explosionRadius = 4f;
     public ExplosionPrefab explosionPrefab;
 
     public ExplosiveArrowControl() {
