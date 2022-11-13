@@ -51,7 +51,7 @@ public class Main extends SimpleApplication {
         
         // preload models
         assetManager.loadModel(AnimDefs.Archer.ASSET_PATH);
-        //assetManager.loadModel(AnimDefs.Monster.ASSET_PATH);
+        assetManager.loadModel(AnimDefs.Monster.ASSET_PATH);
 
         /** Initialize the physics simulation */
         BulletAppState physics = new BulletAppState();
@@ -62,7 +62,7 @@ public class Main extends SimpleApplication {
         stateManager.attach(new GInputAppState());
         stateManager.attach(new PlayerManager());
         stateManager.attach(new CubeAppState());
-        //stateManager.attach(new MonsterAppState());
+        stateManager.attach(new MonsterAppState());
         stateManager.attach(new TogglePhysicsDebugState());
 
         //String dirName = System.getProperty("user.dir") + "/video";
