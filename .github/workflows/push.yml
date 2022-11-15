@@ -17,7 +17,7 @@ jobs:
       - uses: gradle/wrapper-validation-action@v1.0.5
       - run: ./gradlew build --console=plain --no-daemon --stacktrace
 
-  Java14-MacOS:
+  Java18-MacOS:
     if: contains(toJson(github.event.commits), '[ci skip] ') == false
     runs-on: macOS-12
     steps:
@@ -25,10 +25,10 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: 14
+          java-version: 18
       - run: ./gradlew build --console=plain --no-daemon --stacktrace
 
-  Java14-Windows:
+  Java17-Windows:
     if: contains(toJson(github.event.commits), '[ci skip] ') == false
     runs-on: windows-2022
     steps:
@@ -36,6 +36,6 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: 14
+          java-version: 17
       - run: ./gradlew build --console=plain --no-daemon --stacktrace
         shell: bash
