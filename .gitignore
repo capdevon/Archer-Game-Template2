@@ -8,3 +8,6 @@ bin
 # Native libraries that get extracted once the project is run
 /*.so
 /*.dll
+
+# Captured screenshots and video
+/*.avi

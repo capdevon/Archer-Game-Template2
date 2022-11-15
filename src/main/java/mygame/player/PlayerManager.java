@@ -105,7 +105,7 @@ public class PlayerManager extends SimpleAppState {
         playerControl.footstepsSFX = SoundManager.createAudioBuffer(AudioLib.GRASS_FOOTSTEPS);
         player.addControl(playerControl);
 
-        playerInput = new PlayerInput();
+        playerInput = new PlayerInput(app);
         player.addControl(playerInput);
     }
 

@@ -1,5 +1,6 @@
 package mygame;
 
+import com.capdevon.engine.Capture;
 import com.capdevon.input.GInputAppState;
 import com.capdevon.physx.Physics;
 import com.capdevon.physx.TogglePhysicsDebugState;
@@ -69,4 +70,15 @@ public class Main extends SimpleApplication {
         //Capture.captureVideo(this, 0.5f, dirName);
     }
 
+    /**
+     * Callback invoked when requesting the JmeContext to close.
+     *
+     * @param waitFor true&rarr;wait for the context to be fully destroyed,
+     * true&rarr;don't wait
+     */
+    @Override
+    public void stop(boolean waitFor) {
+        Capture.cleanup(stateManager);
+        super.stop(waitFor);
+    }
 }

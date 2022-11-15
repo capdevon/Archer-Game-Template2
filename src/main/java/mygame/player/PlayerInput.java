@@ -1,7 +1,9 @@
 package mygame.player;
 
 import com.capdevon.control.AdapterControl;
+import com.capdevon.engine.Capture;
 import com.capdevon.input.KeyMapping;
+import com.jme3.app.Application;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.scene.Spatial;
 
@@ -11,8 +13,18 @@ import com.jme3.scene.Spatial;
  */
 public class PlayerInput extends AdapterControl implements ActionListener {
 
+    private final Application app;
     private PlayerWeaponManager m_PlayerWeaponManager;
     private PlayerControl playerControl;
+
+    /**
+     * Instantiate an adapter.
+     *
+     * @param app the running application (not null)
+     */
+    PlayerInput(Application app) {
+        this.app = app;
+    }
 
     @Override
     public void setSpatial(Spatial sp) {
@@ -41,6 +53,16 @@ public class PlayerInput extends AdapterControl implements ActionListener {
             m_PlayerWeaponManager.shooting();
         } else if (action.equals(KeyMapping.SWITCH_AMMO) && keyPressed) {
             m_PlayerWeaponManager.switchWeaponBullet();
+        }
+
+        // Additional actions for use during development and testing:
+        if (keyPressed) {
+            switch (action) {
+                case KeyMapping.TOGGLE_VIDEO:
+                    float quality = 0.5f;
+                    Capture.toggleVideo(app, quality);
+                    return;
+            }
         }
     }
 }

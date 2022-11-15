@@ -17,4 +17,7 @@ public interface KeyMapping {
     final String TOGGLE_CROUCH  = "TOGGLE_CROUCH";
     final String EMPTY          = "EMPTY";
 
+    // additional key mappings for development and testing:
+    final String TOGGLE_VIDEO    = "TOGGLE_VIDEO";
+
 }
