@@ -58,6 +58,10 @@ public class PlayerInput extends AdapterControl implements ActionListener {
         // Additional actions for use during development and testing:
         if (keyPressed) {
             switch (action) {
+                case KeyMapping.TAKE_SCREENSHOT:
+                    Capture.takeScreenshot(app, tpf);
+                    return;
+
                 case KeyMapping.TOGGLE_VIDEO:
                     float quality = 0.5f;
                     Capture.toggleVideo(app, quality);

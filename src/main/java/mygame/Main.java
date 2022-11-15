@@ -6,9 +6,11 @@ import com.capdevon.physx.Physics;
 import com.capdevon.physx.TogglePhysicsDebugState;
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.system.AppSettings;
 
+import java.io.File;
 import mygame.audio.SoundManager;
 import mygame.player.PlayerManager;
 import mygame.states.CubeAppState;
@@ -66,8 +68,10 @@ public class Main extends SimpleApplication {
         stateManager.attach(new MonsterAppState());
         stateManager.attach(new TogglePhysicsDebugState());
 
-        //String dirName = System.getProperty("user.dir") + "/video";
-        //Capture.captureVideo(this, 0.5f, dirName);
+        // an app state for taking screenshots:
+        String workingDirectory = System.getProperty("user.dir") + File.separator;
+        ScreenshotAppState screenshot = new ScreenshotAppState(workingDirectory, "screenshot");
+        stateManager.attach(screenshot);
     }
 
     /**

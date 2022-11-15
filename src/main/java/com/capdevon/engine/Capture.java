@@ -2,16 +2,21 @@ package com.capdevon.engine;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.app.state.VideoRecorderAppState;
 import com.jme3.system.AppSettings;
 import java.awt.DisplayMode;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author capdevon
  */
 public class Capture {
+
+    private static final Logger logger = Logger.getLogger(Capture.class.getName());
 
     private Capture() {
         // private constructor.
@@ -53,6 +58,19 @@ public class Capture {
             // TODO - use a Logger instead of System.out
             System.out.println("Stop VideoRecorder=" + file.getAbsolutePath());
         }
+    }
+
+    /**
+     * Take a screenshot.
+     *
+     * @param app the running application (not null)
+     * @param tpf passed to {@code onAction()}
+     */
+    public static void takeScreenshot(Application app, float tpf) {
+        AppStateManager stateManager = app.getStateManager();
+        ScreenshotAppState appState = stateManager.getState(ScreenshotAppState.class);
+        appState.onAction("ScreenShot", true, tpf);
+        logger.log(Level.WARNING, "Took a screenshot.");
     }
 
     /**
