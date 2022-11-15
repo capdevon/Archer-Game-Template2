@@ -2,7 +2,6 @@ package mygame.prefabs;
 
 import com.capdevon.engine.PrefabComponent;
 import com.jme3.app.Application;
-import com.jme3.light.Light;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
