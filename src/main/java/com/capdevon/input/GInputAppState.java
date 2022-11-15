@@ -28,6 +28,8 @@ public class GInputAppState extends AbstractInputAppState {
         addMapping(KeyMapping.FIRE,             new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
 
         // additional key mappings for development and testing:
+        addMapping(KeyMapping.DUMP_PHYSICS,     new KeyTrigger(KeyInput.KEY_O));
+        addMapping(KeyMapping.DUMP_RENDER,      new KeyTrigger(KeyInput.KEY_P));
         addMapping(KeyMapping.TAKE_SCREENSHOT,  new KeyTrigger(KeyInput.KEY_F12));
         addMapping(KeyMapping.TOGGLE_VIDEO,     new KeyTrigger(KeyInput.KEY_F11));
     }

@@ -18,6 +18,8 @@ public interface KeyMapping {
     final String EMPTY          = "EMPTY";
 
     // additional key mappings for development and testing:
+    final String DUMP_PHYSICS    = "DUMP_PHYSICS";
+    final String DUMP_RENDER     = "DUMP_RENDER";
     final String TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
     final String TOGGLE_VIDEO    = "TOGGLE_VIDEO";
 

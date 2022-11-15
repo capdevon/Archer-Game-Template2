@@ -4,8 +4,12 @@ import com.capdevon.control.AdapterControl;
 import com.capdevon.engine.Capture;
 import com.capdevon.input.KeyMapping;
 import com.jme3.app.Application;
+import com.jme3.app.state.AppStateManager;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.input.controls.ActionListener;
+import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Spatial;
+import jme3utilities.minie.PhysicsDumper;
 
 /**
  * 
@@ -14,6 +18,7 @@ import com.jme3.scene.Spatial;
 public class PlayerInput extends AdapterControl implements ActionListener {
 
     private final Application app;
+    private static final PhysicsDumper dumper = new PhysicsDumper();
     private PlayerWeaponManager m_PlayerWeaponManager;
     private PlayerControl playerControl;
 
@@ -58,6 +63,17 @@ public class PlayerInput extends AdapterControl implements ActionListener {
         // Additional actions for use during development and testing:
         if (keyPressed) {
             switch (action) {
+                case KeyMapping.DUMP_PHYSICS:
+                    AppStateManager stateManager = app.getStateManager();
+                    BulletAppState bas = stateManager.getState(BulletAppState.class);
+                    dumper.dump(bas);
+                    return;
+
+                case KeyMapping.DUMP_RENDER:
+                    RenderManager renderManager = app.getRenderManager();
+                    dumper.dump(renderManager);
+                    return;
+
                 case KeyMapping.TAKE_SCREENSHOT:
                     Capture.takeScreenshot(app, tpf);
                     return;
