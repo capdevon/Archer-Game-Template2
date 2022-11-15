@@ -12,3 +12,6 @@ bin
 # Captured screenshots and video
 /*.avi
 /*.png
+
+# Development environment
+/.idea/
