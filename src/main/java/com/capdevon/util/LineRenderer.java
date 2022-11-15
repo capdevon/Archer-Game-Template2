@@ -78,10 +78,12 @@ public class LineRenderer extends AbstractControl {
         geom.updateModelBound();
     }
 
+    @Override
     public boolean isEnabled() {
         return (geom.getCullHint() == CullHint.Never || geom.getCullHint() == CullHint.Dynamic);
     }
 
+    @Override
     public void setEnabled(boolean enable) {
         geom.setCullHint(enable ? CullHint.Never : CullHint.Always);
     }
