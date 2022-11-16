@@ -57,7 +57,7 @@ public class TestModel extends SimpleApplication implements ActionListener {
         app.start();
     }
 
-    private final String ARCHER = "Models/Archer/Erika.j3o";
+    private final String ARCHER = "Models/Erika/Erika.j3o";
     private Node myModel;
     private SkinningControl skinningControl;
     private AnimComposer animComposer;

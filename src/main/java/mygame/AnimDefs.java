@@ -10,7 +10,7 @@ public interface AnimDefs {
 	
     public interface Archer {
     	
-        final String ASSET_PATH = "Models/Archer/Erika.j3o";
+        final String ASSET_PATH = "Models/Erika/Erika.j3o";
 
         final Animation3 Idle               = new Animation3("Idle", true);
         final Animation3 Running            = new Animation3("Running", true);
