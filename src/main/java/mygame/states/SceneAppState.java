@@ -20,8 +20,6 @@ import com.jme3.post.filters.FXAAFilter;
 import com.jme3.post.filters.LightScatteringFilter;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.util.SkyFactory;
@@ -56,18 +54,13 @@ public class SceneAppState extends SimpleAppState {
         scene.setName("MainScene");
         scene.move(0, -5, 0);
         rootNode.attachChild(scene);
-        
-        scene.depthFirstTraversal(new SceneGraphVisitorAdapter() {
-            @Override
-            public void visit(Geometry geom) {
-                System.out.println("--Add RigidBodyControl: " + geom);
-                CollisionShape shape = CollisionShapeFactory.createMeshShape(geom);
-                RigidBodyControl rgb = new RigidBodyControl(shape, PhysicsBody.massForStatic);
-                geom.addControl(rgb);
-                getPhysicsSpace().add(rgb);
-            }
-        });
-        
+
+        // a single static rigid body control for the entire scene:
+        CollisionShape shape = CollisionShapeFactory.createMeshShape(scene);
+        RigidBodyControl rbc = new RigidBodyControl(shape, PhysicsBody.massForStatic);
+        scene.addControl(rbc);
+        getPhysicsSpace().add(rbc);
+
         rootNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         rootNode.setQueueBucket(RenderQueue.Bucket.Opaque);
 
