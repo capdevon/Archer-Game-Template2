@@ -38,10 +38,6 @@ public class FireWeapon extends Weapon {
         // default empty.
     }
 
-    /**
-     * @param name
-     * @param model
-     */
 //    public FireWeapon(String name, Node model) {
 //        super(name, model);
 //    }

@@ -58,7 +58,6 @@ public class BPCameraCollider extends BPPlayerCamera {
     
     /**
      * handle collisions
-     * @param tpf 
      */
     protected void testSightLine() {
 

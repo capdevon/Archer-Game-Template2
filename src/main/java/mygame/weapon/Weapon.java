@@ -64,10 +64,6 @@ public class Weapon extends AdapterControl {
         // default empty.
     }
 
-    /**
-     * @param name
-     * @param model
-     */
 //    public Weapon(String name, Node model) {
 //        this.model = model;
 //        this.name = name;
