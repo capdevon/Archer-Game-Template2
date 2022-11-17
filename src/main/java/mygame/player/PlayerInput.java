@@ -9,6 +9,7 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Spatial;
+import jme3utilities.minie.DumpFlags;
 import jme3utilities.minie.PhysicsDumper;
 
 /**
@@ -29,6 +30,7 @@ public class PlayerInput extends AdapterControl implements ActionListener {
      */
     PlayerInput(Application app) {
         this.app = app;
+        dumper.setEnabled(DumpFlags.ChildShapes, true);
     }
 
     @Override
