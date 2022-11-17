@@ -77,8 +77,7 @@ dependencies {
     //runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jmeVersion // LWJGL 3.x
 
     runtimeOnly 'org.jmonkeyengine:jme3-jogg:' + jmeVersion
-    runtimeOnly 'org.jmonkeyengine:jme3-plugins:' + jmeVersion
-    
+
     // Libraries related to the Lemur GUI and Groovy:
     //implementation 'com.simsilica:lemur:1.15.0'
     //implementation 'com.simsilica:lemur-props:1.1.1'
