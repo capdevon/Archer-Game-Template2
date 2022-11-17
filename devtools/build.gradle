@@ -1,0 +1,46 @@
+// Gradle build script for tools used to develop the Archer Game Template
+
+plugins {
+    id 'application'
+    id 'java'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+ext.jmeVersion = '3.5.2-stable'
+
+sourceSets.main.java.srcDir '../src/main/java'
+sourceSets.main.resources.srcDir '../src/main/resources'
+
+repositories {
+    //mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.github.stephengold:Minie:6.2.0+big3'
+    implementation 'org.jmonkeyengine:jme3-core:' + jmeVersion
+    implementation 'org.jmonkeyengine:jme3-desktop:' + jmeVersion
+    implementation 'org.jmonkeyengine:jme3-effects:' + jmeVersion
+    runtimeOnly    'org.jmonkeyengine:jme3-jogg:' + jmeVersion
+    runtimeOnly    'org.jmonkeyengine:jme3-plugins:' + jmeVersion
+    runtimeOnly    'org.jmonkeyengine:jme3-testdata:' + jmeVersion
+
+    // select one version of LWJGL
+    runtimeOnly 'org.jmonkeyengine:jme3-lwjgl:' + jmeVersion  // LWJGL 2.x
+    //runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jmeVersion // LWJGL 3.x
+
+    implementation files('../lib/shaderblow-ex-1.0.0.jar') 
+    runtimeOnly    files('../lib/jme-materialize.jar')
+}
+
+// cleanup tasks:
+
+clean.dependsOn('cleanDLLs', 'cleanSOs')
+
+tasks.register('cleanDLLs', Delete) { // extracted Windows native libraries
+    delete fileTree(dir: '.', include: '*.dll')
+}
+tasks.register('cleanSOs', Delete) { // extracted Linux native libraries
+    delete fileTree(dir: '.', include: '*.so')
+}

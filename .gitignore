@@ -5,9 +5,9 @@
 build
 bin
 
-# Native libraries that get extracted once the project is run
-/*.so
-/*.dll
+# Native libraries that get extracted when apps are run
+*.dll
+*.so
 
 # Captured screenshots and video
 /*.avi
