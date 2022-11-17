@@ -314,8 +314,8 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
                 //bindWeapon(r_wh, currentWeapon.ik[0], arrow);
                 //bindWeapon(l_wh, currentWeapon.ik[1], bow);
 
-                Spatial arrow = assetManager.loadModel("Models/Arrow/arrow.glb");
-                Spatial bow = assetManager.loadModel("Models/Bow/bow.gltf");
+                Spatial arrow = assetManager.loadModel("Models/Arrow/arrow.j3o");
+                Spatial bow = assetManager.loadModel("Models/Bow/bow.j3o");
                 bindWeapon(r_wh, IKPositions.Arrow.getTransform(), arrow);
                 bindWeapon(l_wh, IKPositions.Bow.getTransform(), bow);
                 break;

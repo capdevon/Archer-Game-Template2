@@ -50,7 +50,7 @@ public class SceneAppState extends SimpleAppState {
     }
 
     private void setupScene() {
-        Spatial scene = assetManager.loadModel("Scenes/level_rough.glb");
+        Spatial scene = assetManager.loadModel("Scenes/level_rough.j3o");
         scene.setName("MainScene");
         scene.move(0, -5, 0);
         rootNode.attachChild(scene);
