@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.jme3.anim.tween.Tweens;
 import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.SceneGraphVisitorAdapter;
@@ -56,40 +55,6 @@ public class GameObject {
             }
         });
         return lst;
-    }
-
-    /**
-     * Calls the method named methodName on every Control in the Spatial.
-     *
-     * @param sp
-     * @param methodName The name of the method to call.
-     * @param args An optional parameter value to pass to the called method.
-     */
-    public static void sendMessage(Spatial sp, String methodName, Object... args) {
-        for (int i = 0; i < sp.getNumControls(); i++) {
-            Control control = sp.getControl(i);
-            Tweens.callMethod(control, methodName, args).interpolate(0);
-        }
-    }
-
-    /**
-     * Calls the method named methodName on every Control in the Spatial or any
-     * of its children.
-     *
-     * @param sp
-     * @param methodName
-     * @param args
-     */
-    public static void broadcastMessage(Spatial sp, String methodName, Object... args) {
-        sp.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
-            @Override
-            public void visit(Node node) {
-                for (int i = 0; i < node.getNumControls(); i++) {
-                    Control control = node.getControl(i);
-                    Tweens.callMethod(control, methodName, args).interpolate(0);
-                }
-            }
-        });
     }
 
     public static <T extends Control> T getComponent(Spatial sp, Class<T> clazz) {
