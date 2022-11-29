@@ -38,7 +38,10 @@ public class Spawner extends AbstractControl {
             int qty = ((Node) spatial).getQuantity();
             if (qty < maxObjects) {
                 Vector3f spawnPoint = getRandomSpawnPoint().addLocal(center);
-                prefab.instantiate(spawnPoint, Quaternion.IDENTITY, (Node) spatial);
+                float yAngle = FastMath.TWO_PI * FastMath.nextRandomFloat();
+                Quaternion spawnRotation
+                        = new Quaternion().fromAngles(0f, yAngle, 0f);
+                prefab.instantiate(spawnPoint, spawnRotation, (Node) spatial);
             }
         }
     }
