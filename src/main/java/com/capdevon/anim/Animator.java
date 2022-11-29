@@ -40,16 +40,6 @@ public class Animator extends AdapterControl {
         if (spatial != null) {
             animComposer = getComponentInChildren(AnimComposer.class);
             skinningControl = getComponentInChildren(SkinningControl.class);
-
-            printAnimInfo();
-        }
-    }
-
-    private void printAnimInfo() {
-        System.out.printf("Owner: %s, AnimRoot: %s", spatial, getAnimRoot());
-        for (AnimClip clip : animComposer.getAnimClips()) {
-            System.out.printf("%n * Clip=%s Tracks=%d, Length=%.2f sec",
-                    clip.getName(), clip.getTracks().length, clip.getLength());
         }
     }
 
