@@ -1,5 +1,8 @@
 package mygame.player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.capdevon.anim.Animator;
 import com.capdevon.engine.GameObject;
 import com.capdevon.engine.SimpleAppState;
@@ -129,8 +132,6 @@ public class PlayerManager extends SimpleAppState {
         Spatial bow = createFakeBowModel();
         bow.addControl(rWeapon);
 
-        RangedBullet[] bullets = new RangedBullet[3];
-        
         // 1.
         ExplosionPrefab eFlame = new ExplosionPrefab(app);
         eFlame.assetName = "Scenes/jMonkey/Flame.j3o";
@@ -141,7 +142,6 @@ public class PlayerManager extends SimpleAppState {
         fArrow.name = "FlameArrow";
         fArrow.mass = 6f;
         fArrow.explosionPrefab = eFlame;
-        bullets[0] = fArrow;
 
         // 2.
         ExplosionPrefab ePoison = new ExplosionPrefab(app);
@@ -153,13 +153,16 @@ public class PlayerManager extends SimpleAppState {
         pArrow.name = "PoisonArrow";
         pArrow.mass = 6f;
         pArrow.explosionPrefab = ePoison;
-        bullets[1] = pArrow;
         
         // 3.
         ArrowPrefab arrow = new ArrowPrefab(app);
         arrow.mass = 6f;
         arrow.name = "Arrow";
-        bullets[2] = arrow;
+        
+        List<RangedBullet> bullets = new ArrayList<>();
+        bullets.add(fArrow);
+        bullets.add(pArrow);
+        bullets.add(arrow);
         
         // set arrows
         rWeapon.setBullets(bullets);

@@ -1,5 +1,8 @@
 package mygame.weapon;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.capdevon.engine.FRotator;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Quaternion;
@@ -13,8 +16,8 @@ import com.jme3.scene.Spatial;
 public class RangedWeapon extends Weapon {
 
     // The bullet used
-    RangedBullet[] bullets;
-    int index;
+    private List<RangedBullet> bullets = new ArrayList<>();
+    private int currIndex;
 
     // The force given to the shell if the fire button is not held.
     public float m_MinLaunchForce = 30f;
@@ -42,16 +45,16 @@ public class RangedWeapon extends Weapon {
      * @return {@link RangedBullet} The bullet this weapon fires
      */
     public RangedBullet getBullet() {
-        return bullets[index];
+        return bullets.get(currIndex);
     }
 
-    public void setBullets(RangedBullet[] bullets) {
+    public void setBullets(List<RangedBullet> bullets) {
         this.bullets = bullets;
     }
 
     @Override
     public void switchBullet() {
-        index = (index + 1) % bullets.length;
+        currIndex = (currIndex + 1) % bullets.size();
     }
 
     @Override
