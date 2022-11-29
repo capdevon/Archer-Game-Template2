@@ -15,7 +15,7 @@ public class MonsterAppState extends SimpleAppState {
     @Override
     protected void simpleInit() {
 
-        Node monsters = new Node("MonsterSpwaner");
+        Node monsters = new Node("MonsterSpawner");
         rootNode.attachChild(monsters);
 
         Spawner spawner = new Spawner();

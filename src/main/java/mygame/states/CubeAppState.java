@@ -15,7 +15,7 @@ public class CubeAppState extends SimpleAppState {
     @Override
     protected void simpleInit() {
 
-        Node cubes = new Node("CubeSpwaner");
+        Node cubes = new Node("CubeSpawner");
         rootNode.attachChild(cubes);
 
         Spawner spawner = new Spawner();
