@@ -52,14 +52,15 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     private Animator animator;
 
     private MainCamera mainCamera;
-    public float nearClipPlane = 0.01f;
-    public float farClipPlane = 100f;
+    private float nearClipPlane = 0.01f;
+    private float farClipPlane = 100f;
     private float fov = 0;
     private float aimingSpeed = 5f;
     private float aimFOV = 45;
     private float defaultFOV = 60;
+    
     boolean isAiming, canShooting;
-    float m_CurrentLaunchForce;
+    private float m_CurrentLaunchForce;
 
     // weapon hook
     private Node r_wh; // right hand
