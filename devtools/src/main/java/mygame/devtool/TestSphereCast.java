@@ -13,6 +13,8 @@ import com.jme3.bullet.collision.PhysicsSweepTestResult;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
+import com.jme3.bullet.collision.shapes.ConvexShape;
+import com.jme3.bullet.collision.shapes.MultiSphere;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.debug.DebugTools;
@@ -71,6 +73,7 @@ public class TestSphereCast extends SimpleApplication implements ActionListener 
     private String ignoreTag = "";
     private float maxDistance = 10f;
     private float cameraRadius = 0.4f;
+    private boolean useMultiSphere = true;
     private final RaycastHit hitInfo = new RaycastHit();
     private final List<PhysicsSweepTestResult> sweepTestResults = new LinkedList<>();
 
@@ -94,7 +97,7 @@ public class TestSphereCast extends SimpleApplication implements ActionListener 
         marker = createMarker();
         debugTools.debugNode.attachChild(marker);
     }
-    
+
     private void configCamera() {
         cam.setLocation(new Vector3f(0, 2f, 5f));
         cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
@@ -175,6 +178,9 @@ public class TestSphereCast extends SimpleApplication implements ActionListener 
 
     private void addModels() {
 
+        float radius = 0.5f;
+        float height = 1.8f;
+
         for (int i = 0; i < 4; i++) {
             Node myModel = (Node) assetManager.loadModel("Models/Erika/Erika.j3o");
             myModel.setName("Erika." + i);
@@ -184,19 +190,15 @@ public class TestSphereCast extends SimpleApplication implements ActionListener 
             composer.setCurrentAction("Idle");
 
             if (i % 2 == 0) {
-            	float radius = 0.5f;
-                float height = 1.8f;
                 BoxCollisionShape boxShape = new BoxCollisionShape(radius, (height - (2 * radius)), radius);
-//                CompoundCollisionShape collShape = new CompoundCollisionShape();
-//                Vector3f position = new Vector3f(0, (height / 2f), 0);
-//                collShape.addChildShape(boxShape, position);
+                CompoundCollisionShape collShape = new CompoundCollisionShape();
+                Vector3f position = new Vector3f(0, (height / 2f), 0);
+                collShape.addChildShape(boxShape, position);
 
-                RigidBodyControl rbc = new RigidBodyControl(boxShape, 0f);
+                RigidBodyControl rbc = new RigidBodyControl(collShape, 0f);
                 myModel.addControl(rbc);
 
             } else {
-                float radius = 0.5f;
-                float height = 1.8f;
                 CapsuleCollisionShape capsule = new CapsuleCollisionShape(radius, (height - (2 * radius)));
                 CompoundCollisionShape collShape = new CompoundCollisionShape();
                 Vector3f position = new Vector3f(0, (height / 2f), 0);
@@ -223,7 +225,7 @@ public class TestSphereCast extends SimpleApplication implements ActionListener 
     }
 
     private void setupKeys() {
-    	addMapping("FIRE_ACTION", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        addMapping("FIRE_ACTION", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         addMapping("TOGGLE_PHYSICS_DEBUG", new KeyTrigger(KeyInput.KEY_0));
     }
 
@@ -269,9 +271,10 @@ public class TestSphereCast extends SimpleApplication implements ActionListener 
         hitInfo.clear();
 
         float penetration = 0f; // physics-space units
+        ConvexShape shape = (useMultiSphere) ? new MultiSphere(radius) : new SphereCollisionShape(radius);
 
-        SphereCollisionShape shape = new SphereCollisionShape(radius);
-        //TODO: the order of sweep-test results is arbitrary
+        // FIXME: the order of sweep-test results is arbitrary. 
+        // Perhaps it is worth sorting objects by distance in ascending order.
         physics.getPhysicsSpace().sweepTest(shape, new Transform(beginVec), new Transform(finalVec), sweepTestResults, penetration);
 
         System.out.println("--Collisions: " + sweepTestResults.size());
