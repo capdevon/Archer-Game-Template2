@@ -31,21 +31,21 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
     
     private static final Logger logger = Logger.getLogger(BPPlayerCamera.class.getName());
     
-    Camera camera;
-    InputManager inputManager;
-    Node yawNode;
-    Node pitchNode;
-    CameraNode camNode;
+    protected Camera camera;
+    protected InputManager inputManager;
+    protected Node yawNode;
+    protected Node pitchNode;
+    protected CameraNode camNode;
     
-    float xOffset = 0f;
-    float yHeight = 1.5f;
-    float minDistance = 1f;
-    float maxDistance = 10f;
-    float rotationSpeed = 1f;
-    float zoomSensitivity = 12f;
-    float minVerticalRotation = 0f;
-    float maxVerticalRotation = FastMath.PI / 2;
-    boolean invertYaxis = false;
+    protected float xOffset = 0f;
+    protected float yHeight = 1.5f;
+    protected float minDistance = 1f;
+    protected float maxDistance = 10f;
+    protected float rotationSpeed = 1f;
+    protected float zoomSensitivity = 12f;
+    protected float minVerticalRotation = 0f;
+    protected float maxVerticalRotation = FastMath.PI / 2;
+    protected boolean invertYaxis = false;
     
     private boolean canRotate = true;
     private float horizontalRotation = 0f;
@@ -55,7 +55,7 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
     private Vector3f upVector;
     private Vector3f leftVector;
     
-    float targetDistance;
+    protected float targetDistance;
     private final Vector3f camOffset = new Vector3f(0, 0, 1);
     
     /**
@@ -136,7 +136,6 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
         qHRotation.fromAngleNormalAxis(horizontalRotation, upVector);
         yawNode.setLocalRotation(qHRotation);
     }
-    
 
     @Override
     protected void controlUpdate(float tpf) {
@@ -149,15 +148,15 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
     protected void updateCamera(float tpf) {
         // handle translations
         yawNode.setLocalTranslation(spatial.getWorldTranslation());
-        yawNode.updateLogicalState(tpf);
-        yawNode.updateGeometricState();
-        
+
         // handle zooming
         if (camNode.getLocalTranslation().z != targetDistance) {
             camOffset.z = targetDistance;
             camNode.getLocalTranslation().interpolateLocal(camOffset, tpf * zoomSensitivity);
-//            System.out.println("--cameraNode:" + camOffset);
         }
+
+        yawNode.updateLogicalState(tpf);
+        yawNode.updateGeometricState();
     }
     
     @Override

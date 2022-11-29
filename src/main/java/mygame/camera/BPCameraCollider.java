@@ -10,7 +10,8 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.bullet.collision.PhysicsSweepTestResult;
-import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.collision.shapes.ConvexShape;
+import com.jme3.bullet.collision.shapes.MultiSphere;
 import com.jme3.input.InputManager;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -32,10 +33,8 @@ public class BPCameraCollider extends BPPlayerCamera {
     private String ignoreTag = "";
     // When enabled, will attempt to resolve situations where the line of sight to the target is blocked by an obstacle
     private boolean avoidObstacles = true;
-    // Upper limit on how many obstacle hits to process. Higher numbers may impact performance. In most environments, 4 is enough.
-    private int maxEffort = 4;
-    // Obstacles closer to the target than this will be ignored
-    private float minDistanceFromTarget = 0.05f;
+
+    private float cameraRadius = 0.3f;
     
     private final RaycastHit hitInfo = new RaycastHit();
     private final List<PhysicsRayTestResult> rayTestResults = new ArrayList<>(10);
@@ -65,12 +64,13 @@ public class BPCameraCollider extends BPPlayerCamera {
 
             Vector3f origin = pitchNode.getWorldTranslation();
             Vector3f dirToCamera = pitchNode.getWorldRotation().mult(Vector3f.UNIT_Z).negateLocal();
-            
+
             float distance = -getMaxDistance();
-            if (sphereCast(origin, 0.1f, dirToCamera, hitInfo, getMaxDistance(), collideWithGroups)) {
-                distance = 0.05f - hitInfo.distance;
+            //The sphereCast goes from the pitchNode towards the camera
+            if (sphereCast(origin, cameraRadius, dirToCamera, hitInfo, getMaxDistance(), collideWithGroups)) {
+                distance = -hitInfo.distance;
             }
-            
+
             setDistanceToTarget(distance);
         }
     }
@@ -86,8 +86,11 @@ public class BPCameraCollider extends BPPlayerCamera {
         
         float penetration = 0f; // physics-space units
 
-        SphereCollisionShape shape = new SphereCollisionShape(radius);
+        ConvexShape shape = new MultiSphere(radius);
         PhysicsSpace physicsSpace = PhysicsSpace.getPhysicsSpace();
+        
+        //TODO: the order of sweep-test results is arbitrary.
+        // Perhaps it is worth sorting objects by distance in ascending order.
         physicsSpace.sweepTest(shape, new Transform(beginVec), new Transform(finalVec), sweepTestResults, penetration);
 
         for (PhysicsSweepTestResult tr : sweepTestResults) {
@@ -150,7 +153,6 @@ public class BPCameraCollider extends BPPlayerCamera {
                 
                 break;
             }
-            
         }
 
         t.release();
@@ -186,20 +188,12 @@ public class BPCameraCollider extends BPPlayerCamera {
         this.avoidObstacles = avoidObstacles;
     }
 
-    public int getMaxEffort() {
-        return maxEffort;
+    public float getCameraRadius() {
+        return cameraRadius;
     }
 
-    public void setMaxEffort(int maxEffort) {
-        this.maxEffort = maxEffort;
-    }
-
-    public float getMinDistanceFromTarget() {
-        return minDistanceFromTarget;
-    }
-
-    public void setMinDistanceFromTarget(float minDistanceFromTarget) {
-        this.minDistanceFromTarget = minDistanceFromTarget;
+    public void setCameraRadius(float cameraRadius) {
+        this.cameraRadius = cameraRadius;
     }
 
 }
