@@ -49,6 +49,7 @@ public class MonsterPrefab extends PrefabComponent {
         enemy.setLocalTranslation(position);
         enemy.setLocalRotation(rotation);
         enemy.setLocalScale(1.1f);
+        parent.attachChild(enemy);
         
         enemy.addControl(new Animator());
 
@@ -57,11 +58,13 @@ public class MonsterPrefab extends PrefabComponent {
             enemy.addControl(bcc);
             phySpace.add(bcc);
             bcc.setPhysicsDamping(1f);
+            bcc.setViewDirection(rotation.mult(Vector3f.UNIT_Z));
 
         } else {
             RigidBodyControl rbc = createRigidBody(radius, height);
             enemy.addControl(rbc);
             phySpace.add(rbc);
+            rbc.setPhysicsRotation(rotation);
         }
 
         BitmapText hud = createBitmapText(ColorRGBA.White, "label-placeholder", .1f);
@@ -76,8 +79,6 @@ public class MonsterPrefab extends PrefabComponent {
 
         Damageable m_Damageable = new Damageable();
         enemy.addControl(m_Damageable);
-
-        app.enqueue(() -> parent.attachChild(enemy));
 
         return enemy;
     }
