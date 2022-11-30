@@ -1,6 +1,6 @@
 package mygame.camera;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,7 +8,6 @@ import com.capdevon.engine.GameObject;
 import com.capdevon.physx.RaycastHit;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.bullet.collision.PhysicsSweepTestResult;
 import com.jme3.bullet.collision.shapes.ConvexShape;
 import com.jme3.bullet.collision.shapes.MultiSphere;
@@ -37,7 +36,6 @@ public class BPCameraCollider extends BPPlayerCamera {
     private float cameraRadius = 0.3f;
     
     private final RaycastHit hitInfo = new RaycastHit();
-    private final List<PhysicsRayTestResult> rayTestResults = new ArrayList<>(10);
     private final List<PhysicsSweepTestResult> sweepTestResults = new LinkedList<>();
 
     /**
@@ -89,23 +87,27 @@ public class BPCameraCollider extends BPPlayerCamera {
         ConvexShape shape = new MultiSphere(radius);
         PhysicsSpace physicsSpace = PhysicsSpace.getPhysicsSpace();
         
-        //TODO: the order of sweep-test results is arbitrary.
-        // Perhaps it is worth sorting objects by distance in ascending order.
+        //The order of sweep-test results is arbitrary.
         physicsSpace.sweepTest(shape, new Transform(beginVec), new Transform(finalVec), sweepTestResults, penetration);
-
+        sweepTestResults.sort(hitFractionComparator);
+        
         for (PhysicsSweepTestResult tr : sweepTestResults) {
         	
             PhysicsCollisionObject pco = tr.getCollisionObject();
-            Spatial userObj = (Spatial) pco.getUserObject();
+            if (!(pco.getUserObject() instanceof Spatial)) {
+            	continue;
+            }
+            
+            Spatial userObject = (Spatial) pco.getUserObject();
             
             boolean isObstruction = applyMask(layerMask, pco.getCollisionGroup()) 
-                  && !GameObject.compareTag(userObj, ignoreTag);
+                  && !GameObject.compareTag(userObject, ignoreTag);
 
             if (isObstruction) {
             	
             	hitInfo.rigidBody = pco;
             	hitInfo.collider = pco.getCollisionShape();
-            	hitInfo.gameObject = (Spatial) pco.getUserObject();
+            	hitInfo.gameObject = userObject;
                 MyVector3f.lerp(tr.getHitFraction(), beginVec, finalVec, hitInfo.point);
                 tr.getHitNormalLocal(hitInfo.normal);
                 hitInfo.distance = beginVec.distance(hitInfo.point);
@@ -119,45 +121,15 @@ public class BPCameraCollider extends BPPlayerCamera {
         return collision;
     }
  
-    @Deprecated
-    private boolean raycast(Vector3f origin, Vector3f direction, RaycastHit hitInfo, float maxDistance, int layerMask) {
-
-        boolean collision = false;
-        hitInfo.clear();
-        
-        TempVars t = TempVars.get();
-        Vector3f beginVec = t.vect1.set(origin);
-        Vector3f finalVec = t.vect2.set(direction).scaleAdd(maxDistance, origin);
-        
-        PhysicsSpace.getPhysicsSpace().rayTest(beginVec, finalVec, rayTestResults);
-        
-        for (PhysicsRayTestResult ray : rayTestResults) {
-            
-            PhysicsCollisionObject pco = ray.getCollisionObject();
-            Spatial userObj = (Spatial) pco.getUserObject();
-            
-            boolean isObstruction = applyMask(layerMask, pco.getCollisionGroup()) 
-                    && !GameObject.compareTag(userObj, ignoreTag);
-            
-            if (isObstruction) {
-                
-                collision = true;
-                float hf = ray.getHitFraction();
-                
-                hitInfo.rigidBody   = pco;
-                hitInfo.collider    = pco.getCollisionShape();
-                hitInfo.gameObject  = userObj;
-                hitInfo.distance    = finalVec.subtract(beginVec, t.vect3).length() * hf;
-                hitInfo.point.interpolateLocal(beginVec, finalVec, hf);
-                ray.getHitNormalLocal(hitInfo.normal);
-                
-                break;
-            }
+    private static final Comparator<PhysicsSweepTestResult> hitFractionComparator = new Comparator<>() {
+        @Override
+        public int compare(PhysicsSweepTestResult r1, PhysicsSweepTestResult r2) {
+            float r1Fraction = r1.getHitFraction();
+            float r2Fraction = r2.getHitFraction();
+            int result = Float.compare(r1Fraction, r2Fraction);
+            return result;
         }
-
-        t.release();
-        return collision;
-    }
+    };
     
     // Check if a collisionGroup is in a layerMask
     private boolean applyMask(int layerMask, int collisionGroup) {
