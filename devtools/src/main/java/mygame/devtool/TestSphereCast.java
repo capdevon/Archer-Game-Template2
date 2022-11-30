@@ -30,7 +30,6 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Ray;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
@@ -104,7 +103,7 @@ public class TestSphereCast extends SimpleApplication implements ActionListener 
         flyCam.setMoveSpeed(20f);
 
         float aspect = (float) cam.getWidth() / cam.getHeight();
-        cam.setFrustumPerspective(60, aspect, 0.1f, 100f);
+        cam.setFrustumPerspective(45, aspect, 0.1f, 100f);
     }
 
     /**
@@ -227,6 +226,7 @@ public class TestSphereCast extends SimpleApplication implements ActionListener 
     private void setupKeys() {
         addMapping("FIRE_ACTION", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         addMapping("TOGGLE_PHYSICS_DEBUG", new KeyTrigger(KeyInput.KEY_0));
+        addMapping("TOGGLE_MULTI_SPHERE", new KeyTrigger(KeyInput.KEY_SPACE));
     }
 
     private void addMapping(String mappingName, Trigger... triggers) {
@@ -242,14 +242,19 @@ public class TestSphereCast extends SimpleApplication implements ActionListener 
         } else if (name.equals("TOGGLE_PHYSICS_DEBUG") && isPressed) {
             boolean debugEnabled = physics.isDebugEnabled();
             physics.setDebugEnabled(!debugEnabled);
+            
+        } else if (name.equals("TOGGLE_MULTI_SPHERE") && isPressed) {
+            useMultiSphere = !useMultiSphere;
+            System.out.println("useMultiSphere: " + useMultiSphere);
         }
     }
 
     private void fire() {
-        Ray ray = new Ray(cam.getLocation(), cam.getDirection());
-        debugTools.setYellowArrow(ray.origin, ray.direction.mult(maxDistance));
+    	Vector3f origin = cam.getLocation();
+    	Vector3f direction = cam.getDirection();
+        debugTools.setYellowArrow(origin, direction.mult(maxDistance));
 
-        if (sphereCast(ray.origin, cameraRadius, ray.direction, hitInfo, maxDistance, collideWithGroups)) {
+        if (sphereCast(origin, cameraRadius, direction, hitInfo, maxDistance, collideWithGroups)) {
             marker.setLocalTranslation(hitInfo.point);
         } else {
             marker.setLocalTranslation(0, -1000, 0);
@@ -283,7 +288,6 @@ public class TestSphereCast extends SimpleApplication implements ActionListener 
 
             PhysicsCollisionObject pco = tr.getCollisionObject();
             Spatial userObject = (Spatial) pco.getUserObject();
-            System.out.println(userObject);
 
             boolean isObstruction = applyMask(layerMask, pco.getCollisionGroup())
                     && !compareTag(userObject, ignoreTag);
