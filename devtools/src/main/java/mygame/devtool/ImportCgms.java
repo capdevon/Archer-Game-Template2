@@ -27,7 +27,7 @@ public class ImportCgms extends SimpleApplication {
      * filesystem path to the destination asset root (the directory/folder for
      * output)
      */
-    final private static String assetDirPath = "../src/main/resources";
+    final private static String assetDirPath = "../game/src/main/resources";
     // *************************************************************************
     // new methods exposed
 

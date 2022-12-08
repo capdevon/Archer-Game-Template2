@@ -1,0 +1,24 @@
+// Gradle settings and tasks common to all Archer Game Template subprojects
+
+apply plugin: 'application'
+apply plugin: 'java'
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+ext.jmeVersion = '3.5.2-stable'
+
+repositories {
+    //mavenLocal()
+    mavenCentral()
+}
+
+// cleanup tasks:
+
+clean.dependsOn('cleanDLLs', 'cleanSOs')
+
+tasks.register('cleanDLLs', Delete) { // extracted Windows native libraries
+    delete fileTree(dir: '.', include: '*.dll')
+}
+tasks.register('cleanSOs', Delete) { // extracted Linux native libraries
+    delete fileTree(dir: '.', include: '*.so')
+}

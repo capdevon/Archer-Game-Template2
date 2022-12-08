@@ -1,0 +1,27 @@
+// Gradle build script for the game
+
+// Note: "common.gradle" in the root project contains additional initialization
+//   for this project. This initialization is applied in the "build.gradle"
+//   of the root project.
+
+mainClassName = 'mygame.Main'
+if (!hasProperty('mainClass')) {
+    ext.mainClass = mainClassName
+}
+
+dependencies {
+    implementation 'com.github.stephengold:Minie:6.2.0+big3'
+    implementation 'org.jmonkeyengine:jme3-core:' + jmeVersion
+    implementation 'org.jmonkeyengine:jme3-desktop:' + jmeVersion
+    implementation 'org.jmonkeyengine:jme3-effects:' + jmeVersion
+    runtimeOnly    'org.jmonkeyengine:jme3-jogg:' + jmeVersion
+    runtimeOnly    'org.jmonkeyengine:jme3-plugins:' + jmeVersion
+    runtimeOnly    'org.jmonkeyengine:jme3-testdata:' + jmeVersion
+
+    // select one version of LWJGL
+    runtimeOnly 'org.jmonkeyengine:jme3-lwjgl:' + jmeVersion  // LWJGL 2.x
+    //runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jmeVersion // LWJGL 3.x
+
+    implementation files('../lib/shaderblow-ex-1.0.0.jar')
+    runtimeOnly    files('../lib/jme-materialize.jar')
+}
