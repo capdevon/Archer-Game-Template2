@@ -1,7 +1,5 @@
 package mygame.controls;
 
-import java.util.Objects;
-
 import com.capdevon.control.AdapterControl;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.Vector3f;
@@ -21,8 +19,7 @@ public class RespawnPlayer extends AdapterControl {
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
         if (spatial != null) {
-            this.bcc = spatial.getControl(BetterCharacterControl.class);
-            Objects.requireNonNull(bcc, "BetterCharacterControl not found: " + spatial);
+            this.bcc = getComponent(BetterCharacterControl.class);
         }
     }
 
