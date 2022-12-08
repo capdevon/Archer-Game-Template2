@@ -257,6 +257,7 @@ public class Physics {
 
         hitInfo.clear();
         boolean collision = false;
+        float hf = maxDistance;
 
         TempVars t = TempVars.get();
         Vector3f beginVec = t.vect1.set(center);
@@ -271,10 +272,10 @@ public class Physics {
         for (PhysicsSweepTestResult tr : results) {
             PhysicsCollisionObject pco = tr.getCollisionObject();
 
-            if (applyMask(layerMask, pco.getCollisionGroup())) {
+            if (tr.getHitFraction() < hf && applyMask(layerMask, pco.getCollisionGroup())) {
+            	hf = tr.getHitFraction();
                 hitInfo.set(beginVec, finalVec, tr);
                 collision = true;
-                break;
             }
         }
 
