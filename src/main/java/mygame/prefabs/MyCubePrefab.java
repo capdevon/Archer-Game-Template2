@@ -2,7 +2,6 @@ package mygame.prefabs;
 
 import com.capdevon.engine.PrefabComponent;
 import com.jme3.app.Application;
-import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -47,8 +46,7 @@ public class MyCubePrefab extends PrefabComponent {
         cube.setLocalRotation(rotation);
         parent.attachChild(cube);
 
-        BoundingBox bbox = (BoundingBox) cube.getWorldBound();
-        CollisionShape shape = new BoxCollisionShape(bbox.getExtent(null));
+        CollisionShape shape = new BoxCollisionShape(size, size, size);
         RigidBodyControl rgb = new RigidBodyControl(shape, mass);
         cube.addControl(rgb);
         getPhysicsSpace().add(rgb);
