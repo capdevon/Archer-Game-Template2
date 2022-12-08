@@ -59,7 +59,8 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     private float aimFOV = 45;
     private float defaultFOV = 60;
     
-    boolean isAiming, canShooting;
+    boolean isAiming;
+    boolean canShooting;
     private float m_CurrentLaunchForce;
 
     // weapon hook
@@ -174,8 +175,8 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     public void setAiming(boolean isAiming) {
         this.isAiming = isAiming;
         float distance = isAiming ? bpCamera.getMinDistance() : bpCamera.getMaxDistance();
-        bpCamera.setDistanceToTarget(-distance);
-        bpCamera.setAvoidObstacles(!isAiming);
+        bpCamera.setDistanceToTarget(distance);
+        //bpCamera.setAvoidObstacles(!isAiming);
         bpCamera.setRotationSpeed(isAiming ? 0.5f : 1);
         currentWeapon.crosshair.setEnabled(isAiming);
         animator.setAnimation(Archer.DrawArrow);

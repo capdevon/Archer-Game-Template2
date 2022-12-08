@@ -63,13 +63,13 @@ public class BPCameraCollider extends BPPlayerCamera {
             Vector3f origin = pitchNode.getWorldTranslation();
             Vector3f dirToCamera = pitchNode.getWorldRotation().mult(Vector3f.UNIT_Z).negateLocal();
 
-            float distance = -getMaxDistance();
+            float distToTarget = getMaxDistance();
             //The sphereCast goes from the pitchNode towards the camera
             if (sphereCast(origin, cameraRadius, dirToCamera, hitInfo, getMaxDistance(), collideWithGroups)) {
-                distance = -hitInfo.distance;
+                distToTarget = hitInfo.distance;
             }
 
-            setDistanceToTarget(distance);
+            setDistanceToTarget(distToTarget);
         }
     }
     
@@ -126,8 +126,7 @@ public class BPCameraCollider extends BPPlayerCamera {
         public int compare(PhysicsSweepTestResult r1, PhysicsSweepTestResult r2) {
             float r1Fraction = r1.getHitFraction();
             float r2Fraction = r2.getHitFraction();
-            int result = Float.compare(r1Fraction, r2Fraction);
-            return result;
+            return Float.compare(r1Fraction, r2Fraction);
         }
     };
     

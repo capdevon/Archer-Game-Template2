@@ -87,11 +87,11 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
         yawNode.attachChild(pitchNode);
         pitchNode.attachChild(camNode);
         
-        targetDistance = -maxDistance;
+        targetDistance = maxDistance;
 
         yawNode.setLocalTranslation(spatial.getWorldTranslation());
         pitchNode.setLocalTranslation(xOffset, yHeight, 0);
-        camNode.setLocalTranslation(0, 0, targetDistance);
+        camNode.setLocalTranslation(0, 0, -targetDistance);
         
         camNode.lookAt(pitchNode.getWorldTranslation(), upVector);
         camNode.setControlDir(CameraControl.ControlDirection.SpatialToCamera);
@@ -151,7 +151,7 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
 
         // handle zooming
         if (camNode.getLocalTranslation().z != targetDistance) {
-            camOffset.z = targetDistance;
+            camOffset.z = -targetDistance;
             camNode.getLocalTranslation().interpolateLocal(camOffset, tpf * zoomSensitivity);
         }
 
