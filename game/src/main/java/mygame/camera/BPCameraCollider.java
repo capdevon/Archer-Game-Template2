@@ -1,6 +1,5 @@
 package mygame.camera;
 
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,7 +9,7 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.PhysicsSweepTestResult;
 import com.jme3.bullet.collision.shapes.ConvexShape;
-import com.jme3.bullet.collision.shapes.MultiSphere;
+import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.input.InputManager;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -79,17 +78,15 @@ public class BPCameraCollider extends BPPlayerCamera {
         Vector3f beginVec = t.vect1.set(origin);
         Vector3f finalVec = t.vect2.set(direction).scaleAdd(maxDistance, origin);
 
-        boolean collision = false;
         hitInfo.clear();
+        boolean collision = false;
+        float hf = maxDistance;
         
         float penetration = 0f; // physics-space units
-
-        ConvexShape shape = new MultiSphere(radius);
-        PhysicsSpace physicsSpace = PhysicsSpace.getPhysicsSpace();
+        ConvexShape shape = new SphereCollisionShape(radius);
         
-        //The order of sweep-test results is arbitrary.
+        PhysicsSpace physicsSpace = PhysicsSpace.getPhysicsSpace();
         physicsSpace.sweepTest(shape, new Transform(beginVec), new Transform(finalVec), sweepTestResults, penetration);
-        sweepTestResults.sort(hitFractionComparator);
         
         for (PhysicsSweepTestResult tr : sweepTestResults) {
         	
@@ -103,7 +100,7 @@ public class BPCameraCollider extends BPPlayerCamera {
             boolean isObstruction = applyMask(layerMask, pco.getCollisionGroup()) 
                   && !GameObject.compareTag(userObject, ignoreTag);
 
-            if (isObstruction) {
+            if (tr.getHitFraction() < hf && isObstruction) {
             	
             	hitInfo.rigidBody = pco;
             	hitInfo.collider = pco.getCollisionShape();
@@ -112,8 +109,8 @@ public class BPCameraCollider extends BPPlayerCamera {
                 tr.getHitNormalLocal(hitInfo.normal);
                 hitInfo.distance = beginVec.distance(hitInfo.point);
                 
+                hf = tr.getHitFraction();
                 collision = true;
-                break;
             }
         }
         
@@ -121,15 +118,6 @@ public class BPCameraCollider extends BPPlayerCamera {
         return collision;
     }
  
-    private static final Comparator<PhysicsSweepTestResult> hitFractionComparator = new Comparator<>() {
-        @Override
-        public int compare(PhysicsSweepTestResult r1, PhysicsSweepTestResult r2) {
-            float r1Fraction = r1.getHitFraction();
-            float r2Fraction = r2.getHitFraction();
-            return Float.compare(r1Fraction, r2Fraction);
-        }
-    };
-    
     // Check if a collisionGroup is in a layerMask
     private boolean applyMask(int layerMask, int collisionGroup) {
         return layerMask == (layerMask | collisionGroup);
