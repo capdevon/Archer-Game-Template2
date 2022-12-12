@@ -45,9 +45,16 @@ public class GInputAppState extends AbstractInputAppState {
     public void mapJoystick(Joystick joypad) {
 
     	// FIXME: joystick mapping doesn't work with jme3-lwjgl3 (to be investigated)
-        if (joypad.getAxis(JoystickAxis.Z_ROTATION) != null && joypad.getAxis(JoystickAxis.Z_AXIS) != null) {
-            // let the dpad be up and down
+        JoystickAxis zAxis = joypad.getAxis(JoystickAxis.Z_AXIS);
+        JoystickAxis zRotation = joypad.getAxis(JoystickAxis.Z_ROTATION);
+        if (zRotation != null && zAxis != null) {
+            logger.info("The joystick has Z axes.");
+
+            // Let the dpad be up and down
             assignAxis(joypad.getPovYAxis(), KeyMapping.SWITCH_AMMO, KeyMapping.SWITCH_AMMO);
+
+        } else {
+            logger.info("The joystick does not have Z axes.");
         }
 
         assignButton(joypad, JoystickButton.BUTTON_0, KeyMapping.EMPTY);
