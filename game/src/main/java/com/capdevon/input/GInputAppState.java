@@ -45,27 +45,26 @@ public class GInputAppState extends AbstractInputAppState {
     public void mapJoystick(Joystick joypad) {
 
     	// FIXME: joystick mapping doesn't work with jme3-lwjgl3 (to be investigated)
-        // Map it differently if there are Z axis
         if (joypad.getAxis(JoystickAxis.Z_ROTATION) != null && joypad.getAxis(JoystickAxis.Z_AXIS) != null) {
-
-            // And let the dpad be up and down
-            assignButton(joypad, JoystickButton.BUTTON_0, KeyMapping.EMPTY);
-            assignButton(joypad, JoystickButton.BUTTON_1, KeyMapping.TOGGLE_CROUCH);
-            assignButton(joypad, JoystickButton.BUTTON_2, KeyMapping.EMPTY);
-            assignButton(joypad, JoystickButton.BUTTON_4, KeyMapping.RUNNING);
-            assignButton(joypad, JoystickButton.BUTTON_5, KeyMapping.EMPTY);
-            assignButton(joypad, JoystickButton.BUTTON_6, KeyMapping.AIMING);
-            assignButton(joypad, JoystickButton.BUTTON_7, KeyMapping.FIRE);
-            assignButton(joypad, JoystickButton.BUTTON_8, KeyMapping.EMPTY);
-            assignButton(joypad, JoystickButton.BUTTON_9, KeyMapping.EMPTY);
-
-            // Make the left stick move
-            assignAxis(joypad.getXAxis(), KeyMapping.MOVE_RIGHT, KeyMapping.MOVE_LEFT);
-            assignAxis(joypad.getYAxis(), KeyMapping.MOVE_BACKWARD, KeyMapping.MOVE_FORWARD);
-
-            // And let the dpad be up and down
+            // let the dpad be up and down
             assignAxis(joypad.getPovYAxis(), KeyMapping.SWITCH_AMMO, KeyMapping.SWITCH_AMMO);
         }
+
+        assignButton(joypad, JoystickButton.BUTTON_0, KeyMapping.EMPTY);
+        assignButton(joypad, JoystickButton.BUTTON_1, KeyMapping.TOGGLE_CROUCH);
+        assignButton(joypad, JoystickButton.BUTTON_2, KeyMapping.EMPTY);
+        assignButton(joypad, JoystickButton.BUTTON_4, KeyMapping.RUNNING);
+        assignButton(joypad, JoystickButton.BUTTON_5, KeyMapping.EMPTY);
+        assignButton(joypad, JoystickButton.BUTTON_6, KeyMapping.AIMING);
+        assignButton(joypad, JoystickButton.BUTTON_7, KeyMapping.FIRE);
+        assignButton(joypad, JoystickButton.BUTTON_8, KeyMapping.EMPTY);
+        assignButton(joypad, JoystickButton.BUTTON_9, KeyMapping.EMPTY);
+
+        // Use the (left) stick to move.
+        JoystickAxis xAxis = joypad.getAxis(JoystickAxis.X_AXIS);
+        JoystickAxis yAxis = joypad.getAxis(JoystickAxis.Y_AXIS);
+        assignAxis(xAxis, KeyMapping.MOVE_RIGHT, KeyMapping.MOVE_LEFT);
+        assignAxis(yAxis, KeyMapping.MOVE_BACKWARD, KeyMapping.MOVE_FORWARD);
     }
 
 }
