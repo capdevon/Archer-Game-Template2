@@ -8,9 +8,13 @@ import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.input.JoystickCompatibilityMappings;
 import com.jme3.system.AppSettings;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
 import mygame.audio.SoundManager;
 import mygame.player.PlayerManager;
 import mygame.states.CubeAppState;
@@ -27,6 +31,7 @@ public class Main extends SimpleApplication {
      * @param args
      */
     public static void main(String[] args) {
+        loadMoreJoystickMappings();
 
         Main app = new Main();
 
@@ -84,5 +89,22 @@ public class Main extends SimpleApplication {
     public void stop(boolean waitFor) {
         Capture.cleanup(stateManager);
         super.stop(waitFor);
+    }
+
+    /**
+     * Load joystick mappings that are specific to this application.
+     */
+    public static void loadMoreJoystickMappings() {
+        ClassLoader loader = Main.class.getClassLoader();
+        String resourcePath = "Interface/joystick-mapping.properties";
+        try {
+            Enumeration<URL> en = loader.getResources(resourcePath);
+            while (en.hasMoreElements()) {
+                URL u = en.nextElement();
+                JoystickCompatibilityMappings.loadMappingProperties(u);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -32,6 +32,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
 import com.jme3.system.AppSettings;
+import mygame.Main;
 
 public class TestJoystick extends SimpleApplication {
 
@@ -41,7 +42,9 @@ public class TestJoystick extends SimpleApplication {
     private float yInfo = 0;
     private JoystickButton lastButton;
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
+        Main.loadMoreJoystickMappings();
+
         TestJoystick app = new TestJoystick();
         AppSettings settings = new AppSettings(true);
         settings.setUseJoysticks(true);
