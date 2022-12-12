@@ -6,6 +6,7 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.input.InputManager;
 import com.jme3.input.Joystick;
 import com.jme3.input.JoystickAxis;
+import com.jme3.input.JoystickButton;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.Trigger;
@@ -56,16 +57,21 @@ public abstract class AbstractInputAppState extends AbstractAppState implements 
     }
     
     /**
-     * Assign the mapping name to receive events from the given button index on the joystick
-     * @param joystick
-     * @param logicalId
-     * @param mappingName 
+     * Assign a mapping to receive events from the specified joystick button.
+     *
+     * @param joystick which joystick (not null)
+     * @param buttonName the logical name of the button (typically a string of
+     * digits)
+     * @param mappingName the name by which the listener will receive events
      */
-    public void assignButton(Joystick joystick, String logicalId, String mappingName) {
-        joystick.getButton(logicalId).assignButton(mappingName);
-        inputManager.addListener(this, mappingName);
+    public void assignButton(Joystick joystick, String buttonName, String mappingName) {
+        JoystickButton button = joystick.getButton(buttonName);
+        if (button != null) { // button exists
+            button.assignButton(mappingName);
+            inputManager.addListener(this, mappingName);
+        }
     }
-    
+
     /**
      * Assign the mappings to receive events from the given joystick axis
      * @param axis
