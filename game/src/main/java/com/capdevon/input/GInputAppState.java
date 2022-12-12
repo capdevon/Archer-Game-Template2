@@ -7,12 +7,19 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
+import java.util.logging.Logger;
 
 /**
  *
  * @author capdevon
  */
 public class GInputAppState extends AbstractInputAppState {
+
+    /**
+     * message logger for this class
+     */
+    final public static Logger logger
+            = Logger.getLogger(GInputAppState.class.getName());
 
     @Override
     public void registerInput() {
