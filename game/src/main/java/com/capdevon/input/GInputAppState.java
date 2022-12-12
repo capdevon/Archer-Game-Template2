@@ -57,7 +57,7 @@ public class GInputAppState extends AbstractInputAppState {
             logger.info("The joystick does not have Z axes.");
         }
 
-        assignButton(joypad, JoystickButton.BUTTON_0, KeyMapping.EMPTY);
+        assignButton(joypad, JoystickButton.BUTTON_0, KeyMapping.SWITCH_AMMO);
         assignButton(joypad, JoystickButton.BUTTON_1, KeyMapping.TOGGLE_CROUCH);
         assignButton(joypad, JoystickButton.BUTTON_2, KeyMapping.EMPTY);
         assignButton(joypad, JoystickButton.BUTTON_4, KeyMapping.RUNNING);
