@@ -236,7 +236,7 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
 
     private void setWeaponReady() {
         canShooting = true;
-        currentWeapon.crosshair.setColor(ColorRGBA.White);
+        currentWeapon.crosshair.setColor(ColorRGBA.Green);
         reloadSFX.play();
     }
 
