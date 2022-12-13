@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import jme3utilities.Heart;
 import mygame.audio.SoundManager;
 import mygame.player.PlayerManager;
 import mygame.states.CubeAppState;
@@ -31,6 +33,9 @@ public class Main extends SimpleApplication {
      * @param args
      */
     public static void main(String[] args) {
+        // Mute the chatty loggers in certain packages.
+        Heart.setLoggingLevels(Level.WARNING);
+        
         loadMoreJoystickMappings();
 
         Main app = new Main();
