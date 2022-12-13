@@ -31,8 +31,8 @@ import mygame.controls.Damageable;
 public class MonsterPrefab extends PrefabComponent {
 	
     public boolean usePhysicsCharacter = true;
-    public float radius = 0.4f;
-    public float height = 1.8f;
+    public float radius = 0.9f;
+    public float height = 2f;
 
     private PhysicsSpace phySpace;
 
