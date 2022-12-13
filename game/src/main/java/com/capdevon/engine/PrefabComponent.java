@@ -49,6 +49,15 @@ public abstract class PrefabComponent {
         return ((SimpleApplication) app).getGuiNode();
     }
 
+    /**
+     * Return the ID of this prefab.
+     *
+     * @return the ID
+     */
+    public int getPrefabId() {
+        return objectId;
+    }
+
     public int nextSeqId() {
         return ++objectId;
     }
