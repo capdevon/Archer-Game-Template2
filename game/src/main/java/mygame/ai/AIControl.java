@@ -1,5 +1,6 @@
 package mygame.ai;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.capdevon.anim.ActionAnimEventListener;
@@ -127,6 +128,9 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
     }
 
     private void changeState(AIState newState) {
+        logger.log(Level.INFO, "id = {0} newState = {1}",
+                new Object[]{id, newState});
+
         stateTimer = 0;
         currentState = newState;
         updateAnimations();
