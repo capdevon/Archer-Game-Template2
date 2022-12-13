@@ -80,8 +80,8 @@ public class PlayerManager extends SimpleAppState {
         bpCamera.setYHeight(1.8f);
         bpCamera.setMinDistance(1f);
         bpCamera.setMaxDistance(3f);
-        bpCamera.setMinVerticalRotation(-FastMath.DEG_TO_RAD * 20);
-        bpCamera.setMaxVerticalRotation(FastMath.DEG_TO_RAD * 30);
+        bpCamera.setMinVerticalRotation(FastMath.DEG_TO_RAD * -45);
+        bpCamera.setMaxVerticalRotation(FastMath.DEG_TO_RAD * 45);
         bpCamera.setRotationSpeed(1f);
         bpCamera.setIgnoreTag("TagPlayer");
         player.addControl(bpCamera);
