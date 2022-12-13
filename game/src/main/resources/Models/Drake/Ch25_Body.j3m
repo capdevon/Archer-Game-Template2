@@ -1,0 +1,23 @@
+Material Ch25_Body : Common/MatDefs/Light/PBRLighting.j3md {
+
+    MaterialParameters {
+      EmissivePower : 3.0
+      BackfaceShadows : false
+      Roughness : 1.0
+      EmissiveIntensity : 2.0
+      Glossiness : 1.0
+      BaseColor : 0.8 0.8 0.8 1.0
+      ParallaxHeight : 0.05
+      Metallic : 0.0
+      NormalType : 1.0
+      Emissive : 0.0 0.0 0.0 1.0
+      NormalMap : WrapRepeat_S WrapRepeat_T "Models/Drake/ch25-1001-normal.jpg"
+      BaseColorMap : WrapRepeat_S WrapRepeat_T "Models/Drake/ch25-1001-diffuse.jpg"
+      MetallicRoughnessMap : WrapRepeat_S WrapRepeat_T "Models/Drake/ao_met_rough_Ch25_1001_Glossiness.jpg"
+      Specular : 1.0 1.0 1.0 1.0
+    }
+
+    AdditionalRenderState {
+      PointSprite On
+    }
+}
