@@ -14,6 +14,7 @@ import com.jme3.scene.Spatial;
 import mygame.AnimDefs.Monster;
 
 /**
+ * A state machine to manage the behavior of a monster.
  *
  * @author capdevon
  */
@@ -38,6 +39,22 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
     private float health = maxHealth;
     private AIState currentState;
     private float stateTimer = 0;
+    /**
+     * unique ID for debugging, assigned serially
+     */
+    final private int id;
+    /**
+     * the next ID to be assigned
+     */
+    private static int nextId = 0;
+
+    /**
+     * Instantiate a state machine and assign it an ID.
+     */
+    public AIControl() {
+        this.id = nextId;
+        ++nextId;
+    }
 
     @Override
     public void setSpatial(Spatial sp) {
