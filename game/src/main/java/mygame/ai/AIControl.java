@@ -128,8 +128,9 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
     }
 
     private void changeState(AIState newState) {
-        logger.log(Level.INFO, "id = {0} newState = {1}",
-                new Object[]{id, newState});
+        logger.log(Level.INFO, "{0}   {1} -> {2}", new Object[]{
+            spatial.getName(), currentState, newState
+        });
 
         stateTimer = 0;
         currentState = newState;
