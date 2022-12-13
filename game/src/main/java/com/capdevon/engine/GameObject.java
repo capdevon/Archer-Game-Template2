@@ -9,6 +9,7 @@ import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
+import jme3utilities.MySpatial;
 
 /**
  * https://docs.unity3d.com/ScriptReference/GameObject.html
@@ -57,8 +58,20 @@ public class GameObject {
         return lst;
     }
 
-    public static <T extends Control> T getComponent(Spatial sp, Class<T> clazz) {
-        return sp.getControl(clazz);
+    /**
+     * Returns the scene-graph control of the specified type.
+     *
+     * @param <T> subclass of {@code Control}
+     * @param subtree the subtree to search (not null, alias created)
+     * @param clazz the subclass of {@code Control} to find
+     * @return an instance of the specified subclass (not null)
+     */
+    public static <T extends Control> T getComponent(Spatial subtree, Class<T> clazz) {
+        List<T> list = MySpatial.listControls(subtree, clazz, null);
+        assert list.size() == 1 : list.size();
+        T result = list.get(0);
+
+        return result;
     }
 
     /**
