@@ -23,13 +23,14 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
 
     private static final Logger logger = Logger.getLogger(AIControl.class.getName());
 
-    public enum AIState {
+    private enum AIState {
         IDLE, CHASE, ATTACK, HIT, DEAD, WAIT, AWARE
     }
-
-    public Spatial player;
-    public BitmapText hud;
-
+    /**
+     * display the monster's status in the viewport
+     */
+    final private BitmapText hud;
+ 
     private BetterCharacterControl bcc;
     private Animator animator;
     private boolean isAnimDone;
@@ -42,9 +43,12 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
     private float stateTimer = 0;
 
     /**
-     * Instantiate a control.
+     * Instantiate with the specified parameters.
+     *
+     * @param label to display the monster's status in the viewport
      */
-    public AIControl() {
+    public AIControl(BitmapText label) {
+        this.hud = label;
     }
 
     @Override

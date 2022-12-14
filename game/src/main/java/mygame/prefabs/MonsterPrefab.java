@@ -72,9 +72,7 @@ public class MonsterPrefab extends PrefabComponent {
         hud.setLocalTranslation(0, 2f, 0);
         enemy.attachChild(hud);
 
-        AIControl aiControl = new AIControl();
-        aiControl.hud = hud;
-        aiControl.player = getRootNode().getChild("Player");
+        AIControl aiControl = new AIControl(hud);
         enemy.addControl(aiControl);
 
         Damageable m_Damageable = new Damageable();
