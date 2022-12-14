@@ -67,7 +67,7 @@ public class MonsterPrefab extends PrefabComponent {
             rbc.setPhysicsRotation(rotation);
         }
 
-        BitmapText hud = createBitmapText(ColorRGBA.White, "label-placeholder", .1f);
+        BitmapText hud = createBitmapText(ColorRGBA.Black, "label-placeholder", .1f);
         hud.setName("Healthbar");
         hud.setLocalTranslation(0, 2f, 0);
         enemy.attachChild(hud);
