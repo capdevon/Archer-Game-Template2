@@ -7,6 +7,10 @@ sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 ext.jmeVersion = '3.5.2-stable'
 
+tasks.withType(JavaExec) { // Java runtime options:
+    enableAssertions true
+}
+
 repositories {
     //mavenLocal()
     mavenCentral()
