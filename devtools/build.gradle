@@ -8,7 +8,7 @@ sourceSets.main.java.srcDir '../game/src/main/java'
 sourceSets.main.resources.srcDir '../game/src/main/resources'
 
 dependencies {
-    implementation 'com.github.stephengold:Minie:6.2.0+big3'
+    implementation 'com.github.stephengold:Minie:7.0.0'
     implementation 'org.jmonkeyengine:jme3-core:' + jmeVersion
     implementation 'org.jmonkeyengine:jme3-desktop:' + jmeVersion
     implementation 'org.jmonkeyengine:jme3-effects:' + jmeVersion
