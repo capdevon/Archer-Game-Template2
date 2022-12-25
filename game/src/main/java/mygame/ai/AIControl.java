@@ -7,9 +7,12 @@ import com.capdevon.anim.ActionAnimEventListener;
 import com.capdevon.anim.Animator;
 import com.capdevon.control.AdapterControl;
 import com.jme3.anim.AnimComposer;
+import com.jme3.bullet.animation.DynamicAnimControl;
 import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.font.BitmapText;
 import com.jme3.math.FastMath;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
 import mygame.AnimDefs.Monster;
@@ -24,14 +27,20 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
     private static final Logger logger = Logger.getLogger(AIControl.class.getName());
 
     private enum AIState {
-        IDLE, CHASE, ATTACK, HIT, DEAD, WAIT, AWARE
+        IDLE, CHASE, ATTACK, HIT, WAIT, AWARE, DYING, RAGDOLL, SINKING
     }
+    /**
+     * acceleration when the monster sinks into the ground
+     */
+    private static final Vector3f sinkingGravity = new Vector3f(0f, -0.5f, 0f);
     /**
      * display the monster's status in the viewport
      */
     final private BitmapText hud;
  
     private BetterCharacterControl bcc;
+    private DynamicAnimControl dac;
+
     private Animator animator;
     private boolean isAnimDone;
 
@@ -56,6 +65,7 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
         super.setSpatial(sp);
         if (spatial != null) {
             this.bcc = getComponent(BetterCharacterControl.class);
+            this.dac = getComponent(DynamicAnimControl.class);
             this.animator = getComponentInChildren(Animator.class);
 
             animator.createDefaultActions();
@@ -84,11 +94,26 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
                     changeState(AIState.AWARE);
                 }
                 break;
-            case DEAD:
-                if (isAnimDone) {
+
+            case DYING:
+                if (timeout(2f)) {
+                    changeState(AIState.RAGDOLL);
+                }
+                break;
+
+            case RAGDOLL:
+                if (timeout(12f)) {
+                    changeState(AIState.SINKING);
+                }
+                break;
+
+            case SINKING:
+                if (timeout(2f)) {
+                    dac.setEnabled(false);
                     spatial.removeFromParent();
                 }
                 break;
+
             default:
                 break;
         }
@@ -105,7 +130,7 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
             case CHASE:
                 animator.setAnimation(Monster.Running);
                 break;
-            case DEAD:
+            case DYING:
                 animator.setAnimation(Monster.Dying);
                 break;
             case HIT:
@@ -114,6 +139,21 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
             case IDLE:
                 animator.setAnimation(Monster.OrcIdle);
                 break;
+
+            case RAGDOLL:
+                bcc.setEnabled(false);
+                bcc.getSpatial().removeControl(bcc);
+                dac.setRagdollMode();
+                break;
+
+            case SINKING:
+                for (PhysicsRigidBody body : dac.listRigidBodies()) {
+                    body.setContactResponse(false);
+                    body.setGravity(sinkingGravity);
+                    body.getCollisionShape().setMargin(0.004f);
+                }
+                break;
+
             case WAIT:
                 break;
             default:
@@ -167,8 +207,7 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
 
         if (health <= 0f) {
             isDead = true;
-            bcc.setEnabled(false);
-            changeState(AIState.DEAD);
+            changeState(AIState.DYING);
         }
     }
 

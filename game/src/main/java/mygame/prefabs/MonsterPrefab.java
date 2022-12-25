@@ -1,9 +1,11 @@
 package mygame.prefabs;
 
 import com.capdevon.anim.Animator;
+import com.capdevon.engine.GameObject;
 import com.capdevon.engine.PrefabComponent;
 import com.jme3.app.Application;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.animation.DynamicAnimControl;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
@@ -19,10 +21,17 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.BillboardControl;
+import com.jme3.scene.control.Control;
+import jme3utilities.MyControl;
+import jme3utilities.Validate;
+import jme3utilities.debug.Describer;
+import jme3utilities.minie.MyControlP;
+import jme3utilities.minie.UserFilter;
 
 import mygame.AnimDefs;
 import mygame.ai.AIControl;
 import mygame.controls.Damageable;
+import mygame.player.PlayerInput;
 
 /**
  * 
@@ -53,19 +62,14 @@ public class MonsterPrefab extends PrefabComponent {
         
         enemy.addControl(new Animator());
 
-        if (usePhysicsCharacter) {
-            BetterCharacterControl bcc = new BetterCharacterControl(radius, height, 10f);
-            enemy.addControl(bcc);
-            phySpace.add(bcc);
-            bcc.setPhysicsDamping(1f);
-            bcc.setViewDirection(rotation.mult(Vector3f.UNIT_Z));
+        BetterCharacterControl bcc = new BetterCharacterControl(radius, height, 10f);
+        enemy.addControl(bcc);
+        phySpace.add(bcc);
+        bcc.setPhysicsDamping(1f);
+        bcc.setViewDirection(rotation.mult(Vector3f.UNIT_Z));
 
-        } else {
-            RigidBodyControl rbc = createRigidBody(radius, height);
-            enemy.addControl(rbc);
-            phySpace.add(rbc);
-            rbc.setPhysicsRotation(rotation);
-        }
+        DynamicAnimControl ragdoll = GameObject.getComponent(enemy, DynamicAnimControl.class);
+        phySpace.add(ragdoll);
 
         BitmapText hud = createBitmapText(ColorRGBA.Black, "label-placeholder", .1f);
         hud.setName("Healthbar");

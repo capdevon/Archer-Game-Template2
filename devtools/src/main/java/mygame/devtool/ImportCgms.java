@@ -1,12 +1,16 @@
 package mygame.devtool;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.bullet.animation.RagUtils;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.system.JmeContext;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
 import jme3utilities.MyString;
+import mygame.AnimDefs;
+import mygame.prefabs.DrakeControl;
 
 /**
  * A headless SimpleApplication to import certain C-G models used in the Archer
@@ -67,6 +71,16 @@ public class ImportCgms extends SimpleApplication {
 
         Spatial bow = assetManager.loadModel("Models/Bow/bow.gltf");
         writeToJ3O(bow, "Models/Bow/bow.j3o");
+
+        // Scale the Drake model and add a DrakeControl.
+        Spatial drake
+                = assetManager.loadModel("Models/Drake/Drake-no-ragdoll.j3o");
+        drake.setLocalScale(1.1f);
+        AbstractControl sControl = RagUtils.findSControl(drake);
+        Spatial controlledSpatial = sControl.getSpatial();
+        DrakeControl ragdoll = new DrakeControl();
+        controlledSpatial.addControl(ragdoll);
+        writeToJ3O(drake, AnimDefs.Monster.ASSET_PATH);
 
         Spatial levelRough
                 = assetManager.loadModel("Scenes/level_rough.gltf");
