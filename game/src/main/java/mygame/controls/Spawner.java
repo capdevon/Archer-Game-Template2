@@ -26,7 +26,6 @@ public class Spawner extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        //To change body of generated methods, choose Tools | Templates.
         if (prefab == null) {
             return;
         }
@@ -48,7 +47,6 @@ public class Spawner extends AbstractControl {
     
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-        //To change body of generated methods, choose Tools | Templates.
     }
     
     private Vector3f getRandomSpawnPoint() {

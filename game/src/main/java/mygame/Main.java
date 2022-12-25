@@ -56,20 +56,21 @@ public class Main extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-        // disable the default 1st-person flyCam!
+        // Disable the default 1st-person flyCam!
         stateManager.detach(stateManager.getState(FlyCamAppState.class));
         flyCam.setEnabled(false);
 
         SoundManager.init(assetManager);
-        
-        // preload models
+
+        // Preload some models.
         assetManager.loadModel(AnimDefs.Archer.ASSET_PATH);
         assetManager.loadModel(AnimDefs.Monster.ASSET_PATH);
 
-        /** Initialize the physics simulation */
+        // Initialize the physics simulation.
         BulletAppState physics = new BulletAppState();
         stateManager.attach(physics);
         physics.getPhysicsSpace().setGravity(Physics.DEFAULT_GRAVITY);
+        //physics.setDebugEnabled(true);
 
         stateManager.attach(new SceneAppState());
         stateManager.attach(new GInputAppState());
@@ -78,7 +79,7 @@ public class Main extends SimpleApplication {
         stateManager.attach(new MonsterAppState());
         stateManager.attach(new TogglePhysicsDebugState());
 
-        // an app state for taking screenshots:
+        // Attach an app state for taking screenshots.
         String workingDirectory = System.getProperty("user.dir") + File.separator;
         ScreenshotAppState screenshot = new ScreenshotAppState(workingDirectory, "screenshot");
         stateManager.attach(screenshot);
