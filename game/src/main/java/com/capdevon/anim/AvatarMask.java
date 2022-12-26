@@ -12,11 +12,12 @@ import com.jme3.anim.Joint;
 
 /**
  * An AnimationMask to select joints from a single Armature.
+ *
  * @author capdevon
  */
-public class AnimMaskBuilder implements AnimationMask {
+public class AvatarMask implements AnimationMask {
 
-    private static final Logger logger = Logger.getLogger(AnimMaskBuilder.class.getName());
+    private static final Logger logger = Logger.getLogger(AvatarMask.class.getName());
 
     private final BitSet affectedJoints;
     private final Armature armature;
@@ -26,7 +27,7 @@ public class AnimMaskBuilder implements AnimationMask {
      *
      * @param armature
      */
-    public AnimMaskBuilder(Armature armature) {
+    public AvatarMask(Armature armature) {
         this.armature = armature;
         this.affectedJoints = new BitSet(armature.getJointCount());
         logger.log(Level.INFO, "Joint count: {0}", armature.getJointCount());
@@ -36,9 +37,9 @@ public class AnimMaskBuilder implements AnimationMask {
      * Add all the bones of the model's armature to be influenced by this
      * animation mask.
      *
-     * @return AnimMaskBuilder
+     * @return AvatarMask
      */
-    public AnimMaskBuilder addAllJoints() {
+    public AvatarMask addAllJoints() {
         int numJoints = armature.getJointCount();
         affectedJoints.set(0, numJoints);
         return this;
@@ -48,10 +49,10 @@ public class AnimMaskBuilder implements AnimationMask {
      * Add joints to be influenced by this animation mask.
      *
      * @param jointNames
-     * @return AnimMaskBuilder
+     * @return AvatarMask
      */
-    public AnimMaskBuilder addJoints(String...jointNames) {
-        for (String jointName: jointNames) {
+    public AvatarMask addJoints(String... jointNames) {
+        for (String jointName : jointNames) {
             Joint joint = findJoint(jointName);
             affectedJoints.set(joint.getId());
         }
@@ -71,9 +72,9 @@ public class AnimMaskBuilder implements AnimationMask {
      * animation mask.
      *
      * @param jointName the starting point (may be null, unaffected)
-     * @return AnimMaskBuilder
+     * @return AvatarMask
      */
-    public AnimMaskBuilder addFromJoint(String jointName) {
+    public AvatarMask addFromJoint(String jointName) {
         Joint joint = findJoint(jointName);
         addFromJoint(joint);
         return this;
@@ -81,7 +82,7 @@ public class AnimMaskBuilder implements AnimationMask {
 
     private void addFromJoint(Joint joint) {
         affectedJoints.set(joint.getId());
-        for (Joint j: joint.getChildren()) {
+        for (Joint j : joint.getChildren()) {
             addFromJoint(j);
         }
     }
@@ -91,9 +92,9 @@ public class AnimMaskBuilder implements AnimationMask {
      * animation mask.
      *
      * @param jointName the starting point (may be null, unaffected)
-     * @return AnimMaskBuilder
+     * @return AvatarMask
      */
-    public AnimMaskBuilder removeFromJoint(String jointName) {
+    public AvatarMask removeFromJoint(String jointName) {
         Joint joint = findJoint(jointName);
         removeFromJoint(joint);
         return this;
@@ -101,7 +102,7 @@ public class AnimMaskBuilder implements AnimationMask {
 
     private void removeFromJoint(Joint joint) {
         affectedJoints.clear(joint.getId());
-        for (Joint j: joint.getChildren()) {
+        for (Joint j : joint.getChildren()) {
             removeFromJoint(j);
         }
     }
@@ -110,9 +111,9 @@ public class AnimMaskBuilder implements AnimationMask {
      * Add the specified Joint and all its ancestors.
      *
      * @param jointName the starting point (may be null, unaffected)
-     * @return AnimMaskBuilder
+     * @return AvatarMask
      */
-    public AnimMaskBuilder addAncestors(String jointName) {
+    public AvatarMask addAncestors(String jointName) {
         Joint joint = findJoint(jointName);
         addAncestors(joint);
         return this;
@@ -128,9 +129,9 @@ public class AnimMaskBuilder implements AnimationMask {
      * Remove the specified Joint and all its ancestors.
      *
      * @param jointName the starting point (may be null, unaffected)
-     * @return AnimMaskBuilder
+     * @return AvatarMask
      */
-    public AnimMaskBuilder removeAncestors(String jointName) {
+    public AvatarMask removeAncestors(String jointName) {
         Joint joint = findJoint(jointName);
         removeAncestors(joint);
         return this;
@@ -146,17 +147,17 @@ public class AnimMaskBuilder implements AnimationMask {
      * Remove the named joints.
      *
      * @param jointNames the names of the joints to be removed
-     * @return AnimMaskBuilder
+     * @return AvatarMask
      */
-    public AnimMaskBuilder removeJoints(String...jointNames) {
-        for (String jointName: jointNames) {
+    public AvatarMask removeJoints(String... jointNames) {
+        for (String jointName : jointNames) {
             Joint joint = findJoint(jointName);
             affectedJoints.clear(joint.getId());
         }
 
         return this;
     }
-    
+
     /**
      * Get the list of joints affected by this animation mask.
      *
