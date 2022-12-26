@@ -22,4 +22,10 @@ dependencies {
 
     implementation files('../lib/shaderblow-ex-1.0.0.jar')
     runtimeOnly    files('../lib/jme-materialize.jar')
+    
+    // libraries related to the Lemur GUI and Groovy:
+    implementation 'com.simsilica:lemur:1.16.0'
+    implementation 'com.simsilica:lemur-props:1.2.0'
+    implementation 'com.simsilica:lemur-proto:1.13.0'
+    runtimeOnly 'org.codehaus.groovy:groovy-jsr223:3.0.14'
 }
