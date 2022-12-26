@@ -1,7 +1,16 @@
 package mygame.devtool;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.bullet.RotationOrder;
+import com.jme3.bullet.animation.CenterHeuristic;
+import com.jme3.bullet.animation.DacConfiguration;
+import com.jme3.bullet.animation.DynamicAnimControl;
+import com.jme3.bullet.animation.LinkConfig;
+import com.jme3.bullet.animation.MassHeuristic;
 import com.jme3.bullet.animation.RagUtils;
+import com.jme3.bullet.animation.RangeOfMotion;
+import com.jme3.bullet.animation.ShapeHeuristic;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.system.JmeContext;
@@ -10,7 +19,6 @@ import java.util.logging.Logger;
 import jme3utilities.Heart;
 import jme3utilities.MyString;
 import mygame.AnimDefs;
-import mygame.prefabs.DrakeControl;
 
 /**
  * A headless SimpleApplication to import certain C-G models used in the Archer
@@ -72,13 +80,14 @@ public class ImportCgms extends SimpleApplication {
         Spatial bow = assetManager.loadModel("Models/Bow/bow.gltf");
         writeToJ3O(bow, "Models/Bow/bow.j3o");
 
-        // Scale the Drake model and add a DrakeControl.
+        // Scale the Drake model and add a DynamicAnimControl.
         Spatial drake
                 = assetManager.loadModel("Models/Drake/Drake-no-ragdoll.j3o");
         drake.setLocalScale(1.1f);
         AbstractControl sControl = RagUtils.findSControl(drake);
         Spatial controlledSpatial = sControl.getSpatial();
-        DrakeControl ragdoll = new DrakeControl();
+        DynamicAnimControl ragdoll = new DynamicAnimControl();
+        configureDrakeRagdoll(ragdoll);
         controlledSpatial.addControl(ragdoll);
         writeToJ3O(drake, AnimDefs.Monster.ASSET_PATH);
 
@@ -91,6 +100,65 @@ public class ImportCgms extends SimpleApplication {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Configure a DynamicAnimControl for the Drake model.
+     *
+     * @param ragdoll the control to configure (not null, modified)
+     */
+    private void configureDrakeRagdoll(DynamicAnimControl ragdoll) {
+        ragdoll.setIgnoredHops(2);
+
+        float density = 1f;
+        LinkConfig vertexHull = new LinkConfig(density, MassHeuristic.Density,
+                ShapeHeuristic.VertexHull, new Vector3f(1f, 1f, 1f),
+                CenterHeuristic.Mean, RotationOrder.XZY);
+
+        ragdoll.setConfig(DacConfiguration.torsoName, vertexHull);
+        ragdoll.link("mixamorig:Spine", vertexHull,
+                new RangeOfMotion(1f, -0.4f, 0.4f, -0.4f, 0.4f, -0.4f));
+        ragdoll.link("mixamorig:Spine1", vertexHull,
+                new RangeOfMotion(0.4f, 0.2f, 0.2f));
+        ragdoll.link("mixamorig:Spine2", vertexHull,
+                new RangeOfMotion(0.4f, 0.2f, 0.2f));
+
+        ragdoll.link("mixamorig:Neck", vertexHull,
+                new RangeOfMotion(1f, 0.5f, 0.7f));
+        ragdoll.link("mixamorig:Head", vertexHull,
+                new RangeOfMotion(1f, 0.5f, 0.7f));
+
+        ragdoll.link("mixamorig:LeftShoulder", vertexHull,
+                new RangeOfMotion(0.5f, -0.5f, 0f, 0f, 0.6f, -0.3f));
+        ragdoll.link("mixamorig:LeftArm", vertexHull,
+                new RangeOfMotion(1f, -1.6f, 1f, -1f, 1.6f, -1f));
+        ragdoll.link("mixamorig:LeftForeArm", vertexHull,
+                new RangeOfMotion(0f, 0f, 1f, -1f, 2f, 0f));
+        ragdoll.link("mixamorig:LeftHand", vertexHull,
+                new RangeOfMotion(0.8f, 0f, 0.2f));
+
+        ragdoll.link("mixamorig:RightShoulder", vertexHull,
+                new RangeOfMotion(0.5f, -0.5f, 0f, 0f, 0.3f, -0.6f));
+        ragdoll.link("mixamorig:RightArm", vertexHull,
+                new RangeOfMotion(1.6f, -1f, 1f, -1f, 1f, -1.6f));
+        ragdoll.link("mixamorig:RightForeArm", vertexHull,
+                new RangeOfMotion(0f, 0f, 1f, -1f, 0f, -2f));
+        ragdoll.link("mixamorig:RightHand", vertexHull,
+                new RangeOfMotion(0.8f, 0f, 0.2f));
+
+        ragdoll.link("mixamorig:LeftUpLeg", vertexHull,
+                new RangeOfMotion(0.4f, -1f, 0.4f, -0.4f, 1f, -0.6f));
+        ragdoll.link("mixamorig:LeftLeg", vertexHull,
+                new RangeOfMotion(0f, -2f, 0.6f, -0.6f, 0f, 0f));
+        ragdoll.link("mixamorig:LeftFoot", vertexHull,
+                new RangeOfMotion(0.4f, 0.4f, 0f));
+
+        ragdoll.link("mixamorig:RightUpLeg", vertexHull,
+                new RangeOfMotion(0.4f, -1f, 0.4f, -0.4f, 0.6f, -1f));
+        ragdoll.link("mixamorig:RightLeg", vertexHull,
+                new RangeOfMotion(0f, -2f, 0.6f, -0.6f, 0f, 0f));
+        ragdoll.link("mixamorig:RightFoot", vertexHull,
+                new RangeOfMotion(0.4f, 0.4f, 0f));
+    }
 
     /**
      * Write the specified model to a J3O file.
