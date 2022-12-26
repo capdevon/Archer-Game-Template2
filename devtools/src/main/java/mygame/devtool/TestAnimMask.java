@@ -244,9 +244,6 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
         return bmp;
     }
 
-    /**
-     * @class JointWidget
-     */
     protected class JointWidget {
 
         private Joint joint;
