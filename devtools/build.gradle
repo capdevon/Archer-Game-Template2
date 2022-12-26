@@ -8,21 +8,8 @@ sourceSets.main.java.srcDir '../game/src/main/java'
 sourceSets.main.resources.srcDir '../game/src/main/resources'
 
 dependencies {
-    implementation 'com.github.stephengold:Minie:7.0.0'
-    implementation 'org.jmonkeyengine:jme3-core:' + jmeVersion
-    implementation 'org.jmonkeyengine:jme3-desktop:' + jmeVersion
-    implementation 'org.jmonkeyengine:jme3-effects:' + jmeVersion
-    runtimeOnly    'org.jmonkeyengine:jme3-jogg:' + jmeVersion
-    runtimeOnly    'org.jmonkeyengine:jme3-plugins:' + jmeVersion
-    runtimeOnly    'org.jmonkeyengine:jme3-testdata:' + jmeVersion
+    runtimeOnly 'org.jmonkeyengine:jme3-testdata:' + jmeVersion
 
-    // select one version of LWJGL
-    runtimeOnly 'org.jmonkeyengine:jme3-lwjgl:' + jmeVersion  // LWJGL 2.x
-    //runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jmeVersion // LWJGL 3.x
-
-    implementation files('../lib/shaderblow-ex-1.0.0.jar')
-    runtimeOnly    files('../lib/jme-materialize.jar')
-    
     // libraries related to the Lemur GUI and Groovy:
     implementation 'com.simsilica:lemur:1.16.0'
     implementation 'com.simsilica:lemur-props:1.2.0'
