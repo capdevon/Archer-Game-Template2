@@ -186,21 +186,28 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
 
         Container window = new Container();
         window.addChild(new Label("Joint Widget", new ElementId("title")));
+
+        JointWidget widget = new JointWidget(spine);
+        PropertyPanel properties = new PropertyPanel(null);
+        properties.addFloatProperty("X", widget, "x", -180, 180, 0.05f);
+        properties.addFloatProperty("Y", widget, "y", -180, 180, 0.05f);
+        properties.addFloatProperty("Z", widget, "z", -180, 180, 0.05f);
+        properties.addBooleanProperty("User Control", widget, "userControl");
+        window.addChild(properties);
+
         window.setLocalTranslation(10, cam.getHeight() - 100f, 0);
         guiNode.attachChild(window);
 
-        JointWidget widget = new JointWidget(spine);
-        window.addChild(widget.getProperties());
         nextAnim();
     }
-    
+
     @Override
     public void simpleUpdate(float tpf) {
         // do something...
     }
 
     private void setupKeys() {
-        addMapping("toggleArmature", new KeyTrigger(KeyInput.KEY_RETURN));
+        addMapping("toggleArmature", new KeyTrigger(KeyInput.KEY_0));
         addMapping("nextAnim", new KeyTrigger(KeyInput.KEY_RIGHT));
     }
 
@@ -247,7 +254,6 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
     protected class JointWidget {
 
         private Joint joint;
-        private PropertyPanel properties;
         private Quaternion tempRot = new Quaternion();
         private float x, y, z;
         private Node axes;
@@ -255,18 +261,8 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
 
         public JointWidget(Joint joint) {
             this.joint = joint;
-            properties = new PropertyPanel(null);
-            properties.addFloatProperty("X", this, "x", -180, 180, 0.05f);
-            properties.addFloatProperty("Y", this, "y", -180, 180, 0.05f);
-            properties.addFloatProperty("Z", this, "z", -180, 180, 0.05f);
-            properties.addBooleanProperty("User Control", this, "userControl");
-
             axes = createTransformWidget();
             skinningControl.getAttachmentsNode(joint.getName()).attachChild(axes);
-        }
-
-        public PropertyPanel getProperties() {
-            return properties;
         }
 
         public float getX() {
@@ -305,7 +301,7 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
             if (userControl) {
                 applyRotation();
             } else {
-            	// layerName = jointName
+                // layerName = jointName
                 animComposer.setCurrentAction(currAnimName, joint.getName());
                 //animComposer.getLayer(joint.getName()).setTime(???);
             }
@@ -322,7 +318,7 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
         }
 
         private void applyRotation() {
-        	// layerName = jointName
+            // layerName = jointName
             animComposer.removeCurrentAction(joint.getName());
             //Quaternion q = joint.getLocalRotation().mult(tempRot);
             joint.setLocalRotation(tempRot);
