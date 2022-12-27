@@ -273,17 +273,13 @@ public class TestSphereCast extends SimpleApplication implements ActionListener 
         Vector3f finalVec = t.vect2.set(direction).scaleAdd(maxDistance, origin);
 
         boolean collision = false;
+        float hf = maxDistance;
         hitInfo.clear();
 
         float penetration = 0f; // physics-space units
         ConvexShape shape = (useMultiSphere) ? new MultiSphere(radius) : new SphereCollisionShape(radius);
-
-        // FIXME: the order of sweep-test results is arbitrary. 
-        // Perhaps it is worth sorting objects by distance in ascending order.
         physics.getPhysicsSpace().sweepTest(shape, new Transform(beginVec), new Transform(finalVec), sweepTestResults, penetration);
-
-        System.out.println("--Collisions: " + sweepTestResults.size());
-
+        
         for (PhysicsSweepTestResult tr : sweepTestResults) {
 
             PhysicsCollisionObject pco = tr.getCollisionObject();
@@ -292,7 +288,7 @@ public class TestSphereCast extends SimpleApplication implements ActionListener 
             boolean isObstruction = applyMask(layerMask, pco.getCollisionGroup())
                     && !compareTag(userObject, ignoreTag);
 
-            if (isObstruction) {
+            if (tr.getHitFraction() < hf && isObstruction) {
 
                 hitInfo.rigidBody = pco;
                 hitInfo.collider = pco.getCollisionShape();
@@ -301,9 +297,8 @@ public class TestSphereCast extends SimpleApplication implements ActionListener 
                 tr.getHitNormalLocal(hitInfo.normal);
                 hitInfo.distance = beginVec.distance(hitInfo.point);
 
-                System.out.println("isObstruction " + userObject);
                 collision = true;
-                break;
+                hf = tr.getHitFraction();
             }
         }
 
