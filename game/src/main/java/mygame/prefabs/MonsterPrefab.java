@@ -21,17 +21,10 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.BillboardControl;
-import com.jme3.scene.control.Control;
-import jme3utilities.MyControl;
-import jme3utilities.Validate;
-import jme3utilities.debug.Describer;
-import jme3utilities.minie.MyControlP;
-import jme3utilities.minie.UserFilter;
 
 import mygame.AnimDefs;
 import mygame.ai.AIControl;
 import mygame.controls.Damageable;
-import mygame.player.PlayerInput;
 
 /**
  * 
@@ -68,7 +61,7 @@ public class MonsterPrefab extends PrefabComponent {
         bcc.setPhysicsDamping(1f);
         bcc.setViewDirection(rotation.mult(Vector3f.UNIT_Z));
 
-        DynamicAnimControl ragdoll = GameObject.getComponent(enemy, DynamicAnimControl.class);
+        DynamicAnimControl ragdoll = GameObject.getComponentInChildren(enemy, DynamicAnimControl.class);
         phySpace.add(ragdoll);
 
         BitmapText hud = createBitmapText(ColorRGBA.Black, "label-placeholder", .1f);

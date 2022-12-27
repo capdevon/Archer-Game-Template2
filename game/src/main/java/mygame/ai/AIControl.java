@@ -65,8 +65,8 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
         super.setSpatial(sp);
         if (spatial != null) {
             this.bcc = getComponent(BetterCharacterControl.class);
-            this.dac = getComponent(DynamicAnimControl.class);
-            this.animator = getComponentInChildren(Animator.class);
+            this.dac = getComponentInChildren(DynamicAnimControl.class);
+            this.animator = getComponent(Animator.class);
 
             animator.createDefaultActions();
             animator.addListener(this);

@@ -36,16 +36,6 @@ public abstract class AdapterControl extends AbstractControl {
     }
 
     /**
-     * Returns all components of Type type in the GameObject.
-     *
-     * @param type
-     * @return
-     */
-    public List<Node> getComponents(Class<? extends Control> type) {
-        return GameObject.getComponents(spatial, type);
-    }
-
-    /**
      * Returns the component of Type type if the game object has one attached,
      * null if it doesn't.
      *

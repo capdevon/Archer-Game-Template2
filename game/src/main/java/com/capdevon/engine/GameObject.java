@@ -6,10 +6,8 @@ import java.util.Objects;
 
 import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitor;
-import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
-import jme3utilities.MySpatial;
 
 /**
  * https://docs.unity3d.com/ScriptReference/GameObject.html
@@ -21,12 +19,17 @@ public class GameObject {
     /**
      * A private constructor to inhibit instantiation of this class.
      */
-    private GameObject() {}
-    
+    private GameObject() {
+    }
+
     public static final String TAG_NAME = "TagName";
 
     /**
      * Is Spatial tagged with tag ?
+     *
+     * @param sp
+     * @param tag
+     * @return
      */
     public static boolean compareTag(Spatial sp, String tag) {
         return Objects.equals(sp.getUserData(TAG_NAME), tag);
@@ -35,6 +38,10 @@ public class GameObject {
     /**
      * Returns one active GameObject tagged tag. Returns null if no GameObject
      * was found.
+     *
+     * @param sp
+     * @param tag
+     * @return
      */
     public static Spatial findWithTag(Spatial sp, String tag) {
         List<Spatial> lst = findGameObjectsWithTag(sp, tag);
@@ -44,14 +51,18 @@ public class GameObject {
     /**
      * Returns an array of active GameObjects tagged tag. Returns empty array if
      * no GameObject was found.
+     *
+     * @param subtree
+     * @param tag
+     * @return
      */
-    public static List<Spatial> findGameObjectsWithTag(Spatial sp, String tag) {
+    public static List<Spatial> findGameObjectsWithTag(Spatial subtree, String tag) {
         List<Spatial> lst = new ArrayList<>();
-        sp.breadthFirstTraversal(new SceneGraphVisitor() {
+        subtree.breadthFirstTraversal(new SceneGraphVisitor() {
             @Override
-            public void visit(Spatial node) {
-                if (tag.equals(node.getUserData(TAG_NAME))) {
-                    lst.add(node);
+            public void visit(Spatial sp) {
+                if (tag.equals(sp.getUserData(TAG_NAME))) {
+                    lst.add(sp);
                 }
             }
         });
@@ -67,31 +78,7 @@ public class GameObject {
      * @return an instance of the specified subclass (not null)
      */
     public static <T extends Control> T getComponent(Spatial subtree, Class<T> clazz) {
-        List<T> list = MySpatial.listControls(subtree, clazz, null);
-        assert list.size() == 1 : list.size();
-        T result = list.get(0);
-
-        return result;
-    }
-
-    /**
-     * Returns all components of Type type in the GameObject.
-     *
-     * @param spatial
-     * @param clazz
-     * @return
-     */
-    public static List<Node> getComponents(Spatial spatial, Class<? extends Control> clazz) {
-        final List<Node> lst = new ArrayList<>(10);
-        spatial.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
-            @Override
-            public void visit(Node node) {
-                if (node.getControl(clazz) != null) {
-                    lst.add(node);
-                }
-            }
-        });
-        return lst;
+        return subtree.getControl(clazz);
     }
 
     /**
@@ -99,17 +86,17 @@ public class GameObject {
      * children children using depth first search. Works recursively.
      *
      * @param <T>
-     * @param sp
-     * @param clazz
+     * @param subtree
+     * @param type
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <T> List<T> getComponentsInChildren(Spatial sp, Class<? extends Control> clazz) {
+    public static <T> List<T> getComponentsInChildren(Spatial subtree, Class<? extends Control> type) {
         List<T> lst = new ArrayList<>(5);
-        sp.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
+        subtree.breadthFirstTraversal(new SceneGraphVisitor() {
             @Override
-            public void visit(Node node) {
-                T control = (T) node.getControl(clazz);
+            public void visit(Spatial sp) {
+                T control = (T) sp.getControl(type);
                 if (control != null) {
                     lst.add(control);
                 }
@@ -123,18 +110,19 @@ public class GameObject {
      * children using depth first search.
      *
      * @param <T>
-     * @param clazz
+     * @param subtree
+     * @param type
      * @return
      */
-    public static <T extends Control> T getComponentInChildren(Spatial sp, final Class<T> clazz) {
-        T control = sp.getControl(clazz);
+    public static <T extends Control> T getComponentInChildren(Spatial subtree, final Class<T> type) {
+        T control = subtree.getControl(type);
         if (control != null) {
             return control;
         }
 
-        if (sp instanceof Node) {
-            for (Spatial child : ((Node) sp).getChildren()) {
-                control = getComponentInChildren(child, clazz);
+        if (subtree instanceof Node) {
+            for (Spatial child : ((Node) subtree).getChildren()) {
+                control = getComponentInChildren(child, type);
                 if (control != null) {
                     return control;
                 }
@@ -149,13 +137,14 @@ public class GameObject {
      * parents.
      *
      * @param <T>
-     * @param clazz
+     * @param subtree
+     * @param type
      * @return
      */
-    public static <T extends Control> T getComponentInParent(Spatial sp, Class<T> clazz) {
-        Node parent = sp.getParent();
+    public static <T extends Control> T getComponentInParent(Spatial subtree, Class<T> type) {
+        Node parent = subtree.getParent();
         while (parent != null) {
-            T control = parent.getControl(clazz);
+            T control = parent.getControl(type);
             if (control != null) {
                 return control;
             }
