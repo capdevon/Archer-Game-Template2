@@ -110,11 +110,17 @@ public class ImportCgms extends SimpleApplication {
         ragdoll.setIgnoredHops(2);
 
         float density = 1f;
+        LinkConfig fourSphere = new LinkConfig(density, MassHeuristic.Density,
+                ShapeHeuristic.FourSphere, new Vector3f(1f, 1f, 1f),
+                CenterHeuristic.Mean, RotationOrder.XZY);
+        LinkConfig twoSphere = new LinkConfig(density, MassHeuristic.Density,
+                ShapeHeuristic.TwoSphere, new Vector3f(1f, 1f, 1f),
+                CenterHeuristic.Mean, RotationOrder.XZY);
         LinkConfig vertexHull = new LinkConfig(density, MassHeuristic.Density,
                 ShapeHeuristic.VertexHull, new Vector3f(1f, 1f, 1f),
                 CenterHeuristic.Mean, RotationOrder.XZY);
 
-        ragdoll.setConfig(DacConfiguration.torsoName, vertexHull);
+        ragdoll.setConfig(DacConfiguration.torsoName, fourSphere);
         ragdoll.link("mixamorig:Spine", vertexHull,
                 new RangeOfMotion(1f, -0.4f, 0.4f, -0.4f, 0.4f, -0.4f));
         ragdoll.link("mixamorig:Spine1", vertexHull,
@@ -124,48 +130,51 @@ public class ImportCgms extends SimpleApplication {
 
         ragdoll.link("mixamorig:Neck", vertexHull,
                 new RangeOfMotion(1f, 0.5f, 0.7f));
-        ragdoll.link("mixamorig:Head", vertexHull,
+        ragdoll.link("mixamorig:Head", fourSphere,
                 new RangeOfMotion(1f, 0.5f, 0.7f));
 
         ragdoll.link("mixamorig:LeftShoulder", vertexHull,
                 new RangeOfMotion(0.5f, -0.5f, 0f, 0f, 0.6f, -0.3f));
         ragdoll.link("mixamorig:LeftArm", vertexHull,
                 new RangeOfMotion(1f, -1.6f, 1f, -1f, 1.6f, -1f));
-        ragdoll.link("mixamorig:LeftForeArm", vertexHull,
+        ragdoll.link("mixamorig:LeftForeArm", twoSphere,
                 new RangeOfMotion(0f, 0f, 1f, -1f, 2f, 0f));
-        ragdoll.link("mixamorig:LeftHand", vertexHull,
+        ragdoll.link("mixamorig:LeftHand", fourSphere,
                 new RangeOfMotion(0.8f, 0f, 0.2f));
 
         ragdoll.link("mixamorig:RightShoulder", vertexHull,
                 new RangeOfMotion(0.5f, -0.5f, 0f, 0f, 0.3f, -0.6f));
         ragdoll.link("mixamorig:RightArm", vertexHull,
                 new RangeOfMotion(1.6f, -1f, 1f, -1f, 1f, -1.6f));
-        ragdoll.link("mixamorig:RightForeArm", vertexHull,
+        ragdoll.link("mixamorig:RightForeArm", twoSphere,
                 new RangeOfMotion(0f, 0f, 1f, -1f, 0f, -2f));
-        ragdoll.link("mixamorig:RightHand", vertexHull,
+        ragdoll.link("mixamorig:RightHand", fourSphere,
                 new RangeOfMotion(0.8f, 0f, 0.2f));
 
-        ragdoll.link("mixamorig:LeftUpLeg", vertexHull,
+        ragdoll.link("mixamorig:LeftUpLeg", twoSphere,
                 new RangeOfMotion(0.4f, -1f, 0.4f, -0.4f, 1f, -0.6f));
-        ragdoll.link("mixamorig:LeftLeg", vertexHull,
+        ragdoll.link("mixamorig:LeftLeg", fourSphere,
                 new RangeOfMotion(0f, -2f, 0.6f, -0.6f, 0f, 0f));
         ragdoll.link("mixamorig:LeftFoot", vertexHull,
                 new RangeOfMotion(0.4f, 0.4f, 0f));
 
-        ragdoll.link("mixamorig:RightUpLeg", vertexHull,
+        ragdoll.link("mixamorig:RightUpLeg", twoSphere,
                 new RangeOfMotion(0.4f, -1f, 0.4f, -0.4f, 0.6f, -1f));
-        ragdoll.link("mixamorig:RightLeg", vertexHull,
+        ragdoll.link("mixamorig:RightLeg", fourSphere,
                 new RangeOfMotion(0f, -2f, 0.6f, -0.6f, 0f, 0f));
         ragdoll.link("mixamorig:RightFoot", vertexHull,
                 new RangeOfMotion(0.4f, 0.4f, 0f));
     }
 
     /**
-     * Write the specified model to a J3O file.
+     * Write the specified model to the specified J3O file.
+     *
+     * @param subtree
+     * @param writeAssetPath
      */
-    private void writeToJ3O(Spatial model, String writeAssetPath) {
+    private void writeToJ3O(Spatial subtree, String writeAssetPath) {
         String writeFilePath
                 = String.format("%s/%s", assetDirPath, writeAssetPath);
-        Heart.writeJ3O(writeFilePath, model);
+        Heart.writeJ3O(writeFilePath, subtree);
     }
 }
