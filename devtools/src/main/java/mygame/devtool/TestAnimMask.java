@@ -66,12 +66,10 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
 
     private String ARCHER = "Models/Erika/Erika.j3o";
 
-    private SkinningControl skinningControl;
     private AnimComposer animComposer;
     private final Queue<String> animsQueue = new LinkedList<>();
-    private String currAnimName;
-    private String defaultLayer = "MyDefaultLayer";
-    private Joint spine;
+    private final String defaultLayer = "MyDefaultLayer";
+    private JointWidget widget;
 
     private BitmapText animUI;
     private ArmatureDebugAppState armatureDebug;
@@ -163,19 +161,41 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
         animComposer = GameObject.getComponentInChildren(myModel, AnimComposer.class);
         animsQueue.addAll(Arrays.asList("StandingAimIdle", "StandingDrawArrow", "StandingAimOverdraw", "StandingAimRecoil", "StandingAimWalkForward"));
 
-        skinningControl = GameObject.getComponentInChildren(myModel, SkinningControl.class);
-        armatureDebug.addArmatureFrom(skinningControl);
+        SkinningControl skControl = GameObject.getComponentInChildren(myModel, SkinningControl.class);
+        armatureDebug.addArmatureFrom(skControl);
 
-        Armature armature = skinningControl.getArmature();
-        spine = armature.getJoint("mixamorig:Spine");
-        String jointName = spine.getName();
+        Armature armature = skControl.getArmature();
 
-        // All bones except the spine
-        AvatarMask defaultMask = new AvatarMask(armature).addAllJoints().removeJoints(jointName);
+        // All bones
+        AvatarMask defaultMask = new AvatarMask(armature).addAllJoints();
         animComposer.makeLayer(defaultLayer, defaultMask);
 
-        // layerName = jointName; only the spine
-        animComposer.makeLayer(jointName, new AvatarMask(armature).addJoints(jointName));
+        Joint spine = armature.getJoint("mixamorig:Spine");
+        Node axes = createTransformWidget();
+        skControl.getAttachmentsNode(spine.getName()).attachChild(axes);
+
+        widget = new JointWidget(defaultMask, spine);
+    }
+
+    private Node createTransformWidget() {
+        Node node = new Node("Rotation");
+        node.attachChild(createArrow("X", Vector3f.UNIT_X, ColorRGBA.Red));
+        node.attachChild(createArrow("Y", Vector3f.UNIT_Y, ColorRGBA.Green));
+        node.attachChild(createArrow("Z", Vector3f.UNIT_Z, ColorRGBA.Blue));
+        node.setShadowMode(ShadowMode.Off);
+        node.setQueueBucket(Bucket.Transparent);
+        node.scale(0.5f);
+        return node;
+    }
+
+    private Geometry createArrow(String name, Vector3f dir, ColorRGBA color) {
+        Arrow arrow = new Arrow(dir);
+        Geometry geo = new Geometry(name, arrow);
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", color);
+        mat.getAdditionalRenderState().setDepthTest(false);
+        geo.setMaterial(mat);
+        return geo;
     }
 
     private void initLemur() {
@@ -187,13 +207,12 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
         Container window = new Container();
         window.addChild(new Label("Joint Widget", new ElementId("title")));
 
-        JointWidget widget = new JointWidget(spine);
-        PropertyPanel properties = new PropertyPanel(null);
-        properties.addFloatProperty("X", widget, "x", -180, 180, 0.05f);
-        properties.addFloatProperty("Y", widget, "y", -180, 180, 0.05f);
-        properties.addFloatProperty("Z", widget, "z", -180, 180, 0.05f);
-        properties.addBooleanProperty("User Control", widget, "userControl");
-        window.addChild(properties);
+        PropertyPanel panel = new PropertyPanel("glass");
+        panel.addFloatProperty("X", widget, "x", -180, 180, 0.05f);
+        panel.addFloatProperty("Y", widget, "y", -180, 180, 0.05f);
+        panel.addFloatProperty("Z", widget, "z", -180, 180, 0.05f);
+        panel.addBooleanProperty("User Control", widget, "userControl");
+        window.addChild(panel);
 
         window.setLocalTranslation(10, cam.getHeight() - 100f, 0);
         guiNode.attachChild(window);
@@ -231,14 +250,12 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
     }
 
     private void nextAnim() {
-        currAnimName = animsQueue.poll();
+        String currAnimName = animsQueue.poll();
         animsQueue.add(currAnimName);
         animUI.setText("Anim: " + currAnimName);
 
         // Run an action on the default layer.
         animComposer.setCurrentAction(currAnimName, defaultLayer);
-        // Run an action on the spine layer.
-        animComposer.setCurrentAction(currAnimName, spine.getName());
     }
 
     private BitmapText getTextUI(ColorRGBA color, float xPos, float yPos) {
@@ -253,16 +270,15 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
 
     protected class JointWidget {
 
-        private Joint joint;
-        private Quaternion tempRot = new Quaternion();
+        private final AvatarMask mask;
+        private final Joint joint;
+        private final Quaternion tempRot = new Quaternion();
         private float x, y, z;
-        private Node axes;
         private boolean userControl;
 
-        public JointWidget(Joint joint) {
+        public JointWidget(AvatarMask mask, Joint joint) {
+            this.mask = mask;
             this.joint = joint;
-            axes = createTransformWidget();
-            skinningControl.getAttachmentsNode(joint.getName()).attachChild(axes);
         }
 
         public float getX() {
@@ -296,14 +312,18 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
             return userControl;
         }
 
-        public void setUserControl(boolean userControl) {
-            this.userControl = userControl;
+        /**
+         * If enabled, user can control joint transform.
+         * Animation transforms are not applied to this bone when enabled.
+         *
+         * @param enable true for direct control, false for canned animations
+         */
+        public void setUserControl(boolean enable) {
+            this.userControl = enable;
             if (userControl) {
                 applyRotation();
             } else {
-                // layerName = jointName
-                animComposer.setCurrentAction(currAnimName, joint.getName());
-                //animComposer.getLayer(joint.getName()).setTime(???);
+                mask.addJoints(joint.getName());
             }
         }
 
@@ -318,31 +338,10 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
         }
 
         private void applyRotation() {
-            // layerName = jointName
-            animComposer.removeCurrentAction(joint.getName());
-            //Quaternion q = joint.getLocalRotation().mult(tempRot);
+            if (mask.contains(joint)) {
+                mask.removeJoints(joint.getName());
+            }
             joint.setLocalRotation(tempRot);
-        }
-
-        private Node createTransformWidget() {
-            Node node = new Node("Rotation");
-            node.attachChild(createArrow("X", Vector3f.UNIT_X, ColorRGBA.Red));
-            node.attachChild(createArrow("Y", Vector3f.UNIT_Y, ColorRGBA.Green));
-            node.attachChild(createArrow("Z", Vector3f.UNIT_Z, ColorRGBA.Blue));
-            node.setShadowMode(ShadowMode.Off);
-            node.setQueueBucket(Bucket.Transparent);
-            node.scale(1f);
-            return node;
-        }
-
-        private Geometry createArrow(String name, Vector3f dir, ColorRGBA color) {
-            Arrow arrow = new Arrow(dir);
-            Geometry geo = new Geometry(name, arrow);
-            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            mat.setColor("Color", color);
-            mat.getAdditionalRenderState().setDepthTest(false);
-            geo.setMaterial(mat);
-            return geo;
         }
 
     }
