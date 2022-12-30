@@ -126,8 +126,9 @@ public class PlayerControl extends AdapterControl {
     }
 
     private boolean checkTransition(Animation3 newAnim, Animation3 a, Animation3 b) {
-        String curAnim = animator.getCurrentAnimation();
-        return (newAnim.equals(a) && b.name.equals(curAnim)) || (newAnim.equals(b) && a.name.equals(curAnim));
+        String curAnim = animator.getCurrentAnimName();
+        return (newAnim.equals(a) && b.getName().equals(curAnim))
+                || (newAnim.equals(b) && a.getName().equals(curAnim));
     }
 
 }

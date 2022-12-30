@@ -75,7 +75,7 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     // weapons list
     private List<Weapon> lstWeapons = new ArrayList<>();
 
-    private static final String pfxMixamo = "mixamorig:";
+    private static final String MixamoPrefix = "mixamorig:";
     private IKControl ikControl;
     private final Quaternion tempRotation = new Quaternion();
     private final float[] angles = new float[3];
@@ -91,8 +91,9 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
 
             mainCamera = new MainCamera(camera, defaultFOV, nearClipPlane, farClipPlane);
 
+            // Override the default layer mask.
             AvatarMask avatarMask = new AvatarMask(animator.getArmature()).addAllJoints();
-            animator.addAnimMask(AnimComposer.DEFAULT_LAYER, avatarMask);
+            animator.setAnimMask(AnimComposer.DEFAULT_LAYER, avatarMask);
             
             r_wh = createBoneHook(HumanBodyBones.RightHand);
             l_wh = createBoneHook(HumanBodyBones.LeftHand);
@@ -118,13 +119,12 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
 
     private Node createBoneHook(String jointName) {
         Node wh = new Node("Ref-" + jointName);
-        animator.getAttachments(pfxMixamo + jointName).attachChild(wh);
-        System.out.println("--Setup BoneHook: " + wh);
+        animator.getAttachments(MixamoPrefix + jointName).attachChild(wh);
         return wh;
     }
 
     private IKControl createIKControl(AvatarMask mask, String jointName) {
-        Joint joint = animator.getJoint(pfxMixamo + jointName);
+        Joint joint = animator.getJoint(MixamoPrefix + jointName);
         return new IKControl(mask, joint);
     }
 
@@ -205,10 +205,10 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
 
     @Override
     public void onAnimCycleDone(AnimComposer control, String animName, boolean loop) {
-        if (animName.equals(Archer.AimRecoil.name)) {
+        if (animName.equals(Archer.AimRecoil.getName())) {
             animator.setAnimation(Archer.DrawArrow);
 
-        } else if (animName.equals(Archer.DrawArrow.name)) {
+        } else if (animName.equals(Archer.DrawArrow.getName())) {
             animator.setAnimation(Archer.AimOverdraw);
 
         } else if (!loop) {
@@ -220,14 +220,14 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     public void onAnimChange(AnimComposer control, String animName) {
         showRightHandItem(false);
 
-        if (animName.equals(Archer.AimRecoil.name)) {
+        if (animName.equals(Archer.AimRecoil.getName())) {
             setWeaponCharging();
 
-        } else if (animName.equals(Archer.DrawArrow.name)) {
+        } else if (animName.equals(Archer.DrawArrow.getName())) {
             setWeaponCharging();
             showRightHandItem(true);
 
-        } else if (animName.equals(Archer.AimOverdraw.name)) {
+        } else if (animName.equals(Archer.AimOverdraw.getName())) {
             setWeaponReady();
             showRightHandItem(true);
         }

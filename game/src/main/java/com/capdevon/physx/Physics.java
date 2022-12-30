@@ -39,7 +39,7 @@ public class Physics {
     /**
      * DefaultRaycastLayers
      */
-    public static final int AllLayers = ~0;
+    public static final int ALL_LAYERS = ~0;
 
     /**
      * A private constructor to inhibit instantiation of this class.
@@ -83,7 +83,7 @@ public class Physics {
         Vector3f beginVec = t.vect1.set(origin);
         Vector3f finalVec = t.vect2.set(direction).scaleAdd(maxDistance, origin);
 
-        List<PhysicsRayTestResult> results = PhysicsSpace.getPhysicsSpace().rayTest(beginVec, finalVec);
+        List<PhysicsRayTestResult> results = PhysicsSpace.getPhysicsSpace().rayTestRaw(beginVec, finalVec);
 
         for (PhysicsRayTestResult ray : results) {
             PhysicsCollisionObject pco = ray.getCollisionObject();
@@ -104,7 +104,7 @@ public class Physics {
      * Casts a ray through the scene and returns all hits.
      */
     public static List<RaycastHit> raycastAll(Vector3f origin, Vector3f direction, float maxDistance) {
-        return raycastAll(origin, direction, maxDistance, AllLayers);
+        return raycastAll(origin, direction, maxDistance, ALL_LAYERS);
     }
     
     /**
@@ -152,7 +152,7 @@ public class Physics {
     }
     
     public static boolean raycast(Vector3f origin, Vector3f direction, RaycastHit hitInfo, float maxDistance) {
-        return raycast(origin, direction, hitInfo, maxDistance, AllLayers);
+        return raycast(origin, direction, hitInfo, maxDistance, ALL_LAYERS);
     }
     
     public static boolean raycast(Ray ray, RaycastHit hitInfo, float maxDistance, int layerMask) {
@@ -160,7 +160,7 @@ public class Physics {
     }
     
     public static boolean raycast(Ray ray, RaycastHit hitInfo, float maxDistance) {
-        return raycast(ray.origin, ray.direction, hitInfo, maxDistance, AllLayers);
+        return raycast(ray.origin, ray.direction, hitInfo, maxDistance, ALL_LAYERS);
     }
 
     /**
@@ -202,7 +202,7 @@ public class Physics {
      * Returns true if there is any collider intersecting the line between start and end.
      */
     public static boolean linecast(Vector3f beginVec, Vector3f finalVec, RaycastHit hitInfo) {
-        return linecast(beginVec, finalVec, hitInfo, AllLayers);
+        return linecast(beginVec, finalVec, hitInfo, ALL_LAYERS);
     }
     
     /**
@@ -333,7 +333,7 @@ public class Physics {
     }
 
     public static Set<PhysicsCollisionObject> overlapSphere(Vector3f position, float radius) {
-        return overlapSphere(position, radius, AllLayers);
+        return overlapSphere(position, radius, ALL_LAYERS);
     }
     
     /**
@@ -359,7 +359,7 @@ public class Physics {
     }
 
     public static Set<PhysicsCollisionObject> overlapBox(Vector3f center, Vector3f halfExtents, Quaternion rotation) {
-        return overlapBox(center, halfExtents, rotation, AllLayers);
+        return overlapBox(center, halfExtents, rotation, ALL_LAYERS);
     }
 
     /**

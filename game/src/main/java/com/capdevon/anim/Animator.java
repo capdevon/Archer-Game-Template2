@@ -99,7 +99,7 @@ public class Animator extends AdapterControl {
         notifyAnimChange(currentAnim);
     }
 
-    public String getCurrentAnimation() {
+    public String getCurrentAnimName() {
         return currentAnim;
     }
 
@@ -119,7 +119,14 @@ public class Animator extends AdapterControl {
         return skinningControl.getArmature();
     }
 
-    public void addAnimMask(String layerName, AnimationMask mask) {
+    /**
+     * Set mask with specified layer name. 
+     * It will make a new layer if there isn't any.
+     *
+     * @param layerName the desired name for the new layer
+     * @param mask the desired mask for the new layer (alias created)
+     */
+    public void setAnimMask(String layerName, AnimationMask mask) {
         animComposer.makeLayer(layerName, mask);
     }
 
