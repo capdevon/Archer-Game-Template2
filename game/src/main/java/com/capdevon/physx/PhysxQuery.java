@@ -18,17 +18,18 @@ public class PhysxQuery {
     private static final Logger logger = Logger.getLogger(PhysxQuery.class.getName());
   
     /**
-     * DefaultRaycastLayers ALL LAYERS
+     * DefaultRaycastLayers
      */
-    private static final int AllLayers = ~0;
+    private static final int ALL_LAYERS = ~0;
     /**
      * IdentityFunction
      */
     private static final Predicate<PhysicsRigidBody> IdentityFunction = x -> true;
 
-    private PhysxQuery() {
-    	// private constructor.
-    }
+    /**
+     * A private constructor to inhibit instantiation of this class.
+     */
+    private PhysxQuery() {}
     
     /**
      * Computes and stores colliders inside the sphere.
@@ -61,7 +62,7 @@ public class PhysxQuery {
     }
 
     public static List<PhysicsRigidBody> checkSphere(Vector3f position, float radius) {
-        return checkSphere(position, radius, AllLayers, IdentityFunction);
+        return checkSphere(position, radius, ALL_LAYERS, IdentityFunction);
     }
   
     /**
@@ -99,7 +100,7 @@ public class PhysxQuery {
     }
 
     public static int checkSphereNonAlloc(Vector3f position, float radius, PhysicsRigidBody[] results) {
-        return checkSphereNonAlloc(position, radius, results, AllLayers, IdentityFunction);
+        return checkSphereNonAlloc(position, radius, results, ALL_LAYERS, IdentityFunction);
     }
 
     /**
