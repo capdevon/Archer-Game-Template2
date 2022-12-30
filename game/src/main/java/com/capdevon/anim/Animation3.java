@@ -10,7 +10,7 @@ import com.jme3.anim.AnimComposer;
  */
 public class Animation3 {
 
-	public final String name;
+    private String name;
     private String layer = AnimComposer.DEFAULT_LAYER;
     private boolean loop = true;
     private float speed = 1.0f;
