@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import com.capdevon.control.AdapterControl;
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
+import com.jme3.anim.AnimationMask;
 import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
 import com.jme3.anim.SkinningControl;
@@ -55,7 +56,7 @@ public class Animator extends AdapterControl {
     public void actionCycleDone(Animation3 anim) {
         String animName = anim.getName();
         boolean isLooping = anim.isLooping();
-        actionCycleDone(animName, isLooping).setSpeed(anim.speed);
+        actionCycleDone(animName, isLooping).setSpeed(anim.getSpeed());
     }
 
     public Action actionCycleDone(String animName, boolean loop) {
@@ -63,36 +64,38 @@ public class Animator extends AdapterControl {
         Action action = animComposer.action(animName);
         Tween doneTween = Tweens.callMethod(this, "notifyAnimCycleDone", animName, loop);
         // Register custom action with specified name.
-        return animComposer.actionSequence(animName, action, doneTween);
+        action = new MaskBaseAction(Tweens.sequence(action, doneTween));
+        animComposer.addAction(animName, action);
+        return action;
     }
 
     /**
-     * Run an action on the default layer.
+     * Run an action with specified anim params.
      */
     public void setAnimation(Animation3 anim) {
-        setAnimation(anim.getName());
+        setAnimation(anim.getName(), anim.getLayer());
     }
 
     /**
-     * Run an action on the default layer.
+     * Run an action on specified layer.
      */
-    public void setAnimation(String animName) {
+    public void setAnimation(String animName, String layerName) {
         if (!animName.equals(currentAnim)) {
             currentAnim = animName;
-            animComposer.setCurrentAction(currentAnim);
+            animComposer.setCurrentAction(currentAnim, layerName);
             notifyAnimChange(currentAnim);
         }
     }
 
-    public void crossFade(Animation3 newAnim) {
-        crossFade(newAnim.getName());
+    public void crossFade(Animation3 anim) {
+        crossFade(anim.getName(), anim.getLayer());
     }
 
-    public void crossFade(String animName) {
+    public void crossFade(String animName, String layerName) {
         currentAnim = animName;
-        double dt = animComposer.getTime();
-        animComposer.setCurrentAction(currentAnim);
-        animComposer.setTime(dt);
+        double dt = animComposer.getTime(layerName);
+        animComposer.setCurrentAction(currentAnim, layerName);
+        animComposer.setTime(layerName, dt);
         notifyAnimChange(currentAnim);
     }
 
@@ -110,6 +113,14 @@ public class Animator extends AdapterControl {
 
     public Node getAttachments(String jointName) {
         return skinningControl.getAttachmentsNode(jointName);
+    }
+    
+    public Armature getArmature() {
+        return skinningControl.getArmature();
+    }
+
+    public void addAnimMask(String layerName, AnimationMask mask) {
+        animComposer.makeLayer(layerName, mask);
     }
 
     public void disableArmatureDebug() {
