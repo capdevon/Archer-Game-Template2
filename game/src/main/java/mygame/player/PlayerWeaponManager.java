@@ -8,7 +8,9 @@ import java.util.logging.Logger;
 
 import com.capdevon.anim.ActionAnimEventListener;
 import com.capdevon.anim.Animator;
+import com.capdevon.anim.AvatarMask;
 import com.capdevon.anim.HumanBodyBones;
+import com.capdevon.anim.IKControl;
 import com.capdevon.control.AdapterControl;
 import com.capdevon.physx.Physics;
 import com.capdevon.physx.RaycastHit;
@@ -73,10 +75,10 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     // weapons list
     private List<Weapon> lstWeapons = new ArrayList<>();
 
-    private final String pfxMixamo = "mixamorig:";
-    private Joint spineBone;
-    private Quaternion tempRotation = new Quaternion();
-    private float[] angles = new float[3];
+    private static final String pfxMixamo = "mixamorig:";
+    private IKControl ikControl;
+    private final Quaternion tempRotation = new Quaternion();
+    private final float[] angles = new float[3];
 
     @Override
     public void setSpatial(Spatial sp) {
@@ -89,9 +91,12 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
 
             mainCamera = new MainCamera(camera, defaultFOV, nearClipPlane, farClipPlane);
 
-            r_wh = createHook(HumanBodyBones.RightHand);
-            l_wh = createHook(HumanBodyBones.LeftHand);
-            spineBone = setupBoneIK(HumanBodyBones.Spine1);
+            AvatarMask avatarMask = new AvatarMask(animator.getArmature()).addAllJoints();
+            animator.addAnimMask(AnimComposer.DEFAULT_LAYER, avatarMask);
+            
+            r_wh = createBoneHook(HumanBodyBones.RightHand);
+            l_wh = createBoneHook(HumanBodyBones.LeftHand);
+            ikControl = createIKControl(avatarMask, HumanBodyBones.Spine1);
 
             configureAnimClips();
             switchWeapon();
@@ -111,39 +116,32 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
         animator.addListener(this);
     }
 
-    private Node createHook(String jointName) {
+    private Node createBoneHook(String jointName) {
         Node wh = new Node("Ref-" + jointName);
         animator.getAttachments(pfxMixamo + jointName).attachChild(wh);
-        System.out.println("--Setup Hook: " + wh);
+        System.out.println("--Setup BoneHook: " + wh);
         return wh;
     }
 
-    private Joint setupBoneIK(String jointName) {
-    	Joint joint = animator.getJoint(pfxMixamo + jointName);
-        System.out.println("--Setup BoneIK: " + joint.getId() + " " + joint.getName());
-        return joint;
+    private IKControl createIKControl(AvatarMask mask, String jointName) {
+        Joint joint = animator.getJoint(pfxMixamo + jointName);
+        return new IKControl(mask, joint);
     }
 
     @Override
     protected void controlUpdate(float tpf) {
-        updateBoneIK(tpf);
+        updateBoneIK();
         updateWeaponCharge(tpf);
         updateWeaponAiming(tpf);
     }
 
-    private void updateBoneIK(float tpf) {
-    	//TODO: To be converted into the new animation system (How ???).
-//        if (isAiming) {
-//            camera.getRotation().toAngles(angles);
-//            float rx = FastMath.clamp(angles[0], -0.1f, 0.75f);
-//            //System.out.println("updateBoneIK: " + angles[0] + " " + rx);
-//            tempRotation.fromAngles(0, 0, -rx);
-//            spineBone.setUserControl(true);
-//            spineBone.setUserTransforms(Vector3f.ZERO, tempRotation, Vector3f.UNIT_XYZ);
-//
-//        } else {
-//            spineBone.setUserControl(false);
-//        }
+    private void updateBoneIK() {
+        if (isAiming) {
+            camera.getRotation().toAngles(angles);
+            float rx = angles[0];
+            tempRotation.fromAngles(0, 0, -rx);
+            ikControl.setIKRotation(tempRotation);
+        }
     }
 
     private void updateWeaponCharge(float tpf) {
@@ -172,13 +170,14 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
         }
     }
 
-    public void setAiming(boolean isAiming) {
-        this.isAiming = isAiming;
-        float distance = isAiming ? bpCamera.getMinDistance() : bpCamera.getMaxDistance();
+    public void setAiming(boolean enable) {
+        this.isAiming = enable;
+        ikControl.setUserControl(enable);
+        float distance = (enable) ? bpCamera.getMinDistance() : bpCamera.getMaxDistance();
         bpCamera.setDistanceToTarget(distance);
-        //bpCamera.setAvoidObstacles(!isAiming);
-        bpCamera.setRotationSpeed(isAiming ? 0.5f : 1);
-        currentWeapon.crosshair.setEnabled(isAiming);
+        //bpCamera.setAvoidObstacles(!enable);
+        bpCamera.setRotationSpeed(enable ? 0.5f : 1);
+        currentWeapon.crosshair.setEnabled(enable);
         animator.setAnimation(Archer.DrawArrow);
     }
 
@@ -186,7 +185,7 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
         if (isAiming && canShooting) {
 
             // Aim the ray from character location in camera direction.
-            Vector3f origin = camera.getLocation(); //aimNode.getWorldTranslation();
+            Vector3f origin = camera.getLocation();
             Vector3f dir = camera.getDirection();
 
             if (currentWeapon instanceof FireWeapon) {
@@ -211,9 +210,9 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
 
         } else if (animName.equals(Archer.DrawArrow.name)) {
             animator.setAnimation(Archer.AimOverdraw);
-            
+
         } else if (!loop) {
-        	control.removeCurrentAction();
+            control.removeCurrentAction();
         }
     }
 
@@ -254,7 +253,7 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
         if (model != null)
             wh.attachChild(model);
 
-        String msg = String.format("\n\nModel: %s \nParent: %s \nPos: %s \nRot: %s \nScale: %s",
+        String msg = String.format("%nModel: %s %nParent: %s %nPos: %s %nRot: %s %nScale: %s",
             model, wh.getName(),
             wh.getLocalTranslation().toString(),
             wh.getLocalRotation().toString(),
