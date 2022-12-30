@@ -26,13 +26,18 @@ public class IKControl {
         this.joint = joint;
     }
 
-    public boolean isUserControl() {
+    /**
+     * Returns true if this joint can be directly manipulated by the user.
+     *
+     * @return true if it can be manipulated
+     */
+    public boolean hasUserControl() {
         return userControl;
     }
 
     /**
      * If enabled, user can control joint transform. Animation transforms are
-     * not applied to this bone when enabled.
+     * not applied to this joint when enabled.
      *
      * @param enable true for direct control, false for canned animations
      */
