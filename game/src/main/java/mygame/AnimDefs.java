@@ -15,7 +15,7 @@ public interface AnimDefs {
         final Animation3 Idle               = new Animation3("Idle", true);
         final Animation3 Running            = new Animation3("Running", true);
         final Animation3 Sprinting          = new Animation3("Sprinting", true);
-        final Animation3 AimIdle            = new Animation3("StandingAimIdle", false);
+        final Animation3 AimIdle            = new Animation3("StandingAimIdle", true);
         final Animation3 AimOverdraw        = new Animation3("StandingAimOverdraw", false);
         final Animation3 AimRecoil          = new Animation3("StandingAimRecoil", false);
         final Animation3 DrawArrow          = new Animation3("StandingDrawArrow", false);
