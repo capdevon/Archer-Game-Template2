@@ -31,8 +31,6 @@ import com.jme3.util.SkyFactory;
 public class SceneAppState extends SimpleAppState {
 
     private DirectionalLight sun;
-    private FilterPostProcessor fpp;
-
     private boolean generateLightProbe = false;
 
     @Override
@@ -123,15 +121,15 @@ public class SceneAppState extends SimpleAppState {
 
         FXAAFilter fxaa = new FXAAFilter();
 
-        fpp = new FilterPostProcessor(assetManager);
+        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
 //        int numSamples = settings.getSamples();
 //        if (numSamples > 0) {
 //            fpp.setNumSamples(numSamples);
 //        }
-//
-//        fpp.addFilter(dlsf);
-        fpp.addFilter(ssao);
-        fpp.addFilter(bloom);
+
+        //fpp.addFilter(dlsf);
+        //fpp.addFilter(ssao);
+        //fpp.addFilter(bloom);
         fpp.addFilter(lsf);
         fpp.addFilter(fxaa);
         viewPort.addProcessor(fpp);
