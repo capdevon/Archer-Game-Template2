@@ -53,12 +53,11 @@ public abstract class AdapterControl extends AbstractControl {
      * children children using depth first search. Works recursively.
      *
      * @param <T>
-     * @param sp
      * @param type
      * @return
      */
-    public <T> List<T> getComponentsInChildren(Spatial sp, Class<? extends Control> type) {
-        return GameObject.getComponentsInChildren(sp, type);
+    public <T> List<T> getComponentsInChildren(Class<? extends Control> type) {
+        return GameObject.getComponentsInChildren(spatial, type);
     }
 
     /**
