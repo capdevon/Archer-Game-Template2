@@ -28,11 +28,15 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.FXAAFilter;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial.CullHint;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.debug.custom.ArmatureDebugAppState;
 import com.jme3.scene.shape.Quad;
@@ -67,10 +71,9 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
     private String ARCHER = "Models/Erika/Erika.j3o";
 
     private AnimComposer animComposer;
+    private SkinningControl skControl;
     private final Queue<String> animsQueue = new LinkedList<>();
-    private final String defaultLayer = "MyDefaultLayer";
     private JointWidget widget;
-
     private BitmapText animUI;
     private ArmatureDebugAppState armatureDebug;
 
@@ -161,29 +164,31 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
         animComposer = GameObject.getComponentInChildren(myModel, AnimComposer.class);
         animsQueue.addAll(Arrays.asList("StandingAimIdle", "StandingDrawArrow", "StandingAimOverdraw", "StandingAimRecoil", "StandingAimWalkForward"));
 
-        SkinningControl skControl = GameObject.getComponentInChildren(myModel, SkinningControl.class);
+        skControl = GameObject.getComponentInChildren(myModel, SkinningControl.class);
         armatureDebug.addArmatureFrom(skControl);
 
         Armature armature = skControl.getArmature();
 
-        // All bones
-        AvatarMask defaultMask = new AvatarMask(armature).addAllJoints();
-        animComposer.makeLayer(defaultLayer, defaultMask);
+        // Override the default layer mask.
+        AvatarMask avatarMask = new AvatarMask(armature).addAllJoints();
+        animComposer.makeLayer(AnimComposer.DEFAULT_LAYER, avatarMask);
 
         Joint spine = armature.getJoint("mixamorig:Spine");
-        Node axes = createTransformWidget();
-        skControl.getAttachmentsNode(spine.getName()).attachChild(axes);
+        widget = new JointWidget(avatarMask, spine);
 
-        widget = new JointWidget(defaultMask, spine);
+        Node axes = createTransformWidget();
+        axes.addControl(widget);
+        skControl.getAttachmentsNode(spine.getName()).attachChild(axes);
     }
 
     private Node createTransformWidget() {
-        Node node = new Node("Rotation");
+        Node node = new Node("Axes");
         node.attachChild(createArrow("X", Vector3f.UNIT_X, ColorRGBA.Red));
         node.attachChild(createArrow("Y", Vector3f.UNIT_Y, ColorRGBA.Green));
         node.attachChild(createArrow("Z", Vector3f.UNIT_Z, ColorRGBA.Blue));
         node.setShadowMode(ShadowMode.Off);
         node.setQueueBucket(Bucket.Transparent);
+        node.setCullHint(CullHint.Never);
         node.scale(0.5f);
         return node;
     }
@@ -208,9 +213,9 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
         window.addChild(new Label("Joint Widget", new ElementId("title")));
 
         PropertyPanel panel = new PropertyPanel("glass");
-        panel.addFloatProperty("X", widget, "x", -180, 180, 0.05f);
-        panel.addFloatProperty("Y", widget, "y", -180, 180, 0.05f);
-        panel.addFloatProperty("Z", widget, "z", -180, 180, 0.05f);
+        panel.addFloatProperty("RX", widget, "x", -180, 180, 0.05f);
+        panel.addFloatProperty("RY", widget, "y", -180, 180, 0.05f);
+        panel.addFloatProperty("RZ", widget, "z", -180, 180, 0.05f);
         panel.addBooleanProperty("User Control", widget, "userControl");
         window.addChild(panel);
 
@@ -228,6 +233,7 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
     private void setupKeys() {
         addMapping("toggleArmature", new KeyTrigger(KeyInput.KEY_0));
         addMapping("nextAnim", new KeyTrigger(KeyInput.KEY_RIGHT));
+        addMapping("stopAnim", new KeyTrigger(KeyInput.KEY_P));
     }
 
     private void addMapping(String mappingName, Trigger... triggers) {
@@ -244,6 +250,11 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
         if (name.equals("nextAnim")) {
             nextAnim();
 
+        } else if (name.equals("stopAnim")) {
+            // Reset all layers to t=0 with no current action.
+            animComposer.reset();
+            skControl.getArmature().applyBindPose();
+
         } else if (name.equals("toggleArmature")) {
             armatureDebug.setEnabled(!armatureDebug.isEnabled());
         }
@@ -255,7 +266,7 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
         animUI.setText("Anim: " + currAnimName);
 
         // Run an action on the default layer.
-        animComposer.setCurrentAction(currAnimName, defaultLayer);
+        animComposer.setCurrentAction(currAnimName);
     }
 
     private BitmapText getTextUI(ColorRGBA color, float xPos, float yPos) {
@@ -268,11 +279,11 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
         return bmp;
     }
 
-    protected class JointWidget {
+    protected class JointWidget extends AbstractControl {
 
         private final AvatarMask mask;
         private final Joint joint;
-        private final Quaternion tempRot = new Quaternion();
+        private final Quaternion tempRotation = new Quaternion();
         private float x, y, z;
         private boolean userControl;
 
@@ -313,15 +324,15 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
         }
 
         /**
-         * If enabled, user can control joint transform.
-         * Animation transforms are not applied to this bone when enabled.
+         * If enabled, user can control joint transform. Animation transforms
+         * are not applied to this bone when enabled.
          *
          * @param enable true for direct control, false for canned animations
          */
         public void setUserControl(boolean enable) {
             this.userControl = enable;
             if (userControl) {
-                applyRotation();
+                mask.removeJoints(joint.getName());
             } else {
                 mask.addJoints(joint.getName());
             }
@@ -331,17 +342,18 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
             float qx = FastMath.DEG_TO_RAD * x;
             float qy = FastMath.DEG_TO_RAD * y;
             float qz = FastMath.DEG_TO_RAD * z;
-            tempRot.fromAngles(qx, qy, qz);
+            tempRotation.fromAngles(qx, qy, qz);
+        }
+
+        @Override
+        protected void controlUpdate(float tpf) {
             if (userControl) {
-                applyRotation();
+                joint.setLocalRotation(tempRotation);
             }
         }
 
-        private void applyRotation() {
-            if (mask.contains(joint)) {
-                mask.removeJoints(joint.getName());
-            }
-            joint.setLocalRotation(tempRot);
+        @Override
+        protected void controlRender(RenderManager rm, ViewPort vp) {
         }
 
     }
