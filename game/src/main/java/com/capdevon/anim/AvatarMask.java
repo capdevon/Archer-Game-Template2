@@ -1,5 +1,6 @@
 package com.capdevon.anim;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -9,18 +10,23 @@ import java.util.logging.Logger;
 import com.jme3.anim.AnimationMask;
 import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
+import com.jme3.export.InputCapsule;
+import com.jme3.export.JmeExporter;
+import com.jme3.export.JmeImporter;
+import com.jme3.export.OutputCapsule;
+import com.jme3.export.Savable;
 
 /**
  * An AnimationMask to select joints from a single Armature.
  *
  * @author capdevon
  */
-public class AvatarMask implements AnimationMask {
+public class AvatarMask implements AnimationMask, Savable {
 
     private static final Logger logger = Logger.getLogger(AvatarMask.class.getName());
 
-    private final BitSet affectedJoints;
-    private final Armature armature;
+    private BitSet affectedJoints;
+    private Armature armature;
 
     /**
      * Instantiate a mask that affects no joints.
@@ -177,6 +183,20 @@ public class AvatarMask implements AnimationMask {
     public boolean contains(Object target) {
         Joint joint = (Joint) target;
         return affectedJoints.get(joint.getId());
+    }
+
+    @Override
+    public void write(JmeExporter ex) throws IOException {
+        OutputCapsule oc = ex.getCapsule(this);
+        oc.write(armature, "armature", null);
+        oc.write(affectedJoints, "affectedJoints", null);
+    }
+
+    @Override
+    public void read(JmeImporter im) throws IOException {
+        InputCapsule in = im.getCapsule(this);
+        armature = (Armature) in.readSavable("armature", null);
+        affectedJoints = in.readBitSet("affectedJoints", null);
     }
 
 }
