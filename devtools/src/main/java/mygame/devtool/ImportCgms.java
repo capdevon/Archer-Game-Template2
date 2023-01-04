@@ -126,48 +126,48 @@ public class ImportCgms extends SimpleApplication {
 
         ragdoll.setConfig(DacConfiguration.torsoName, fourSphere);
         ragdoll.link("mixamorig:Spine", vertexHull,
-                new RangeOfMotion(1f, -0.4f, 0.4f, -0.4f, 0.4f, -0.4f));
+                new RangeOfMotion(0.2f, -1f, 0.1f, -0.1f, 0.1f, -0.1f));
         ragdoll.link("mixamorig:Spine1", vertexHull,
-                new RangeOfMotion(0.4f, 0.2f, 0.2f));
+                new RangeOfMotion(0.2f, 0.3f, 0.3f));
         ragdoll.link("mixamorig:Spine2", vertexHull,
-                new RangeOfMotion(0.4f, 0.2f, 0.2f));
+                new RangeOfMotion(0.4f, 0.6f, 0.5f));
 
         ragdoll.link("mixamorig:Neck", vertexHull,
-                new RangeOfMotion(1f, 0.5f, 0.7f));
+                new RangeOfMotion(0.6f, -0.3f, 0.6f, -0.6f, 0.4f, -0.4f));
         ragdoll.link("mixamorig:Head", fourSphere,
-                new RangeOfMotion(1f, 0.5f, 0.7f));
+                new RangeOfMotion(0.6f, -0.3f, 0.6f, -0.6f, 0.7f, -0.7f));
 
         ragdoll.link("mixamorig:LeftShoulder", vertexHull,
-                new RangeOfMotion(0.5f, -0.5f, 0f, 0f, 0.6f, -0.3f));
+                new RangeOfMotion(0.4f, -0.2f, 0f, 0f, 0.6f, -0.3f));
         ragdoll.link("mixamorig:LeftArm", vertexHull,
-                new RangeOfMotion(1f, -1.6f, 1f, -1f, 1.6f, -1f));
+                new RangeOfMotion(0.2f, -1.5f, 0.5f, -0.5f, 1f, -1.6f));
         ragdoll.link("mixamorig:LeftForeArm", twoSphere,
-                new RangeOfMotion(0f, 0f, 1f, -1f, 2f, 0f));
+                new RangeOfMotion(0f, -2f, 1f, -1f, 0f, 0f));
         ragdoll.link("mixamorig:LeftHand", fourSphere,
-                new RangeOfMotion(0.8f, 0f, 0.2f));
+                new RangeOfMotion(0.9f, 0f, 0.3f));
 
         ragdoll.link("mixamorig:RightShoulder", vertexHull,
-                new RangeOfMotion(0.5f, -0.5f, 0f, 0f, 0.3f, -0.6f));
+                new RangeOfMotion(0.4f, -0.2f, 0f, 0f, 0.6f, -0.3f));
         ragdoll.link("mixamorig:RightArm", vertexHull,
-                new RangeOfMotion(1.6f, -1f, 1f, -1f, 1f, -1.6f));
+                new RangeOfMotion(0.2f, -1.5f, 0.5f, -0.5f, 1.6f, -1f));
         ragdoll.link("mixamorig:RightForeArm", twoSphere,
-                new RangeOfMotion(0f, 0f, 1f, -1f, 0f, -2f));
+                new RangeOfMotion(0f, -2f, 1f, -1f, 0f, 0f));
         ragdoll.link("mixamorig:RightHand", fourSphere,
-                new RangeOfMotion(0.8f, 0f, 0.2f));
+                new RangeOfMotion(0.9f, 0f, 0.3f));
 
         ragdoll.link("mixamorig:LeftUpLeg", twoSphere,
-                new RangeOfMotion(0.4f, -1f, 0.4f, -0.4f, 1f, -0.6f));
+                new RangeOfMotion(0.2f, -1.1f, 0.4f, -0.4f, 0.2f, -0.4f));
         ragdoll.link("mixamorig:LeftLeg", fourSphere,
-                new RangeOfMotion(0f, -2f, 0.6f, -0.6f, 0f, 0f));
+                new RangeOfMotion(2f, 0f, 0.1f, -0.1f, 0f, 0f));
         ragdoll.link("mixamorig:LeftFoot", vertexHull,
-                new RangeOfMotion(0.4f, 0.4f, 0f));
+                new RangeOfMotion(0.6f, -0.4f, 0.4f, -0.4f, 0.4f, -0.4f));
 
         ragdoll.link("mixamorig:RightUpLeg", twoSphere,
-                new RangeOfMotion(0.4f, -1f, 0.4f, -0.4f, 0.6f, -1f));
+                new RangeOfMotion(0.2f, -1.1f, 0.4f, -0.4f, 0.4f, -0.2f));
         ragdoll.link("mixamorig:RightLeg", fourSphere,
-                new RangeOfMotion(0f, -2f, 0.6f, -0.6f, 0f, 0f));
+                new RangeOfMotion(2f, 0f, 0.1f, -0.1f, 0f, 0f));
         ragdoll.link("mixamorig:RightFoot", vertexHull,
-                new RangeOfMotion(0.4f, 0.4f, 0f));
+                new RangeOfMotion(0.6f, -0.4f, 0.4f, -0.4f, 0.4f, -0.4f));
     }
 
     /**
