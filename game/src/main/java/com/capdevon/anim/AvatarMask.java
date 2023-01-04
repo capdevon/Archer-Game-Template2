@@ -25,8 +25,14 @@ public class AvatarMask implements AnimationMask, Savable {
 
     private static final Logger logger = Logger.getLogger(AvatarMask.class.getName());
 
-    private BitSet affectedJoints;
     private Armature armature;
+    private BitSet affectedJoints;
+
+    /**
+     * For serialization only. Do not use.
+     */
+    protected AvatarMask() {
+    }
 
     /**
      * Instantiate a mask that affects no joints.
@@ -194,9 +200,9 @@ public class AvatarMask implements AnimationMask, Savable {
 
     @Override
     public void read(JmeImporter im) throws IOException {
-        InputCapsule in = im.getCapsule(this);
-        armature = (Armature) in.readSavable("armature", null);
-        affectedJoints = in.readBitSet("affectedJoints", null);
+        InputCapsule ic = im.getCapsule(this);
+        armature = (Armature) ic.readSavable("armature", null);
+        affectedJoints = ic.readBitSet("affectedJoints", null);
     }
 
 }
