@@ -40,6 +40,10 @@ public class ImportCgms extends SimpleApplication {
      * output)
      */
     final private static String assetDirPath = "../game/src/main/resources";
+    /**
+     * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
+     */
+    final private static Vector3f scaleIdentity = new Vector3f(1f, 1f, 1f);
     // *************************************************************************
     // new methods exposed
 
@@ -111,13 +115,13 @@ public class ImportCgms extends SimpleApplication {
 
         float density = 1f;
         LinkConfig fourSphere = new LinkConfig(density, MassHeuristic.Density,
-                ShapeHeuristic.FourSphere, new Vector3f(1f, 1f, 1f),
+                ShapeHeuristic.FourSphere, scaleIdentity,
                 CenterHeuristic.Mean, RotationOrder.XZY);
         LinkConfig twoSphere = new LinkConfig(density, MassHeuristic.Density,
-                ShapeHeuristic.TwoSphere, new Vector3f(1f, 1f, 1f),
+                ShapeHeuristic.TwoSphere, scaleIdentity,
                 CenterHeuristic.Mean, RotationOrder.XZY);
         LinkConfig vertexHull = new LinkConfig(density, MassHeuristic.Density,
-                ShapeHeuristic.VertexHull, new Vector3f(1f, 1f, 1f),
+                ShapeHeuristic.VertexHull, scaleIdentity,
                 CenterHeuristic.Mean, RotationOrder.XZY);
 
         ragdoll.setConfig(DacConfiguration.torsoName, fourSphere);
