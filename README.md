@@ -1,4 +1,4 @@
-# Archer-Game-Template 2
+## Archer-Game-Template 2
 A Third Person Shooter demo made with [jMonkeyEngine](https://jmonkeyengine.org/)
 
 The demo contains:
@@ -19,11 +19,10 @@ The demo contains:
 * Particles Effects
 * Post Processing Filters
 
-# Youtube videos
+## Youtube videos
 [Demo](https://www.youtube.com/watch?v=US9KNTqL2js&feature=emb_logo)
 
-# Keyboard Commands
-(see file [GInputAppState](https://github.com/capdevon/Archer-Game-Template2/blob/main/src/main/java/com/capdevon/input/GInputAppState.java) for all configurations, joystick included)
+## Keyboard Commands
 - WASD: Basic movements
 - E: Aiming
 - R: Switch arrow type
@@ -32,7 +31,7 @@ The demo contains:
 - CAMERA: Use the mouse to orient the camera
 - KEY_0: Toggle Physics Debug
 
-# Resource Used
+## Resource Used
 - [Mixamo](https://www.mixamo.com/)
 - [Blender](https://www.blender.org/download/)
 
@@ -40,7 +39,7 @@ The demo contains:
 ![Screenshot](images/archer-1.jpg)
 ![Screenshot](images/archer-2.jpg)
 
-# Credits
+## Credits
 I acknowledge the following artists and software developers:
 
 * "grizeldi" for creating the 3d scene, bow and arrow models and for improving the lighting effects and graphics of the demo. 
