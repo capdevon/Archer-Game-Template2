@@ -25,6 +25,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.FXAAFilter;
@@ -216,6 +217,7 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
         panel.addFloatProperty("RX", widget, "x", -180, 180, 0.05f);
         panel.addFloatProperty("RY", widget, "y", -180, 180, 0.05f);
         panel.addFloatProperty("RZ", widget, "z", -180, 180, 0.05f);
+        panel.addFloatProperty("Weight", widget, "weight", 0, 1, 0.05f);
         panel.addBooleanProperty("User Control", widget, "userControl");
         window.addChild(panel);
 
@@ -283,13 +285,15 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
 
         private final AvatarMask mask;
         private final Joint joint;
-        private final Quaternion tempRotation = new Quaternion();
+        private final Quaternion targetRotation = new Quaternion();
         private float x, y, z;
         private boolean userControl;
+        private float weight = 1f;
 
         public JointWidget(AvatarMask mask, Joint joint) {
             this.mask = mask;
             this.joint = joint;
+            targetRotation.set(joint.getInitialTransform().getRotation());
         }
 
         public float getX() {
@@ -319,6 +323,14 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
             updateJointRotation();
         }
 
+        public float getWeight() {
+            return weight;
+        }
+
+        public void setWeight(float weight) {
+            this.weight = weight;
+        }
+
         public boolean isUserControl() {
             return userControl;
         }
@@ -342,13 +354,14 @@ public class TestAnimMask extends SimpleApplication implements ActionListener {
             float qx = FastMath.DEG_TO_RAD * x;
             float qy = FastMath.DEG_TO_RAD * y;
             float qz = FastMath.DEG_TO_RAD * z;
-            tempRotation.fromAngles(qx, qy, qz);
+            targetRotation.fromAngles(qx, qy, qz);
         }
 
         @Override
         protected void controlUpdate(float tpf) {
             if (userControl) {
-                joint.setLocalRotation(tempRotation);
+                Transform t = joint.getInitialTransform();
+                joint.getLocalRotation().slerp(t.getRotation(), targetRotation, weight);
             }
         }
 
