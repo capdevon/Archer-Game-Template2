@@ -13,17 +13,33 @@ public class IKControl {
 
     private final AvatarMask mask;
     private final Joint joint;
+    private final Vector3f ikPosition = new Vector3f();
+    private final Quaternion ikRotation = new Quaternion();
+    private final Vector3f ikScale = new Vector3f();
+    private float weight = 1f;
     private boolean userControl;
 
     /**
-     * Constructor.
+     * Instantiate an IKControl.
      *
      * @param mask
      * @param joint
      */
-    public IKControl(AvatarMask mask, Joint joint) {
+    protected IKControl(AvatarMask mask, Joint joint) {
         this.mask = mask;
         this.joint = joint;
+        Transform tr = joint.getInitialTransform();
+        tr.getTranslation(ikPosition);
+        tr.getRotation(ikRotation);
+        tr.getScale(ikScale);
+    }
+
+    public float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
     }
 
     /**
@@ -37,35 +53,50 @@ public class IKControl {
 
     /**
      * If enabled, user can control joint transform. Animation transforms are
-     * not applied to this joint when enabled.
+     * not applied to this bone when enabled.
      *
      * @param enable true for direct control, false for canned animations
      */
     public void setUserControl(boolean enable) {
         this.userControl = enable;
-
-        if (enable && mask.contains(joint)) {
+        if (enable) {
             mask.removeJoints(joint.getName());
-
-        } else if (!enable && !mask.contains(joint)) {
+        } else {
             mask.addJoints(joint.getName());
         }
     }
 
-    public void setIKRotation(Quaternion rotation) {
-        joint.setLocalRotation(rotation);
+    public Vector3f getIKPosition() {
+        return ikPosition;
     }
 
-    public void setIKPosition(Vector3f position) {
-        joint.setLocalTranslation(position);
+    public void setIKPosition(Vector3f ikPosition) {
+        this.ikPosition.set(ikPosition);
     }
 
-    public void setIKScale(Vector3f scale) {
-        joint.setLocalScale(scale);
+    public Quaternion getIKRotation() {
+        return ikRotation;
     }
 
-    public void setIKTransform(Transform transform) {
-        joint.setLocalTransform(transform);
+    public void setIKRotation(Quaternion ikRotation) {
+        this.ikRotation.set(ikRotation);
+    }
+
+    public Vector3f getIKScale() {
+        return ikScale;
+    }
+
+    public void setIKScale(Vector3f ikScale) {
+        this.ikScale.set(ikScale);
+    }
+
+    protected void update() {
+        if (userControl) {
+            Transform tr = joint.getInitialTransform();
+            joint.getLocalRotation().slerp(tr.getRotation(), ikRotation, weight);
+            joint.getLocalTranslation().interpolateLocal(tr.getTranslation(), ikPosition, weight);
+            joint.getLocalScale().interpolateLocal(tr.getScale(), ikScale, weight);
+        }
     }
 
 }

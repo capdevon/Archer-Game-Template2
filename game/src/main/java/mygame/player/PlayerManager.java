@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.capdevon.anim.Animator;
+import com.capdevon.anim.AvatarMask;
+import com.capdevon.anim.IKRig;
 import com.capdevon.engine.GameObject;
 import com.capdevon.engine.SimpleAppState;
 import com.capdevon.input.GInputAppState;
 import com.capdevon.util.LineRenderer;
+import com.jme3.anim.AnimComposer;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
@@ -72,7 +75,17 @@ public class PlayerManager extends SimpleAppState {
         player.addControl(bcc);
         getPhysicsSpace().add(bcc);
 
-        player.addControl(new Animator());
+        // configure Animator
+        Animator animator = new Animator();
+        player.addControl(animator);
+        
+        // Override the default layer mask.
+        AvatarMask avatarMask = new AvatarMask(animator.getArmature()).addAllJoints();
+        animator.setAnimMask(AnimComposer.DEFAULT_LAYER, avatarMask);
+        
+        IKRig rig = new IKRig(avatarMask);
+        animator.getAnimRoot().addControl(rig);
+        
         player.addControl(new RespawnPlayer());
         
         BPCameraCollider bpCamera = new BPCameraCollider(camera, inputManager);
@@ -87,7 +100,7 @@ public class PlayerManager extends SimpleAppState {
         player.addControl(bpCamera);
 
         WeaponUIManager weaponUI = new WeaponUIManager();
-        weaponUI.weaponText = createUIText(20, settings.getHeight() - 20, ColorRGBA.Red);
+        weaponUI.weaponText = createUIText(20, settings.getHeight() - 20f, ColorRGBA.Red);
         player.addControl(weaponUI);
 
         LineRenderer lr = new LineRenderer(app);
@@ -215,8 +228,8 @@ public class PlayerManager extends SimpleAppState {
         BitmapText ch = new BitmapText(guiFont);
         ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
         ch.setText(text);
-        float width = settings.getWidth() / 2 - ch.getLineWidth() / 2;
-        float height = settings.getHeight() / 2 + ch.getLineHeight() / 2;
+        float width = settings.getWidth() / 2f - ch.getLineWidth() / 2f;
+        float height = settings.getHeight() / 2f + ch.getLineHeight() / 2f;
         ch.setLocalTranslation(width, height, 0);
         return ch;
     }

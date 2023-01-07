@@ -8,15 +8,13 @@ import java.util.logging.Logger;
 
 import com.capdevon.anim.ActionAnimEventListener;
 import com.capdevon.anim.Animator;
-import com.capdevon.anim.AvatarMask;
 import com.capdevon.anim.HumanBodyBones;
-import com.capdevon.anim.IKControl;
+import com.capdevon.anim.IKRig;
 import com.capdevon.control.AdapterControl;
 import com.capdevon.physx.Physics;
 import com.capdevon.physx.RaycastHit;
 import com.capdevon.util.LineRenderer;
 import com.jme3.anim.AnimComposer;
-import com.jme3.anim.Joint;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.PhysicsSpace;
@@ -63,7 +61,7 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     
     boolean isAiming;
     boolean canShooting;
-    private float m_CurrentLaunchForce;
+    private float currentLaunchForce;
 
     // weapon hook
     private Node r_wh; // right hand
@@ -75,8 +73,9 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     // weapons list
     private List<Weapon> lstWeapons = new ArrayList<>();
 
-    private static final String MixamoPrefix = "mixamorig:";
-    private IKControl ikControl;
+    private static final String MIXAMO_PREFIX = "mixamorig:";
+    private IKRig ikRig;
+    private String ikSpine = MIXAMO_PREFIX + HumanBodyBones.Spine2;
     private final Quaternion tempRotation = new Quaternion();
     private final float[] angles = new float[3];
 
@@ -84,29 +83,32 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
         if (spatial != null) {
-            this.bpCamera = getComponent(BPCameraCollider.class);
-            this.weaponUI = getComponent(WeaponUIManager.class);
-            this.animator = getComponent(Animator.class);
-            this.lr = getComponent(LineRenderer.class);
+            this.lr         = getComponent(LineRenderer.class);
+            this.bpCamera   = getComponent(BPCameraCollider.class);
+            this.weaponUI   = getComponent(WeaponUIManager.class);
+            this.ikRig      = getComponentInChildren(IKRig.class);
+            this.animator   = getComponent(Animator.class);
+            configureAnimClips(animator);
+            animator.addListener(this);
 
             mainCamera = new MainCamera(camera, defaultFOV, nearClipPlane, farClipPlane);
 
-            // Override the default layer mask.
-            AvatarMask avatarMask = new AvatarMask(animator.getArmature()).addAllJoints();
-            animator.setAnimMask(AnimComposer.DEFAULT_LAYER, avatarMask);
-            
             r_wh = createBoneHook(HumanBodyBones.RightHand);
             l_wh = createBoneHook(HumanBodyBones.LeftHand);
-            ikControl = createIKControl(avatarMask, HumanBodyBones.Spine1);
 
-            configureAnimClips();
             switchWeapon();
 
             logger.log(Level.INFO, "Initialized");
         }
     }
 
-    private void configureAnimClips() {
+    private Node createBoneHook(String jointName) {
+        Node wh = new Node("Ref-" + jointName);
+        animator.getAttachments(MIXAMO_PREFIX + jointName).attachChild(wh);
+        return wh;
+    }
+    
+    private void configureAnimClips(Animator animator) {
         animator.actionCycleDone(Archer.Idle);
         animator.actionCycleDone(Archer.Running);
         animator.actionCycleDone(Archer.Sprinting);
@@ -114,18 +116,6 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
         animator.actionCycleDone(Archer.AimOverdraw);
         animator.actionCycleDone(Archer.AimRecoil);
         animator.actionCycleDone(Archer.DrawArrow);
-        animator.addListener(this);
-    }
-
-    private Node createBoneHook(String jointName) {
-        Node wh = new Node("Ref-" + jointName);
-        animator.getAttachments(MixamoPrefix + jointName).attachChild(wh);
-        return wh;
-    }
-
-    private IKControl createIKControl(AvatarMask mask, String jointName) {
-        Joint joint = animator.getJoint(MixamoPrefix + jointName);
-        return new IKControl(mask, joint);
     }
 
     @Override
@@ -140,15 +130,15 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
             camera.getRotation().toAngles(angles);
             float rx = angles[0];
             tempRotation.fromAngles(0, 0, -rx);
-            ikControl.setIKRotation(tempRotation);
+            ikRig.setAvatarIKRotation(ikSpine, tempRotation);
         }
     }
 
     private void updateWeaponCharge(float tpf) {
         if (isAiming && currentWeapon instanceof RangedWeapon) {
             RangedWeapon rWeapon = (RangedWeapon) currentWeapon;
-            m_CurrentLaunchForce = Math.min(m_CurrentLaunchForce + rWeapon.m_ChargeSpeed * tpf, rWeapon.m_MaxLaunchForce);
-            //predictPOI(aimNode.getWorldTranslation(), camera.getDirection().mult(m_CurrentLaunchForce));
+            currentLaunchForce = Math.min(currentLaunchForce + rWeapon.m_ChargeSpeed * tpf, rWeapon.m_MaxLaunchForce);
+            //predictPOI(aimNode.getWorldTranslation(), camera.getDirection().mult(currentLaunchForce));
         }
     }
 
@@ -166,18 +156,19 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     private void resetWeaponCharge() {
         if (currentWeapon instanceof RangedWeapon) {
             RangedWeapon rWeapon = (RangedWeapon) currentWeapon;
-            m_CurrentLaunchForce = rWeapon.m_MinLaunchForce;
+            currentLaunchForce = rWeapon.m_MinLaunchForce;
         }
     }
 
     public void setAiming(boolean enable) {
         this.isAiming = enable;
-        ikControl.setUserControl(enable);
         float distance = (enable) ? bpCamera.getMinDistance() : bpCamera.getMaxDistance();
         bpCamera.setDistanceToTarget(distance);
         //bpCamera.setAvoidObstacles(!enable);
         bpCamera.setRotationSpeed(enable ? 0.5f : 1);
         currentWeapon.crosshair.setEnabled(enable);
+        
+        ikRig.setAvatarIKActive(ikSpine, enable);
         animator.setAnimation(Archer.DrawArrow);
     }
 
@@ -194,8 +185,8 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
 
             } else if (currentWeapon instanceof RangedWeapon) {
                 RangedWeapon rWeapon = (RangedWeapon) currentWeapon;
-                rWeapon.handleShoot(origin, dir, m_CurrentLaunchForce);
-                logger.log(Level.INFO, "m_CurrentLaunchForce: {0}", m_CurrentLaunchForce);
+                rWeapon.handleShoot(origin, dir, currentLaunchForce);
+                logger.log(Level.INFO, "currentLaunchForce: {0}", currentLaunchForce);
             }
 
             shootSFX.playInstance();
