@@ -124,6 +124,7 @@ public class ImportCgms extends SimpleApplication {
                 ShapeHeuristic.VertexHull, scaleIdentity,
                 CenterHeuristic.Mean, RotationOrder.XZY);
 
+        // trunk, neck, and head
         ragdoll.setConfig(DacConfiguration.torsoName, fourSphere);
         ragdoll.link("mixamorig:Spine", vertexHull,
                 new RangeOfMotion(0.2f, -1f, 0.1f, -0.1f, 0.1f, -0.1f));
@@ -137,6 +138,7 @@ public class ImportCgms extends SimpleApplication {
         ragdoll.link("mixamorig:Head", fourSphere,
                 new RangeOfMotion(0.6f, -0.3f, 0.6f, -0.6f, 0.7f, -0.7f));
 
+        // left arm
         ragdoll.link("mixamorig:LeftShoulder", vertexHull,
                 new RangeOfMotion(0.4f, -0.2f, 0f, 0f, 0.6f, -0.3f));
         ragdoll.link("mixamorig:LeftArm", vertexHull,
@@ -146,6 +148,7 @@ public class ImportCgms extends SimpleApplication {
         ragdoll.link("mixamorig:LeftHand", fourSphere,
                 new RangeOfMotion(0.9f, 0f, 0.3f));
 
+        // right arm
         ragdoll.link("mixamorig:RightShoulder", vertexHull,
                 new RangeOfMotion(0.4f, -0.2f, 0f, 0f, 0.6f, -0.3f));
         ragdoll.link("mixamorig:RightArm", vertexHull,
@@ -155,6 +158,7 @@ public class ImportCgms extends SimpleApplication {
         ragdoll.link("mixamorig:RightHand", fourSphere,
                 new RangeOfMotion(0.9f, 0f, 0.3f));
 
+        // left leg
         ragdoll.link("mixamorig:LeftUpLeg", twoSphere,
                 new RangeOfMotion(0.2f, -1.1f, 0.4f, -0.4f, 0.2f, -0.4f));
         ragdoll.link("mixamorig:LeftLeg", fourSphere,
@@ -162,6 +166,7 @@ public class ImportCgms extends SimpleApplication {
         ragdoll.link("mixamorig:LeftFoot", vertexHull,
                 new RangeOfMotion(0.6f, -0.4f, 0.4f, -0.4f, 0.4f, -0.4f));
 
+        // right leg
         ragdoll.link("mixamorig:RightUpLeg", twoSphere,
                 new RangeOfMotion(0.2f, -1.1f, 0.4f, -0.4f, 0.4f, -0.2f));
         ragdoll.link("mixamorig:RightLeg", fourSphere,
