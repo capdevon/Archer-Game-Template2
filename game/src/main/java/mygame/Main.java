@@ -43,6 +43,7 @@ public class Main extends SimpleApplication {
         AppSettings settings = new AppSettings(true);
         settings.setTitle("Archer-Game-Template-2");
         settings.setUseJoysticks(true);
+        settings.setRenderer(AppSettings.LWJGL_OPENGL32); // OpenGL 3.2 Core profile
         settings.setResolution(1280, 720);
         settings.setSamples(4);
         settings.setBitsPerPixel(32);
