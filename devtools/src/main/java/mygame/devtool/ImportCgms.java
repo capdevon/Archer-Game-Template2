@@ -114,6 +114,9 @@ public class ImportCgms extends SimpleApplication {
         ragdoll.setIgnoredHops(2);
 
         float density = 1f;
+        LinkConfig cylinder = new LinkConfig(density, MassHeuristic.Density,
+                ShapeHeuristic.Cylinder, scaleIdentity,
+                CenterHeuristic.Mean, RotationOrder.XZY);
         LinkConfig fourSphere = new LinkConfig(density, MassHeuristic.Density,
                 ShapeHeuristic.FourSphere, scaleIdentity,
                 CenterHeuristic.Mean, RotationOrder.XZY);
@@ -126,14 +129,13 @@ public class ImportCgms extends SimpleApplication {
 
         // trunk, neck, and head
         ragdoll.setConfig(DacConfiguration.torsoName, fourSphere);
-        ragdoll.link("mixamorig:Spine", vertexHull,
+        ragdoll.link("mixamorig:Spine", cylinder,
                 new RangeOfMotion(0.2f, -1f, 0.1f, -0.1f, 0.1f, -0.1f));
         ragdoll.link("mixamorig:Spine1", vertexHull,
                 new RangeOfMotion(0.2f, 0.3f, 0.3f));
         ragdoll.link("mixamorig:Spine2", vertexHull,
                 new RangeOfMotion(0.4f, 0.6f, 0.5f));
-
-        ragdoll.link("mixamorig:Neck", vertexHull,
+        ragdoll.link("mixamorig:Neck", fourSphere,
                 new RangeOfMotion(0.6f, -0.3f, 0.6f, -0.6f, 0.4f, -0.4f));
         ragdoll.link("mixamorig:Head", fourSphere,
                 new RangeOfMotion(0.6f, -0.3f, 0.6f, -0.6f, 0.7f, -0.7f));
