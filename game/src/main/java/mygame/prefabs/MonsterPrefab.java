@@ -10,6 +10,7 @@ import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.font.Rectangle;
@@ -63,6 +64,12 @@ public class MonsterPrefab extends PrefabComponent {
 
         DynamicAnimControl ragdoll = GameObject.getComponentInChildren(enemy, DynamicAnimControl.class);
         phySpace.add(ragdoll);
+
+        // The ragdoll and the character control should ignore one another.
+        PhysicsRigidBody bccBody = bcc.getRigidBody();
+        for (PhysicsRigidBody linkBody : ragdoll.listRigidBodies()) {
+            linkBody.addToIgnoreList(bccBody);
+        }
 
         BitmapText hud = createBitmapText(ColorRGBA.Black, "label-placeholder", .1f);
         hud.setName("Healthbar");
