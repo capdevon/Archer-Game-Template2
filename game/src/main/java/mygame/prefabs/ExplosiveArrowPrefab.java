@@ -36,7 +36,7 @@ public class ExplosiveArrowPrefab extends RangedBullet {
 
     @Override
     public Spatial instantiate(Vector3f position, Quaternion rotation, Node parent) {
-        Spatial model = assetManager.loadModel("Models/Arrow/arrow.j3o");
+        Spatial model = assetManager.loadModel(ArrowPrefab.ASSET_PATH);
         model.setName(name + "-" + nextSeqId());
         model.setLocalTranslation(position);
         model.setLocalRotation(rotation);

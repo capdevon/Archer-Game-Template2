@@ -31,6 +31,7 @@ import jme3utilities.math.MyVector3f;
 import mygame.AnimDefs.Archer;
 import mygame.camera.BPCameraCollider;
 import mygame.camera.MainCamera;
+import mygame.prefabs.ArrowPrefab;
 import mygame.weapon.FireWeapon;
 import mygame.weapon.RangedWeapon;
 import mygame.weapon.Weapon;
@@ -306,7 +307,7 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
                 //bindWeapon(r_wh, currentWeapon.ik[0], arrow);
                 //bindWeapon(l_wh, currentWeapon.ik[1], bow);
 
-                Spatial arrow = assetManager.loadModel("Models/Arrow/arrow.j3o");
+                Spatial arrow = assetManager.loadModel(ArrowPrefab.ASSET_PATH);
                 Spatial bow = assetManager.loadModel("Models/Bow/bow.j3o");
                 bindWeapon(r_wh, IKPositions.Arrow.getTransform(), arrow);
                 bindWeapon(l_wh, IKPositions.Bow.getTransform(), bow);

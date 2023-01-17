@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import jme3utilities.Heart;
 import jme3utilities.MyString;
 import mygame.AnimDefs;
+import mygame.prefabs.ArrowPrefab;
 
 /**
  * A headless SimpleApplication to import certain C-G models used in the Archer
@@ -78,7 +79,8 @@ public class ImportCgms extends SimpleApplication {
     public void simpleInitApp() {
         // Convert the arrow model to J3O format.
         Spatial arrow = assetManager.loadModel("Models/Arrow/arrow.glb");
-        writeToJ3O(arrow, "Models/Arrow/arrow.j3o");
+        
+        writeToJ3O(arrow, ArrowPrefab.ASSET_PATH);
 
         // Convert the bow model to J3O format.
         Spatial bow = assetManager.loadModel("Models/Bow/bow.gltf");
