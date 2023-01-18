@@ -132,6 +132,8 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
                 break;
             case DYING:
                 animator.setAnimation(Monster.Dying);
+                bcc.setEnabled(false);
+                bcc.getSpatial().removeControl(bcc);
                 break;
             case HIT:
                 animator.setAnimation(Monster.ReactionHit);
@@ -141,8 +143,6 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
                 break;
 
             case RAGDOLL:
-                bcc.setEnabled(false);
-                bcc.getSpatial().removeControl(bcc);
                 dac.setRagdollMode();
                 break;
 
