@@ -22,6 +22,7 @@ import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
+import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.util.SkyFactory;
 
 /**
@@ -96,11 +97,11 @@ public class SceneAppState extends SimpleAppState {
     }
 
     private void setupFilters() {
-        // Shadows
-//        DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(assetManager, 2048, 3);
-//        dlsf.setLight(sun);
-
-        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, 2048, 3);
+        // shadows
+        DirectionalLightShadowRenderer dlsr
+                = new DirectionalLightShadowRenderer(assetManager, 4_096, 3);
+        dlsr.setEdgeFilteringMode(EdgeFilteringMode.PCFPOISSON);
+        dlsr.setEdgesThickness(5);
         dlsr.setLight(sun);
         dlsr.setShadowIntensity(0.65f);
         viewPort.addProcessor(dlsr);
