@@ -76,7 +76,9 @@ public class ExplosiveArrowControl extends AdapterControl implements PhysicsColl
     //  Destroy everything
     private void destroy() {
         m_PhysicsSpace.removeCollisionListener(this);
-        m_PhysicsSpace.remove(ghostObject);
+        if (m_HasCollided) {
+            m_PhysicsSpace.remove(ghostObject);
+        }
         spatial.removeFromParent();
     }
 
