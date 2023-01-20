@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.capdevon.engine.GameObject;
 import com.capdevon.physx.Physics;
 import com.capdevon.physx.PhysxQuery;
 import com.capdevon.physx.RaycastHit;
@@ -69,8 +70,8 @@ public class FireWeapon extends Weapon {
             PhysicsRigidBody rb = hitColliders[i];
             Physics.addExplosionForce(rb, baseStrength, hit.point, explosionRadius);
 
-            Spatial userObj = (Spatial) rb.getUserObject();
-            applyDamage(userObj, color);
+            Spatial gameObject = GameObject.findGameObject(rb);
+            applyDamage(gameObject, color);
         }
     }
 

@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.jme3.bullet.animation.DacLinks;
+import com.jme3.bullet.animation.PhysicsLink;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.control.AbstractPhysicsControl;
 import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
@@ -151,5 +155,34 @@ public class GameObject {
             parent = parent.getParent();
         }
         return null;
+    }
+
+    /**
+     * Utility method to find the game object associated with the specified
+     * collision object.
+     *
+     * @param collisionObj (not null)
+     * @return the pre-existing game object, or null if not found
+     */
+    public static Spatial findGameObject(PhysicsCollisionObject collisionObj) {
+        Spatial result = null;
+
+        Object user = collisionObj.getUserObject(); // TODO use getApplicationData()
+        if (user instanceof Spatial) {
+            result = (Spatial) user;
+
+        } else if (user instanceof AbstractPhysicsControl) {
+            AbstractPhysicsControl control = (AbstractPhysicsControl) user;
+            // TODO assuming the control is added to the game object
+            result = control.getSpatial();
+
+        } else if (user instanceof PhysicsLink) {
+            PhysicsLink link = (PhysicsLink) user;
+            DacLinks control = link.getControl();
+            Spatial animSpatial = control.getSpatial();
+            // TODO assuming the control is added to a child of the game object
+            result = animSpatial.getParent();
+        }
+        return result;
     }
 }

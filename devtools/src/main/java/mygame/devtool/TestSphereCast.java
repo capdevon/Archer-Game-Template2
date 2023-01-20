@@ -283,7 +283,7 @@ public class TestSphereCast extends SimpleApplication implements ActionListener 
         for (PhysicsSweepTestResult tr : sweepTestResults) {
 
             PhysicsCollisionObject pco = tr.getCollisionObject();
-            Spatial userObject = (Spatial) pco.getUserObject();
+            Spatial userObject = GameObject.findGameObject(pco);
 
             boolean isObstruction = applyMask(layerMask, pco.getCollisionGroup())
                     && !compareTag(userObject, ignoreTag);

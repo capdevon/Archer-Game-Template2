@@ -136,7 +136,7 @@ public class Physics {
             PhysicsCollisionObject pco = ray.getCollisionObject();
 
 //            if (pco instanceof GhostControl) {
-//                logger.log(Level.FINE, "Skipping GhostControl for gameObject={0}", pco.getUserObject());
+//                logger.log(Level.FINE, "Skipping GhostControl for gameObject={0}", GameObject.findGameObject(pco);
 //                continue;
 //            }
 
@@ -184,7 +184,7 @@ public class Physics {
             PhysicsCollisionObject pco = ray.getCollisionObject();
 
 //            if (pco instanceof GhostControl) {
-//                logger.log(Level.FINE, "Skipping GhostControl for gameObject={0}", pco.getUserObject());
+//                logger.log(Level.FINE, "Skipping GhostControl for gameObject={0}", GameObject.findGameObject(pco));
 //                continue;
 //            }
 

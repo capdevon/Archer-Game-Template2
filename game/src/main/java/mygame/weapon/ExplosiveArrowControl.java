@@ -2,8 +2,11 @@ package mygame.weapon;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.capdevon.control.AdapterControl;
+import com.capdevon.engine.GameObject;
 import com.capdevon.physx.Physics;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
@@ -105,7 +108,10 @@ public class ExplosiveArrowControl extends AdapterControl implements PhysicsColl
                 hitPoint = event.getPositionWorldOnA();
             }
 
-            logger.log(Level.INFO, "Collided with: {0}", other.getUserObject().toString());
+            if (logger.isLoggable(Level.INFO)) {
+                Spatial otherGameObject = GameObject.findGameObject(other);
+                logger.log(Level.INFO, "Collided with: {0}", otherGameObject);
+            }
 
             ghostObject.setPhysicsLocation(hitPoint);
             m_PhysicsSpace.add(ghostObject);
@@ -115,34 +121,35 @@ public class ExplosiveArrowControl extends AdapterControl implements PhysicsColl
     private void explode() {
         explosionPrefab.instantiate(ghostObject.getPhysicsLocation(), Quaternion.IDENTITY, spatial.getParent());
 
-        for (PhysicsCollisionObject pco: ghostObject.getOverlappingObjects()) {
+        List<Spatial> affectedGameObjects = new ArrayList<>(8);
+        for (PhysicsCollisionObject pco : ghostObject.getOverlappingObjects()) {
+            Spatial gameObject = GameObject.findGameObject(pco);
 
             if (pco instanceof GhostControl) {
-                System.out.println("skipping: " + pco.getUserObject());
+                System.out.println("skipping: " + gameObject);
                 continue;
             }
 
             if (pco instanceof PhysicsRigidBody) {
                 PhysicsRigidBody rb = (PhysicsRigidBody) pco;
                 if (rb.getMass() > 0) {
-                    logger.log(Level.INFO, "addExplosionForce to: {0}", pco.getUserObject().toString());
+                    logger.log(Level.INFO, "addExplosionForce to: {0}", gameObject);
                     Physics.addExplosionForce(rb, explosionForce, rigidBody.getPhysicsLocation(), explosionRadius);
                 }
-
-                if (pco.getUserObject() instanceof Spatial) {
-                	System.out.println(pco.getUserObject());
-                	
-                    Spatial gameObject = (Spatial) pco.getUserObject();
-                    Damageable damageable = gameObject.getControl(Damageable.class);
-                    if (damageable != null) {
-                        damageable.applyDamage();
-                    }
-                    
-                    AIControl aiControl = gameObject.getControl(AIControl.class);
-                    if (aiControl != null) {
-                        aiControl.kill();
-                    }
+                if (!affectedGameObjects.contains(gameObject)) {
+                    affectedGameObjects.add(gameObject);
                 }
+            }
+        }
+
+        for (Spatial gameObject : affectedGameObjects) {
+            Damageable damageable = gameObject.getControl(Damageable.class);
+            if (damageable != null) {
+                damageable.applyDamage();
+            }
+            AIControl aiControl = gameObject.getControl(AIControl.class);
+            if (aiControl != null) {
+                aiControl.kill();
             }
         }
     }

@@ -92,11 +92,10 @@ public class BPCameraCollider extends BPPlayerCamera {
         for (PhysicsSweepTestResult tr : sweepTestResults) {
         	
             PhysicsCollisionObject pco = tr.getCollisionObject();
-            if (!(pco.getUserObject() instanceof Spatial)) {
+            Spatial userObject = GameObject.findGameObject(pco);
+            if (userObject == null) {
             	continue;
             }
-            
-            Spatial userObject = (Spatial) pco.getUserObject();
             
             boolean isObstruction = applyMask(layerMask, pco.getCollisionGroup()) 
                   && !GameObject.compareTag(userObject, ignoreTag);

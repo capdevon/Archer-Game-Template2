@@ -1,5 +1,6 @@
 package com.capdevon.physx;
 
+import com.capdevon.engine.GameObject;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.bullet.collision.PhysicsSweepTestResult;
@@ -32,7 +33,7 @@ public class RaycastHit {
 
         rigidBody = pco;
         collider = pco.getCollisionShape();
-        gameObject = (Spatial) pco.getUserObject();
+        gameObject = GameObject.findGameObject(pco);
         distance = finalVec.subtract(beginVec).length() * hf;
         point.interpolateLocal(beginVec, finalVec, hf);
         ray.getHitNormalLocal(normal);
@@ -43,7 +44,7 @@ public class RaycastHit {
 
         rigidBody = pco;
         collider = pco.getCollisionShape();
-        gameObject = (Spatial) pco.getUserObject();
+        gameObject = GameObject.findGameObject(pco);
         MyVector3f.lerp(tr.getHitFraction(), beginVec, finalVec, point);
         tr.getHitNormalLocal(normal);
         distance = beginVec.distance(point);
