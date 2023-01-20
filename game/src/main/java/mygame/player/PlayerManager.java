@@ -12,6 +12,7 @@ import com.capdevon.input.GInputAppState;
 import com.capdevon.util.LineRenderer;
 import com.jme3.anim.AnimComposer;
 import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.material.Material;
@@ -25,6 +26,7 @@ import com.jme3.scene.shape.Sphere;
 
 import mygame.AnimDefs;
 import mygame.AudioLib;
+import mygame.Main;
 import mygame.audio.SoundManager;
 import mygame.camera.BPCameraCollider;
 import mygame.controls.RespawnPlayer;
@@ -74,6 +76,11 @@ public class PlayerManager extends SimpleAppState {
         BetterCharacterControl bcc = new BetterCharacterControl(.5f, 1.8f, 20f);
         player.addControl(bcc);
         getPhysicsSpace().add(bcc);
+
+        // The character control should ignore collisions with ammo.
+        PhysicsRigidBody body = bcc.getRigidBody();
+        body.setCollideWithGroups(Main.BCC_GROUP | Main.DEFAULT_GROUP);
+        body.setCollisionGroup(Main.BCC_GROUP);
 
         // configure Animator
         Animator animator = new Animator();

@@ -36,6 +36,11 @@ public class Main extends SimpleApplication {
     public static final int AMMO_GROUP
             = PhysicsCollisionObject.COLLISION_GROUP_02;
     /**
+     * collision group for character controls
+     */
+    public static final int BCC_GROUP
+            = PhysicsCollisionObject.COLLISION_GROUP_03;
+    /**
      * collision group for everything else
      */
     public static final int DEFAULT_GROUP

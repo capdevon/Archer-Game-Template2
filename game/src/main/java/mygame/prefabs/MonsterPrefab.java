@@ -24,6 +24,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.BillboardControl;
 
 import mygame.AnimDefs;
+import mygame.Main;
 import mygame.ai.AIControl;
 import mygame.controls.Damageable;
 
@@ -70,6 +71,10 @@ public class MonsterPrefab extends PrefabComponent {
         for (PhysicsRigidBody linkBody : ragdoll.listRigidBodies()) {
             linkBody.addToIgnoreList(bccBody);
         }
+
+        // The character control should ignore collisions with ammo.
+        bccBody.setCollideWithGroups(Main.BCC_GROUP | Main.DEFAULT_GROUP);
+        bccBody.setCollisionGroup(Main.BCC_GROUP);
 
         bccBody.setFriction(0f);
 
