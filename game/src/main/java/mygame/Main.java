@@ -8,6 +8,7 @@ import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.input.JoystickCompatibilityMappings;
 import com.jme3.system.AppSettings;
 
@@ -27,6 +28,16 @@ import mygame.states.SceneAppState;
  * @author capdevon
  */
 public class Main extends SimpleApplication {
+    /**
+     * collision group for arrows
+     */
+    public static final int AMMO_GROUP
+            = PhysicsCollisionObject.COLLISION_GROUP_02;
+    /**
+     * collision group for everything else
+     */
+    public static final int DEFAULT_GROUP
+            = PhysicsCollisionObject.COLLISION_GROUP_01;
 
     /**
      * Start the jMonkeyEngine application

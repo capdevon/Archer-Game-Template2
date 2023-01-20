@@ -18,6 +18,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.util.TempVars;
 
 import jme3utilities.math.MyVector3f;
+import mygame.Main;
 
 /**
  *
@@ -26,7 +27,7 @@ import jme3utilities.math.MyVector3f;
 public class BPCameraCollider extends BPPlayerCamera {
 
     // The layer mask against which the collider will raycast
-    private int collideWithGroups = PhysicsCollisionObject.COLLISION_GROUP_01;
+    private int collideWithGroups = Main.DEFAULT_GROUP;
     // Obstacles with this tag will be ignored. It is a good idea to set this field to the target's tag
     private String ignoreTag = "";
     // When enabled, will attempt to resolve situations where the line of sight to the target is blocked by an obstacle

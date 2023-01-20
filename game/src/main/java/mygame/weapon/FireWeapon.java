@@ -8,7 +8,6 @@ import com.capdevon.physx.Physics;
 import com.capdevon.physx.PhysxQuery;
 import com.capdevon.physx.RaycastHit;
 import com.jme3.audio.AudioNode;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.effect.ParticleEmitter;
@@ -16,6 +15,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
+import mygame.Main;
 
 /**
  * 
@@ -28,7 +28,7 @@ public class FireWeapon extends Weapon {
     public float distance = 30f;
     public float explosionRadius = 5;
     public float baseStrength = 10f;
-    public int layerMask = PhysicsCollisionObject.COLLISION_GROUP_01;
+    public int layerMask = Main.DEFAULT_GROUP;
     public AudioNode impactSFX;
     public ParticleEmitter impactVFX;
 

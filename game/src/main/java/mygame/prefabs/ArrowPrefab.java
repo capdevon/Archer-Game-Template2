@@ -1,7 +1,6 @@
 package mygame.prefabs;
 
 import com.jme3.app.Application;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Quaternion;
@@ -9,6 +8,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+import mygame.Main;
 import mygame.weapon.ArrowControl;
 import mygame.weapon.RangedBullet;
 
@@ -58,8 +58,8 @@ public class ArrowPrefab extends RangedBullet {
         model.addControl(rbc);
         getPhysicsSpace().add(rbc);
 
-        rbc.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-        rbc.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_01);
+        rbc.setCollisionGroup(Main.AMMO_GROUP);
+        rbc.setCollideWithGroups(Main.DEFAULT_GROUP);
         rbc.setCcdMotionThreshold(0.001f);
         // rbc.setCcdSweptSphereRadius(0.001f);
 

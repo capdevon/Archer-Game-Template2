@@ -1,7 +1,6 @@
 package mygame.prefabs;
 
 import com.jme3.app.Application;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Quaternion;
@@ -9,6 +8,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+import mygame.Main;
 import mygame.weapon.ExplosiveArrowControl;
 import mygame.weapon.RangedBullet;
 
@@ -48,8 +48,8 @@ public class ExplosiveArrowPrefab extends RangedBullet {
         model.addControl(rgb);
         getPhysicsSpace().add(rgb);
 
-        rgb.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-        rgb.setCollideWithGroups(PhysicsCollisionObject.COLLISION_GROUP_01);
+        rgb.setCollisionGroup(Main.AMMO_GROUP);
+        rgb.setCollideWithGroups(Main.DEFAULT_GROUP);
         rgb.setCcdMotionThreshold(0.001f);
 
         ExplosiveArrowControl arrow = new ExplosiveArrowControl();
