@@ -3,10 +3,11 @@ package mygame.weapon;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.capdevon.engine.FRotator;
+import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 /**
@@ -62,13 +63,28 @@ public class RangedWeapon extends Weapon {
         return super.getDescription() + " AmmoType: " + getBullet().name;
     }
 
-    public void handleShoot(Vector3f origin, Vector3f direction, float force) {
-        Spatial spBullet = getBullet().instantiate(Vector3f.ZERO, Quaternion.IDENTITY);
-        RigidBodyControl rgb = spBullet.getControl(RigidBodyControl.class);
-        rgb.setPhysicsLocation(origin);
-        rgb.setPhysicsRotation(FRotator.lookRotation(direction));
-        rgb.setLinearVelocity(direction.mult(force));
-        //rgb.applyTorque(FVector.right(spBullet).mult(2));
+    public void shoot(Node ammoNode, float initialSpeed) {
+        // Access the world transform of ammo attached to the player's avatar.
+        Spatial cylinder = ammoNode.getChild(0);
+        Vector3f origin = cylinder.getWorldTranslation(); // alias
+        Quaternion orientation = cylinder.getWorldRotation(); // alias
+
+        Spatial spBullet = getBullet().instantiate(origin, orientation);
+
+        Vector3f direction = orientation.mult(Vector3f.UNIT_Z, null);
+        Vector3f velocity = direction.mult(initialSpeed);
+
+        PhysicsControl physControl = spBullet.getControl(PhysicsControl.class);
+        if (physControl instanceof Penetrator) { // non-explosive arrow
+            Penetrator penetrator = (Penetrator) physControl;
+            penetrator.launch(origin, velocity);
+
+        } else if (physControl instanceof RigidBodyControl) { // explosive arrow
+            RigidBodyControl rbc = (RigidBodyControl) physControl;
+            rbc.setPhysicsLocation(origin);
+            rbc.setPhysicsRotation(orientation);
+            rbc.setLinearVelocity(velocity);
+        }
     }
 
 }

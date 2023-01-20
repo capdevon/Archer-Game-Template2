@@ -4,7 +4,6 @@ import com.capdevon.engine.PrefabComponent;
 import com.jme3.app.Application;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
@@ -18,6 +17,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 
 import mygame.controls.Damageable;
+import mygame.controls.JoinedBodyControl;
 
 /**
  *
@@ -47,7 +47,7 @@ public class MyCubePrefab extends PrefabComponent {
         parent.attachChild(cube);
 
         CollisionShape shape = new BoxCollisionShape(size, size, size);
-        RigidBodyControl rgb = new RigidBodyControl(shape, mass);
+        JoinedBodyControl rgb = new JoinedBodyControl(shape, mass);
         cube.addControl(rgb);
         getPhysicsSpace().add(rgb);
 

@@ -1,15 +1,17 @@
 package mygame.prefabs;
 
 import com.jme3.app.Application;
-import com.jme3.bullet.collision.shapes.SphereCollisionShape;
-import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
-import mygame.Main;
-import mygame.weapon.ArrowControl;
+import mygame.controls.Damageable;
+import mygame.controls.TimerControl;
+import mygame.weapon.Penetrator;
 import mygame.weapon.RangedBullet;
 
 /**
@@ -51,21 +53,42 @@ public class ArrowPrefab extends RangedBullet {
         model.setLocalTranslation(position);
         model.setLocalRotation(rotation);
         parent.attachChild(model);
+        /*
+         * The loaded model has its origin at the tip of the arrow.
+         * Translate all 3 geometries foward so that the model origin
+         * will be located at the arrow's center of mass.
+         */
+        float halfLength = 0.5f;
+        Vector3f tipLocalOffset = new Vector3f(0f, 0f, halfLength);
+        Node node = (Node) model;
+        for (Spatial geometry : node.getChildren()) {
+            geometry.setLocalTranslation(tipLocalOffset);
+        }
 
         // Add Physics.
-        SphereCollisionShape shape = new SphereCollisionShape(radius);
-        RigidBodyControl rbc = new RigidBodyControl(shape, mass);
-        model.addControl(rbc);
-        getPhysicsSpace().add(rbc);
+        float length = 2f * halfLength;
+        CollisionShape shape = new CapsuleCollisionShape(
+                radius, length, PhysicsSpace.AXIS_Z);
+        float penetrationFraction = 0.35f;
+        Penetrator penetrator = new Penetrator(
+                shape, mass, tipLocalOffset, penetrationFraction);
+        model.addControl(penetrator);
+        getPhysicsSpace().add(penetrator);
+        
+        Damageable damageable = new Damageable();
+        model.addControl(damageable);
 
-        rbc.setCollisionGroup(Main.AMMO_GROUP);
-        rbc.setCollideWithGroups(Main.DEFAULT_GROUP);
-        rbc.setCcdMotionThreshold(0.001f);
-        // rbc.setCcdSweptSphereRadius(0.001f);
-
-        ArrowControl arrow = new ArrowControl();
-        model.addControl(arrow);
-
+        // Remove the arrow automatically in 15 seconds.
+        TimerControl timeout = new TimerControl(15f) {
+            @Override
+            public void onTrigger() {
+                penetrator.setEnabled(false);
+                model.removeFromParent();
+            }
+        };
+        timeout.setEnabled(true);
+        model.addControl(timeout);
+        
         return model;
     }
 

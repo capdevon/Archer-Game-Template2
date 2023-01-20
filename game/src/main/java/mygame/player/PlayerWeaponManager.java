@@ -64,6 +64,8 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     boolean canShooting;
     private float currentLaunchForce;
 
+    private Node ammoNode;
+
     // weapon hook
     private Node r_wh; // right hand
     private Node l_wh; // left hand
@@ -175,18 +177,18 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
 
     public void shooting() {
         if (isAiming && canShooting) {
-
-            // Aim the ray from character location in camera direction.
-            Vector3f origin = camera.getLocation();
-            Vector3f dir = camera.getDirection();
-
             if (currentWeapon instanceof FireWeapon) {
                 FireWeapon fWeapon = (FireWeapon) currentWeapon;
+
+                // Aim the ray from camera location in camera direction.
+                Vector3f origin = camera.getLocation();
+                Vector3f dir = camera.getDirection();
                 fWeapon.handleShoot(origin, dir);
 
             } else if (currentWeapon instanceof RangedWeapon) {
                 RangedWeapon rWeapon = (RangedWeapon) currentWeapon;
-                rWeapon.handleShoot(origin, dir, currentLaunchForce);
+
+                rWeapon.shoot(ammoNode, currentLaunchForce);
                 logger.log(Level.INFO, "currentLaunchForce: {0}", currentLaunchForce);
             }
 
@@ -291,7 +293,7 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
 
         index = newIndex;
         currentWeapon = lstWeapons.get(index);
-        Node spWeapon;
+        this.ammoNode = null;
 
         switch (currentWeapon.weaponType) {
             case Normal:
@@ -307,9 +309,9 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
                 //bindWeapon(r_wh, currentWeapon.ik[0], arrow);
                 //bindWeapon(l_wh, currentWeapon.ik[1], bow);
 
-                Spatial arrow = assetManager.loadModel(ArrowPrefab.ASSET_PATH);
+                this.ammoNode = (Node) assetManager.loadModel(ArrowPrefab.ASSET_PATH);
                 Spatial bow = assetManager.loadModel("Models/Bow/bow.j3o");
-                bindWeapon(r_wh, IKPositions.Arrow.getTransform(), arrow);
+                bindWeapon(r_wh, IKPositions.Arrow.getTransform(), ammoNode);
                 bindWeapon(l_wh, IKPositions.Bow.getTransform(), bow);
                 break;
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.capdevon.control.AdapterControl;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.SceneGraphVisitorAdapter;
@@ -48,7 +49,12 @@ public class Damageable extends AdapterControl {
     }
 
     private void destroy() {
-        PhysicsSpace.getPhysicsSpace().removeAll(spatial);
+        List<PhysicsControl> controls 
+                = MySpatial.listControls(spatial, PhysicsControl.class, null);
+        for (PhysicsControl control : controls) {
+            control.setEnabled(false);
+        }
+
         spatial.removeFromParent();
         System.out.println("Destroyed: " + spatial);
     }

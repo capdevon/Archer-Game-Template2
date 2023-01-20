@@ -8,7 +8,10 @@ import com.capdevon.anim.Animator;
 import com.capdevon.control.AdapterControl;
 import com.jme3.anim.AnimComposer;
 import com.jme3.bullet.animation.DynamicAnimControl;
+import com.jme3.bullet.animation.PhysicsLink;
 import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.bullet.joints.PhysicsJoint;
+import com.jme3.bullet.objects.PhysicsBody;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.font.BitmapText;
 import com.jme3.math.FastMath;
@@ -147,11 +150,9 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
                 break;
 
             case SINKING:
-                for (PhysicsRigidBody body : dac.listRigidBodies()) {
-                    body.setContactResponse(false);
-                    body.setGravity(sinkingGravity);
-                    body.getCollisionShape().setMargin(0.004f);
-                }
+                PhysicsLink link = dac.getTorsoLink();
+                PhysicsRigidBody body = link.getRigidBody();
+                sinkJoinedBodies(body);
                 break;
 
             case WAIT:
@@ -208,6 +209,27 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
         if (health <= 0f) {
             isDead = true;
             changeState(AIState.DYING);
+        }
+    }
+
+    /**
+     * Sink the specified body into the ground, along with any responsive bodies
+     * joined to it.
+     *
+     * @param body (not null)
+     */
+    private static void sinkJoinedBodies(PhysicsRigidBody body) {
+        body.setContactResponse(false);
+        body.setGravity(sinkingGravity);
+
+        for (PhysicsJoint joint : body.listJoints()) {
+            PhysicsBody joinedBody = joint.findOtherBody(body);
+            if (joinedBody instanceof PhysicsRigidBody) {
+                PhysicsRigidBody otherRigidBody = (PhysicsRigidBody) joinedBody;
+                if (otherRigidBody.isContactResponse()) {
+                    sinkJoinedBodies(otherRigidBody);
+                }
+            }
         }
     }
 
