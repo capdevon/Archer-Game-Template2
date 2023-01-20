@@ -115,7 +115,7 @@ public class ImportCgms extends SimpleApplication {
     private void configureDrakeRagdoll(DynamicAnimControl ragdoll) {
         ragdoll.setIgnoredHops(2);
 
-        float density = 1f;
+        float density = 400f;
         LinkConfig cylinder = new LinkConfig(density, MassHeuristic.Density,
                 ShapeHeuristic.Cylinder, scaleIdentity,
                 CenterHeuristic.Mean, RotationOrder.XZY);

@@ -8,7 +8,9 @@ import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.objects.PhysicsBody;
 import com.jme3.input.JoystickCompatibilityMappings;
 import com.jme3.system.AppSettings;
 
@@ -79,9 +81,12 @@ public class Main extends SimpleApplication {
         assetManager.loadModel(AnimDefs.Monster.ASSET_PATH);
 
         // Initialize the physics simulation.
+        PhysicsBody.setDeactivationEnabled(false);
         BulletAppState physics = new BulletAppState();
         stateManager.attach(physics);
-        physics.getPhysicsSpace().setGravity(Physics.DEFAULT_GRAVITY);
+        PhysicsSpace space = physics.getPhysicsSpace();
+        space.setGravity(Physics.DEFAULT_GRAVITY);
+        space.getSolverInfo().setJointErp(1f);
         //physics.setDebugEnabled(true);
 
         stateManager.attach(new SceneAppState());

@@ -71,6 +71,8 @@ public class MonsterPrefab extends PrefabComponent {
             linkBody.addToIgnoreList(bccBody);
         }
 
+        bccBody.setFriction(0f);
+
         BitmapText hud = createBitmapText(ColorRGBA.Black, "label-placeholder", .1f);
         hud.setName("Healthbar");
         hud.setLocalTranslation(0, 2f, 0);
