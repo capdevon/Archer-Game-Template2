@@ -76,11 +76,11 @@ public class FireWeapon extends Weapon {
     }
 
     private void applyImpulse(RaycastHit hit, Weapon weapon) {
-        RigidBodyControl rgb = hit.gameObject.getControl(RigidBodyControl.class);
-        if (rgb != null && rgb.getMass() > 0) {
+        RigidBodyControl rbc = hit.gameObject.getControl(RigidBodyControl.class);
+        if (rbc != null && rbc.getMass() > 0) {
 
-            Vector3f force = rgb.getGravity(null).negateLocal().multLocal(rgb.getMass());
-            rgb.applyImpulse(force, Vector3f.ZERO);
+            Vector3f force = rbc.getGravity(null).negateLocal().multLocal(rbc.getMass());
+            rbc.applyImpulse(force, Vector3f.ZERO);
 
             ColorRGBA color = ColorRGBA.randomColor();
             applyDamage(hit.gameObject, color);

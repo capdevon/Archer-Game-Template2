@@ -44,14 +44,14 @@ public class ExplosiveArrowPrefab extends RangedBullet {
 
         // Add Physics
         SphereCollisionShape shape = new SphereCollisionShape(radius);
-        RigidBodyControl rgb = new RigidBodyControl(shape, mass);
-        model.addControl(rgb);
-        getPhysicsSpace().add(rgb);
+        RigidBodyControl rbc = new RigidBodyControl(shape, mass);
+        model.addControl(rbc);
+        getPhysicsSpace().add(rbc);
 
-        rgb.setCcdMotionThreshold(radius);
-        rgb.setCcdSweptSphereRadius(radius);
-        rgb.setCollisionGroup(Main.AMMO_GROUP);
-        rgb.setCollideWithGroups(Main.DEFAULT_GROUP); // ignore BCCs and other ammo
+        rbc.setCcdMotionThreshold(radius);
+        rbc.setCcdSweptSphereRadius(radius);
+        rbc.setCollisionGroup(Main.AMMO_GROUP);
+        rbc.setCollideWithGroups(Main.DEFAULT_GROUP); // ignore BCCs and other ammo
 
         ExplosiveArrowControl arrow = new ExplosiveArrowControl();
         arrow.explosionPrefab = explosionPrefab;
