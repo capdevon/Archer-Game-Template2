@@ -1,15 +1,11 @@
 package mygame.controls;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.capdevon.control.AdapterControl;
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.SceneGraphVisitorAdapter;
-import com.jme3.scene.Spatial;
 import jme3utilities.MySpatial;
 
 /**
