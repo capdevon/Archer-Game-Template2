@@ -4,7 +4,6 @@
 //   for this project. This initialization is applied in the "build.gradle"
 //   of the root project.
 
-mainClassName = 'mygame.Main'
-if (!hasProperty('mainClass')) {
-    ext.mainClass = mainClassName
+application {
+    mainClass = 'mygame.Main'
 }
