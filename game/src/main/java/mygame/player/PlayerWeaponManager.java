@@ -316,7 +316,7 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
                 break;
 
             default:
-                logger.log(Level.SEVERE, "WeaponType unknow");
+                logger.log(Level.SEVERE, "unknown WeaponType: " + currentWeapon.weaponType);
                 break;
         }
 
