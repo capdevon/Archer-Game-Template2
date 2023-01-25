@@ -13,7 +13,7 @@ import mygame.controls.TimerControl;
 import mygame.weapon.EmitterData;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class ExplosionPrefab extends PrefabComponent {

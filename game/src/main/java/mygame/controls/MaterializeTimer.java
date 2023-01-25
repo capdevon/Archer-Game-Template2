@@ -7,7 +7,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class MaterializeTimer extends AbstractControl {
@@ -28,7 +28,7 @@ public class MaterializeTimer extends AbstractControl {
 
     /**
      * Materialize a material.
-     * 
+     *
      * @param material the material to materialize.
      * @param fadeIn   if true materialize in, else materialize out
      * @param speed    speed modifier between 0 and 1. 0.1 = 10 seconds, 1 = 1 second.

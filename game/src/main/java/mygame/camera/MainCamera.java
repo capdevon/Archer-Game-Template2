@@ -10,16 +10,16 @@ import com.jme3.renderer.Camera;
  * @author capdevon
  */
 public class MainCamera {
-    
+
     private Camera cam;
     private float fieldOfView;
     private float near;
     private float far;
-    
+
     /**
      * Creates a camera state that will initialize the application camera to a
      * 45 degree fov, 0.1 near plane, and 1000 far plane.
-     * 
+     *
      * @param cam
      */
     public MainCamera(Camera cam) {
@@ -30,7 +30,7 @@ public class MainCamera {
      * Creates a camera state that will initialize the specified camera to the
      * specified parameters. If the specified camera is null then the
      * application's main camera will be used.
-     * 
+     *
      * @param cam
      * @param fov
      * @param near
@@ -43,7 +43,7 @@ public class MainCamera {
         this.far = far;
         resetCamera();
     }
-    
+
     public void setFieldOfView(float f) {
         if (this.fieldOfView == f) {
             return;
@@ -79,12 +79,12 @@ public class MainCamera {
     public float getFar() {
         return far;
     }
-    
+
     private void resetCamera() {
         float aspect = (float) cam.getWidth() / (float) cam.getHeight();
         cam.setFrustumPerspective(fieldOfView, aspect, near, far);
     }
-    
+
     /**
      * Returns a ray going from camera through a screen point.
      * @param click2d
@@ -98,5 +98,5 @@ public class MainCamera {
         Ray ray = new Ray(click3d, dir);
         return ray;
     }
-    
+
 }

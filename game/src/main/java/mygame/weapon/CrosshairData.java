@@ -6,7 +6,7 @@ import com.jme3.scene.Node;
 import com.jme3.ui.Picture;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class CrosshairData {

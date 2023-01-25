@@ -13,7 +13,7 @@ import jme3utilities.minie.DumpFlags;
 import jme3utilities.minie.PhysicsDumper;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class PlayerInput extends AdapterControl implements ActionListener {

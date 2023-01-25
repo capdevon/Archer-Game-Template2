@@ -13,7 +13,7 @@ import com.jme3.scene.Spatial;
 import jme3utilities.MySpatial;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class Damageable extends AdapterControl {
@@ -49,7 +49,7 @@ public class Damageable extends AdapterControl {
     }
 
     private void destroy() {
-        List<PhysicsControl> controls 
+        List<PhysicsControl> controls
                 = MySpatial.listControls(spatial, PhysicsControl.class, null);
         for (PhysicsControl control : controls) {
             control.setEnabled(false);

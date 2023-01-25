@@ -53,7 +53,7 @@ public class Main extends SimpleApplication {
     public static void main(String[] args) {
         // Mute the chatty loggers in certain packages.
         Heart.setLoggingLevels(Level.WARNING);
-        
+
         loadMoreJoystickMappings();
 
         Main app = new Main();

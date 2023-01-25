@@ -19,7 +19,7 @@ import com.jme3.scene.Spatial;
 import mygame.Main;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class FireWeapon extends Weapon {

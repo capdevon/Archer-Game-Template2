@@ -4,11 +4,11 @@ import com.capdevon.engine.PrefabComponent;
 import com.jme3.app.Application;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public abstract class RangedBullet extends PrefabComponent {
-	
+
     /**
      * The name in GUI
      */
@@ -24,5 +24,5 @@ public abstract class RangedBullet extends PrefabComponent {
     public RangedBullet(Application app) {
     	super(app);
     }
-    
+
 }

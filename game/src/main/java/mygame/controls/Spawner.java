@@ -21,7 +21,7 @@ public class Spawner extends AbstractControl {
     public int radius      = 5;
     public int maxObjects  = 1;
     public float spawnTime = 2f;
-    
+
     float timer = 0;
 
     @Override
@@ -29,11 +29,11 @@ public class Spawner extends AbstractControl {
         if (prefab == null) {
             return;
         }
-        
+
         timer += tpf;
         if (timer > spawnTime) {
             timer = 0;
-            
+
             int qty = ((Node) spatial).getQuantity();
             if (qty < maxObjects) {
                 Vector3f spawnPoint = getRandomSpawnPoint().addLocal(center);
@@ -44,11 +44,11 @@ public class Spawner extends AbstractControl {
             }
         }
     }
-    
+
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
-    
+
     private Vector3f getRandomSpawnPoint() {
         float x = FastMath.nextRandomInt(-radius, radius);
         float z = FastMath.nextRandomInt(-radius, radius);

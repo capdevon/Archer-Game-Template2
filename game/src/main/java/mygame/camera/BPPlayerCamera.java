@@ -28,15 +28,15 @@ import com.jme3.scene.control.CameraControl;
  * @author capdevon
  */
 public class BPPlayerCamera extends AbstractControl implements AnalogListener {
-    
+
     private static final Logger logger = Logger.getLogger(BPPlayerCamera.class.getName());
-    
+
     protected Camera camera;
     protected InputManager inputManager;
     protected Node yawNode;
     protected Node pitchNode;
     protected CameraNode camNode;
-    
+
     protected float xOffset = 0f;
     protected float yHeight = 1.5f;
     protected float minDistance = 1f;
@@ -46,7 +46,7 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
     protected float minVerticalRotation = 0f;
     protected float maxVerticalRotation = FastMath.PI / 2;
     protected boolean invertYaxis = false;
-    
+
     private boolean canRotate = true;
     private float horizontalRotation = 0f;
     private float verticalRotation = 0f;
@@ -54,14 +54,14 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
     private final Quaternion qVRotation = new Quaternion();
     private Vector3f upVector;
     private Vector3f leftVector;
-    
+
     protected float targetDistance;
     private final Vector3f camOffset = new Vector3f(0, 0, 1);
-    
+
     /**
-     * 
+     *
      * @param camera
-     * @param inputManager 
+     * @param inputManager
      */
     public BPPlayerCamera(Camera camera, InputManager inputManager) {
         this.camera = camera;
@@ -69,7 +69,7 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
         this.leftVector = camera.getLeft().clone();
         registerWithInput(inputManager);
     }
-    
+
     @Override
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
@@ -78,7 +78,7 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
             logger.log(Level.INFO, "Initialized");
         }
     }
-        
+
     private void initCamera() {
         yawNode = new Node("Yaw");
         pitchNode = new Node("Pitch");
@@ -86,43 +86,43 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
 
         yawNode.attachChild(pitchNode);
         pitchNode.attachChild(camNode);
-        
+
         targetDistance = maxDistance;
 
         yawNode.setLocalTranslation(spatial.getWorldTranslation());
         pitchNode.setLocalTranslation(xOffset, yHeight, 0);
         camNode.setLocalTranslation(0, 0, -targetDistance);
-        
+
         camNode.lookAt(pitchNode.getWorldTranslation(), upVector);
         camNode.setControlDir(CameraControl.ControlDirection.SpatialToCamera);
 
         rotateCamera();
     }
-  
+
     @Override
     public void onAnalog(String name, float value, float tpf) {
         if (!canRotate || !enabled) {
             return;
         }
-        
+
         if (name.equals(CameraInput.CHASECAM_MOVELEFT)) {
             horizontalRotation -= value * rotationSpeed;
             rotateCamera();
-            
+
         } else if (name.equals(CameraInput.CHASECAM_MOVERIGHT)) {
             horizontalRotation += value * rotationSpeed;
             rotateCamera();
-            
+
         } else if (name.equals(CameraInput.CHASECAM_UP)) {
             verticalRotation += value * rotationSpeed;
             rotateCamera();
-            
+
         } else if (name.equals(CameraInput.CHASECAM_DOWN)) {
             verticalRotation -= value * rotationSpeed;
             rotateCamera();
         }
     }
-    
+
     /**
      * rotate the camera around the target
      */
@@ -131,7 +131,7 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
         verticalRotation = FastMath.clamp(verticalRotation, minVerticalRotation, maxVerticalRotation);
         qVRotation.fromAngleNormalAxis(verticalRotation, leftVector);
         pitchNode.setLocalRotation(qVRotation);
-        
+
         //rotate the camera around the target on the horizontal plane
         qHRotation.fromAngleNormalAxis(horizontalRotation, upVector);
         yawNode.setLocalRotation(qHRotation);
@@ -141,9 +141,9 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
     protected void controlUpdate(float tpf) {
         updateCamera(tpf);
     }
-    
+
     /**
-     * @param tpf 
+     * @param tpf
      */
     protected void updateCamera(float tpf) {
         // handle translations
@@ -158,11 +158,11 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
         yawNode.updateLogicalState(tpf);
         yawNode.updateGeometricState();
     }
-    
+
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
-    
+
     /**
      * Registers inputs with the input manager
      *
@@ -176,7 +176,7 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
         initHorizontalAxisInput();
         mapJoystick();
     }
-    
+
     private void initVerticalAxisInputs() {
         if (!invertYaxis) {
             addMapping(CameraInput.CHASECAM_DOWN, new MouseAxisTrigger(MouseInput.AXIS_Y, true));
@@ -186,17 +186,17 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
             addMapping(CameraInput.CHASECAM_UP, new MouseAxisTrigger(MouseInput.AXIS_Y, true));
         }
     }
-    
+
     private void initHorizontalAxisInput() {
         addMapping(CameraInput.CHASECAM_MOVELEFT, new MouseAxisTrigger(MouseInput.AXIS_X, false));
         addMapping(CameraInput.CHASECAM_MOVERIGHT, new MouseAxisTrigger(MouseInput.AXIS_X, true));
     }
-    
+
     private void addMapping(String bindingName, Trigger... triggers) {
         inputManager.addMapping(bindingName, triggers);
         inputManager.addListener(this, bindingName);
     }
-    
+
     protected void mapJoystick() {
         Joystick[] joysticks = inputManager.getJoysticks();
 
@@ -218,7 +218,7 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
             }
         }
     }
-    
+
     /**
      * Cleans up the input mappings from the input manager. Undoes the work of
      * registerWithInput().
@@ -232,7 +232,7 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
         inputManager.deleteMapping(CameraInput.CHASECAM_MOVERIGHT);
         inputManager.removeListener(this);
     }
-    
+
     /**
      * invert the vertical axis movement of the mouse
      *
@@ -246,7 +246,7 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
             initVerticalAxisInputs();
         }
     }
-            
+
     /**
      * Returns the min zoom distance of the camera (default is 1)
      * @return minDistance
@@ -254,7 +254,7 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
     public float getMinDistance() {
         return minDistance;
     }
-    
+
     /**
      * Sets the min zoom distance of the camera (default is 1)
      * @param minDistance
@@ -265,7 +265,7 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
 //            zoomCamera(targetDistance - minDistance);
 //        }
     }
-    
+
     /**
      * Returns the max zoom distance of the camera (default is 40)
      * @return maxDistance
@@ -273,7 +273,7 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
     public float getMaxDistance() {
         return maxDistance;
     }
-    
+
     /**
      * Sets the max zoom distance of the camera (default is 40)
      * @param maxDistance
@@ -284,7 +284,7 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
 //            zoomCamera(maxDistance - targetDistance);
 //        }
     }
-    
+
     /**
      * return the current distance from the camera to the target
      * @return the distance
@@ -292,11 +292,11 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
     public float getDistanceToTarget() {
         return targetDistance;
     }
-    
+
     public void setDistanceToTarget(float targetDistance) {
         this.targetDistance = targetDistance;
     }
- 
+
     /**
      * The maximal vertical rotation angle in radian of the camera around the target.
      * @return maxVerticalRotation

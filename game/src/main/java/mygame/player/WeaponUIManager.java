@@ -7,7 +7,7 @@ import com.jme3.scene.Spatial;
 import mygame.weapon.Weapon;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class WeaponUIManager extends AdapterControl {

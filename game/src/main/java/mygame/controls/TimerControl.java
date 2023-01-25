@@ -5,7 +5,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public abstract class TimerControl extends AbstractControl {

@@ -13,7 +13,7 @@ import mygame.weapon.ExplosiveArrowControl;
 import mygame.weapon.RangedBullet;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class ExplosiveArrowPrefab extends RangedBullet {

@@ -59,7 +59,7 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     private float aimingSpeed = 5f;
     private float aimFOV = 45;
     private float defaultFOV = 60;
-    
+
     boolean isAiming;
     boolean canShooting;
     private float currentLaunchForce;
@@ -110,7 +110,7 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
         animator.getAttachments(MIXAMO_PREFIX + jointName).attachChild(wh);
         return wh;
     }
-    
+
     private void configureAnimClips(Animator animator) {
         animator.actionCycleDone(Archer.Idle);
         animator.actionCycleDone(Archer.Running);
@@ -170,7 +170,7 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
         //bpCamera.setAvoidObstacles(!enable);
         bpCamera.setRotationSpeed(enable ? 0.5f : 1);
         currentWeapon.crosshair.setEnabled(enable);
-        
+
         ikRig.setAvatarIKActive(ikSpine, enable);
         animator.setAnimation(Archer.DrawArrow);
     }
@@ -334,7 +334,7 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
 
     /**
      * point-of-impact prediction.
-     * 
+     *
      * @param launchLocation
      * @param launchVelocity
      */
@@ -345,7 +345,7 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
         Vector3f previousLocation = new Vector3f();
 
         float timeStep = 0.02f; // seconds per step
-        //logger.log(Level.INFO, "Start simulation. Position=" + location + ", Velocity=" + launchVelocity + ", timeStep=" + timeStep); 
+        //logger.log(Level.INFO, "Start simulation. Position=" + location + ", Velocity=" + launchVelocity + ", timeStep=" + timeStep);
 
         points.clear();
 

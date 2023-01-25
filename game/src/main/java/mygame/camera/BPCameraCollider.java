@@ -34,25 +34,25 @@ public class BPCameraCollider extends BPPlayerCamera {
     private boolean avoidObstacles = true;
 
     private float cameraRadius = 0.3f;
-    
+
     private final RaycastHit hitInfo = new RaycastHit();
     private final List<PhysicsSweepTestResult> sweepTestResults = new LinkedList<>();
 
     /**
-     * 
+     *
      * @param camera
-     * @param inputManager 
+     * @param inputManager
      */
     public BPCameraCollider(Camera camera, InputManager inputManager) {
         super(camera, inputManager);
     }
-    
+
     @Override
     protected void controlUpdate(float tpf) {
         testSightLine();
         updateCamera(tpf);
     }
-    
+
     /**
      * handle collisions
      */
@@ -72,7 +72,7 @@ public class BPCameraCollider extends BPPlayerCamera {
             setDistanceToTarget(distToTarget);
         }
     }
-    
+
     private boolean sphereCast(Vector3f origin, float radius, Vector3f direction, RaycastHit hitInfo, float maxDistance, int layerMask) {
 
         TempVars t = TempVars.get();
@@ -82,47 +82,47 @@ public class BPCameraCollider extends BPPlayerCamera {
         hitInfo.clear();
         boolean collision = false;
         float hf = maxDistance;
-        
+
         float penetration = 0f; // physics-space units
         ConvexShape shape = new SphereCollisionShape(radius);
-        
+
         PhysicsSpace physicsSpace = PhysicsSpace.getPhysicsSpace();
         physicsSpace.sweepTest(shape, new Transform(beginVec), new Transform(finalVec), sweepTestResults, penetration);
-        
+
         for (PhysicsSweepTestResult tr : sweepTestResults) {
-        	
+
             PhysicsCollisionObject pco = tr.getCollisionObject();
             Spatial userObject = GameObject.findGameObject(pco);
             if (userObject == null) {
             	continue;
             }
-            
-            boolean isObstruction = applyMask(layerMask, pco.getCollisionGroup()) 
+
+            boolean isObstruction = applyMask(layerMask, pco.getCollisionGroup())
                   && !GameObject.compareTag(userObject, ignoreTag);
 
             if (tr.getHitFraction() < hf && isObstruction) {
-            	
+
             	hitInfo.rigidBody = pco;
             	hitInfo.collider = pco.getCollisionShape();
             	hitInfo.gameObject = userObject;
                 MyVector3f.lerp(tr.getHitFraction(), beginVec, finalVec, hitInfo.point);
                 tr.getHitNormalLocal(hitInfo.normal);
                 hitInfo.distance = beginVec.distance(hitInfo.point);
-                
+
                 hf = tr.getHitFraction();
                 collision = true;
             }
         }
-        
+
         t.release();
         return collision;
     }
- 
+
     // Check if a collisionGroup is in a layerMask
     private boolean applyMask(int layerMask, int collisionGroup) {
         return layerMask == (layerMask | collisionGroup);
     }
-    
+
     public int getCollideWithGroups() {
         return collideWithGroups;
     }

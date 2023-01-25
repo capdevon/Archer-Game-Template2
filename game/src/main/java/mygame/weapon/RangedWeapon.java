@@ -11,7 +11,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class RangedWeapon extends Weapon {

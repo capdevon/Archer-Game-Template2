@@ -86,7 +86,7 @@ public class SceneAppState extends SimpleAppState {
             LightProbe probe = LightProbeFactory.makeProbe(envCam, rootNode);
             probe.getArea().setRadius(100); // Set the probe's radius in world units
             rootNode.addLight(probe);
-            
+
         } else {
             // add a PBR probe.
             Spatial probeModel = assetManager.loadModel("Scenes/defaultProbe.j3o");
@@ -112,7 +112,7 @@ public class SceneAppState extends SimpleAppState {
 //        BloomFilter bloom = new BloomFilter();
 //        bloom.setExposurePower(55);
 //        bloom.setBloomIntensity(1.0f);
-                
+
         MipmapBloomFilter bloom = new MipmapBloomFilter(MipmapBloomFilter.Quality.High, MipmapBloomFilter.GlowMode.Scene);
         bloom.setExposurePower(0.7f);
         bloom.setBloomIntensity(0.4f, 0.55f);

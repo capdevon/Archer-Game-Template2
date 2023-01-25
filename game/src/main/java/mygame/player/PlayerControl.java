@@ -19,7 +19,7 @@ import com.jme3.scene.Spatial;
 import mygame.AnimDefs.Archer;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class PlayerControl extends AdapterControl {
@@ -43,7 +43,7 @@ public class PlayerControl extends AdapterControl {
 
     boolean _MoveForward, _MoveBackward, _MoveLeft, _MoveRight;
     boolean isRunning;
-    
+
     public float runSpeed = 5.5f;
     public float moveSpeed = 4.5f;
     public float turnSpeed = 10f;
@@ -91,7 +91,7 @@ public class PlayerControl extends AdapterControl {
             if (walkDirection.lengthSquared() > 0) {
                 float angle = FastMath.atan2(walkDirection.x, walkDirection.z);
                 dr.fromAngleNormalAxis(angle, Vector3f.UNIT_Y);
-                
+
                 float smoothTime = 1 - (tpf * turnSpeed);
                 FRotator.smoothDamp(spatial.getWorldRotation(), dr, smoothTime, viewDirection);
                 bcc.setViewDirection(viewDirection);

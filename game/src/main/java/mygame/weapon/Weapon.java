@@ -12,7 +12,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 /**
- * 
+ *
  * @author capevon
  */
 public class Weapon extends AdapterControl {
@@ -163,5 +163,5 @@ public class Weapon extends AdapterControl {
         }
         return false;
     }
-    
+
 }

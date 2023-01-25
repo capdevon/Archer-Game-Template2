@@ -1,7 +1,7 @@
 package mygame.controls;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public interface MaterializerListener {

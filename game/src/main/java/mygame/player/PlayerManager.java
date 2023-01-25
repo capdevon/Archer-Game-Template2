@@ -71,7 +71,7 @@ public class PlayerManager extends SimpleAppState {
         player.setUserData(GameObject.TAG_NAME, "TagPlayer");
         player.setName("Player");
         rootNode.attachChild(player);
-        
+
         // configure Physics Character
         BetterCharacterControl bcc = new BetterCharacterControl(.5f, 1.8f, 20f);
         player.addControl(bcc);
@@ -85,16 +85,16 @@ public class PlayerManager extends SimpleAppState {
         // configure Animator
         Animator animator = new Animator();
         player.addControl(animator);
-        
+
         // Override the default layer mask.
         AvatarMask avatarMask = new AvatarMask(animator.getArmature()).addAllJoints();
         animator.setAnimMask(AnimComposer.DEFAULT_LAYER, avatarMask);
-        
+
         IKRig rig = new IKRig(avatarMask);
         animator.getAnimRoot().addControl(rig);
-        
+
         player.addControl(new RespawnPlayer());
-        
+
         BPCameraCollider bpCamera = new BPCameraCollider(camera, inputManager);
         bpCamera.setXOffset(-0.4f);
         bpCamera.setYHeight(1.8f);
@@ -137,10 +137,10 @@ public class PlayerManager extends SimpleAppState {
         fWeapon.name = "SniperRifle";
         fWeapon.weaponType = WeaponType.Normal;
         fWeapon.crosshair = new CrosshairData(guiNode, getCrossHair("+"));
-        
+
         Spatial rifle = createFakeRifleModel();
         rifle.addControl(fWeapon);
-        
+
         return fWeapon;
     }
 
@@ -157,7 +157,7 @@ public class PlayerManager extends SimpleAppState {
         eFlame.assetName = "Scenes/jMonkey/Flame.j3o";
         eFlame.explosionColor = ColorRGBA.Orange.clone();
         eFlame.lifeTimeVFX = 1.05f;
-        
+
         ExplosiveArrowPrefab fArrow = new ExplosiveArrowPrefab(app);
         fArrow.name = "FlameArrow";
         fArrow.mass = 6f;
@@ -168,22 +168,22 @@ public class PlayerManager extends SimpleAppState {
         ePoison.assetName = "Scenes/jMonkey/Poison.j3o";
         ePoison.explosionColor = new ColorRGBA(0, 1.0f, 0.452f, 1f);
         ePoison.lifeTimeVFX = 8.85f;
-        
+
         ExplosiveArrowPrefab pArrow = new ExplosiveArrowPrefab(app);
         pArrow.name = "PoisonArrow";
         pArrow.mass = 6f;
         pArrow.explosionPrefab = ePoison;
-        
+
         // 3.
         ArrowPrefab arrow = new ArrowPrefab(app);
         arrow.mass = 6f;
         arrow.name = "Arrow";
-        
+
         List<RangedBullet> bullets = new ArrayList<>();
         bullets.add(fArrow);
         bullets.add(pArrow);
         bullets.add(arrow);
-        
+
         // set arrows
         rWeapon.setBullets(bullets);
 
@@ -211,7 +211,7 @@ public class PlayerManager extends SimpleAppState {
 
         return model;
     }
-    
+
     private Geometry makeGeometry(String name, Mesh mesh, ColorRGBA color) {
         Geometry geo = new Geometry(name, mesh);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -219,7 +219,7 @@ public class PlayerManager extends SimpleAppState {
         geo.setMaterial(mat);
         return geo;
     }
-    
+
     private BitmapText createUIText(float xPos, float yPos, ColorRGBA color) {
         BitmapFont font = assetManager.loadFont("Interface/Fonts/Default.fnt");
         BitmapText hud = new BitmapText(font);

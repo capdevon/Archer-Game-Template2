@@ -74,7 +74,7 @@ public class ArrowPrefab extends RangedBullet {
                 shape, mass, tipLocalOffset, penetrationFraction);
         model.addControl(penetrator);
         getPhysicsSpace().add(penetrator);
-        
+
         Damageable damageable = new Damageable();
         model.addControl(damageable);
 
@@ -88,7 +88,7 @@ public class ArrowPrefab extends RangedBullet {
         };
         timeout.setEnabled(true);
         model.addControl(timeout);
-        
+
         return model;
     }
 

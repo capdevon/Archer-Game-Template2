@@ -29,11 +29,11 @@ import mygame.ai.AIControl;
 import mygame.controls.Damageable;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class MonsterPrefab extends PrefabComponent {
-	
+
     public boolean usePhysicsCharacter = true;
     public float radius = 0.9f;
     public float height = 2f;
@@ -54,7 +54,7 @@ public class MonsterPrefab extends PrefabComponent {
         enemy.setLocalRotation(rotation);
         enemy.setLocalScale(1.1f);
         parent.attachChild(enemy);
-        
+
         enemy.addControl(new Animator());
 
         BetterCharacterControl bcc = new BetterCharacterControl(radius, height, 10f);

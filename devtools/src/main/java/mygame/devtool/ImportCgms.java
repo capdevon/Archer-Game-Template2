@@ -79,7 +79,6 @@ public class ImportCgms extends SimpleApplication {
     public void simpleInitApp() {
         // Convert the arrow model to J3O format.
         Spatial arrow = assetManager.loadModel("Models/Arrow/arrow.glb");
-        
         writeToJ3O(arrow, ArrowPrefab.ASSET_PATH);
 
         // Convert the bow model to J3O format.

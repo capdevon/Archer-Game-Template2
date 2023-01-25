@@ -3,13 +3,13 @@ package mygame;
 import com.capdevon.anim.Animation3;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public interface AnimDefs {
-	
+
     public interface Archer {
-    	
+
         final String ASSET_PATH = "Models/Erika/Erika.j3o";
 
         final Animation3 Idle               = new Animation3("Idle", true);
@@ -30,9 +30,9 @@ public interface AnimDefs {
         final Animation3 Death2             = new Animation3("StandingDeathForward_2", false);
 
     }
-    
+
     public interface Monster {
-    	
+
         final String ASSET_PATH = "Models/Drake/Drake.j3o";
 
         final Animation3 Idle           = new Animation3("Idle", true);
@@ -51,5 +51,5 @@ public interface AnimDefs {
         final Animation3 Attack2        = new Animation3("Attack2", false);
         final Animation3 Punching       = new Animation3("Punching", false);
     }
-    
+
 }
