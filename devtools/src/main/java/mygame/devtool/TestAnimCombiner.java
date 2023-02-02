@@ -8,6 +8,7 @@ import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.Armature;
 import com.jme3.app.SimpleApplication;
+import com.jme3.asset.MaterialKey;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.material.Material;
 import com.jme3.material.plugin.export.material.J3MExporter;
@@ -69,8 +70,11 @@ public class TestAnimCombiner extends SimpleApplication {
             @Override
             public void visit(Geometry geom) {
                 Material mat = geom.getMaterial();
-                File file = new File(dirName, mat.getName() + ".j3m");
-                writeJ3m(mat, file); //TODO: Link the new j3m file to the geometry.
+                File file = new File(dirName, geom.getName() + ".j3m");
+                writeJ3m(mat, file);
+
+                MaterialKey key = new MaterialKey(inputDir + "/" + file.getName());
+                mat.setKey(key);
             }
         });
 
