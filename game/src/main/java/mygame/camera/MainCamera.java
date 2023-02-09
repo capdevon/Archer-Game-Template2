@@ -87,15 +87,18 @@ public class MainCamera {
 
     /**
      * Returns a ray going from camera through a screen point.
-     * @param click2d
+     *
+     * @param cam
+     * @param screenXY
      * @return
      */
-    public static Ray screenPointToRay(Camera cam, Vector2f click2d) {
+    public static Ray screenPointToRay(Camera cam, Vector2f screenXY) {
         // Convert screen click to 3d position
-        Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d), 0).clone();
-        Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d), 1).subtractLocal(click3d).normalizeLocal();
+        Vector3f nearPos = cam.getWorldCoordinates(screenXY, 0f);
+        Vector3f farPos = cam.getWorldCoordinates(screenXY, 1f);
+        Vector3f dir = farPos.subtract(nearPos).normalizeLocal();
         // Aim the ray from the clicked spot forwards.
-        Ray ray = new Ray(click3d, dir);
+        Ray ray = new Ray(nearPos, dir);
         return ray;
     }
 
