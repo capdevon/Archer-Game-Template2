@@ -25,7 +25,7 @@ public class TestAnimCombiner extends SimpleApplication {
 
     private final String resources = "src/main/resources/";
     private final String inputDir = "Models/Erika";
-    private final String characterModel = "Erika"; // Main Chacarter (T-pose)
+    private final String characterModel = "Erika"; // Main Character (T-pose)
 
     /**
      *
