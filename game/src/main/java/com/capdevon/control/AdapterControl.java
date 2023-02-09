@@ -50,13 +50,13 @@ public abstract class AdapterControl extends AbstractControl {
 
     /**
      * Returns all components of Type type in the GameObject or any of its
-     * children children using depth first search. Works recursively.
+     * children using depth first search. Works recursively.
      *
      * @param <T>
      * @param type
      * @return
      */
-    public <T> List<T> getComponentsInChildren(Class<? extends Control> type) {
+    public <T extends Control> List<T> getComponentsInChildren(Class<T> type) {
         return GameObject.getComponentsInChildren(spatial, type);
     }
 

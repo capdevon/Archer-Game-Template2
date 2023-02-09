@@ -87,20 +87,19 @@ public class GameObject {
 
     /**
      * Returns all components of Type type in the GameObject or any of its
-     * children children using depth first search. Works recursively.
+     * children using depth first search. Works recursively.
      *
      * @param <T>
      * @param subtree
-     * @param type
+     * @param clazz
      * @return
      */
-    @SuppressWarnings("unchecked")
-    public static <T> List<T> getComponentsInChildren(Spatial subtree, Class<? extends Control> type) {
+    public static <T extends Control> List<T> getComponentsInChildren(Spatial subtree, Class<T> clazz) {
         List<T> lst = new ArrayList<>(5);
         subtree.breadthFirstTraversal(new SceneGraphVisitor() {
             @Override
             public void visit(Spatial sp) {
-                T control = (T) sp.getControl(type);
+                T control = sp.getControl(clazz);
                 if (control != null) {
                     lst.add(control);
                 }
