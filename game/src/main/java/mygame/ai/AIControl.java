@@ -40,7 +40,9 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
      * display the monster's status in the viewport
      */
     final private BitmapText hud;
- 
+    /**
+     * physics controls
+     */
     private BetterCharacterControl bcc;
     private DynamicAnimControl dac;
 

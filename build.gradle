@@ -1,4 +1,4 @@
-// Gradle build script for the Bats2 project
+// Gradle build script for the Archer-Game-Template2 project
 
 plugins {
     id 'base' // to add a "clean" task to the root project
