@@ -11,6 +11,7 @@ import com.jme3.bullet.collision.PhysicsSweepTestResult;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.ConvexShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.control.JoinedBodyControl;
 import com.jme3.bullet.joints.New6Dof;
 import com.jme3.bullet.joints.motors.MotorParam;
 import com.jme3.bullet.objects.PhysicsRigidBody;
@@ -26,7 +27,6 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
 import mygame.Main;
 import mygame.ai.AIControl;
-import mygame.controls.JoinedBodyControl;
 
 /**
  * A custom PhysicsControl for a dynamic rigid body with a tip that penetrates
@@ -101,7 +101,7 @@ public class Penetrator
         Validate.nonZero(tipLocalOffset, "tip local offset");
         Validate.fraction(penetrationFraction, "penetration fraction");
 
-        centerBody.setCollisionGroup(Main.AMMO_GROUP);
+        getRigidBody().setCollisionGroup(Main.AMMO_GROUP);
 
         this.tipLocalOffset = tipLocalOffset.clone();
         this.penetrationFraction = penetrationFraction;
@@ -124,6 +124,7 @@ public class Penetrator
         Validate.nonNull(tipLocation, "tip location");
         Validate.nonZero(velocity, "velocity");
 
+        PhysicsRigidBody centerBody = getRigidBody();
         centerBody.setLinearVelocity(velocity);
 
         Vector3f directionOfMotion = velocity.normalize();
@@ -166,7 +167,7 @@ public class Penetrator
      */
     @Override
     public void prePhysicsTick(PhysicsSpace space, float timeStep) {
-        if (centerBody.countJoints() == 0) {
+        if (getRigidBody().countJoints() == 0) {
             tipCheck(timeStep);
         }
     }
@@ -191,6 +192,7 @@ public class Penetrator
      * @param timeStep the time per physics step (in seconds, &ge;0)
      */
     private void tipCheck(float timeStep) {
+        PhysicsRigidBody centerBody = getRigidBody();
         centerBody.getPhysicsLocation(tmpCenterStartLocation);
         centerBody.getPhysicsRotation(tmpStartOrientation);
         centerBody.getLinearVelocity(tmpLinearVelocity);
@@ -287,6 +289,7 @@ public class Penetrator
          * Transfer enough momentum so that the body will barely reach
          * the point of impact on the next physics tick.
          */
+        PhysicsRigidBody centerBody = getRigidBody();
         Vector3f velocity = centerBody.getLinearVelocity();
         float factor = (1f - hitFraction) * centerBody.getMass();
         Vector3f impulse = velocity.mult(factor);

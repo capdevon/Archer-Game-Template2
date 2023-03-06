@@ -4,6 +4,7 @@ import com.capdevon.engine.PrefabComponent;
 import com.jme3.app.Application;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.JoinedBodyControl;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
@@ -17,7 +18,6 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 
 import mygame.controls.Damageable;
-import mygame.controls.JoinedBodyControl;
 
 /**
  *
