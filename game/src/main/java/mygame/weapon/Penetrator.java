@@ -331,8 +331,8 @@ public class Penetrator
         getPhysicsSpace().addJoint(fixedConstraint);
 
         // Copy the ignore list and the collision-group settings.
-        long[] ids = hit.listIgnoredIds();
-        centerBody.setIgnoreList(ids);
+        PhysicsCollisionObject[] pcos = hit.listIgnoredPcos();
+        centerBody.setIgnoreList(pcos);
         centerBody.addToIgnoreList(hit);
         int hitGroup = hit.getCollisionGroup();
         centerBody.setCollisionGroup(hitGroup);
