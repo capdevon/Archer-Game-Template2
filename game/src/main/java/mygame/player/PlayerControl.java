@@ -77,11 +77,28 @@ public class PlayerControl extends AdapterControl {
             // Never walk while you're aiming.
             bcc.setWalkDirection(Vector3f.ZERO);
             footstepsSFX.stop();
+
             float cameraAzimuth = MyVector3f.azimuth(camDir);
-            float azimuthErr = cameraAzimuth - viewAzimuth;
-            {
+            if (m_PlayerWeaponManager.canShooting) {
+                Vector3f weaponDir = m_PlayerWeaponManager.weaponDirection();
+                float weaponAzimuth = MyVector3f.azimuth(weaponDir);
+                float azimuthErr = cameraAzimuth - weaponAzimuth;
                 azimuthErr = MyMath.standardizeAngle(azimuthErr);
                 bccTurner.setNextError(azimuthErr);
+                /*
+                 * If the weapon's azimuth is nearly correct,
+                 * then we adjust the weapon's elevation angle as well.
+                 */
+                if (FastMath.abs(azimuthErr) < 0.4f) {
+                    float eaSetpoint = MyVector3f.altitude(camera.getDirection());
+                    {
+                        // Adjust the elevation angle (EA) by bending the spine.
+                        float eaMeasured = MyVector3f.altitude(weaponDir);
+                        float eaErr = eaSetpoint - eaMeasured;
+                        Damper bender = m_PlayerWeaponManager.getSpineBender();
+                        bender.setNextError(eaErr);
+                    }
+                }
             }
 
         } else { // not aiming a weapon

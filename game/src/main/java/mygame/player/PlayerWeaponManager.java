@@ -79,6 +79,10 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     private static final String MIXAMO_PREFIX = "mixamorig:";
     private IKRig ikRig;
     private String ikSpine = MIXAMO_PREFIX + HumanBodyBones.Spine2;
+    /**
+     * control the side-to-side bending of the avatar's spine
+     */
+    final private Damper spineBender = new Damper(0.4f, -0.2f);
     private final Quaternion tempRotation = new Quaternion();
     private final float[] angles = new float[3];
 
@@ -130,9 +134,8 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
 
     private void updateBoneIK() {
         if (isAiming) {
-            camera.getRotation().toAngles(angles);
-            float rx = angles[0];
-            tempRotation.fromAngles(0, 0, -rx);
+            float spineBendAngle = spineBender.update();
+            tempRotation.fromAngles(0f, 0f, spineBendAngle);
             ikRig.setAvatarIKRotation(ikSpine, tempRotation);
         }
     }
@@ -161,6 +164,16 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
             RangedWeapon rWeapon = (RangedWeapon) currentWeapon;
             currentLaunchForce = rWeapon.m_MinLaunchForce;
         }
+    }
+
+    /**
+     * Accesses the control system for side-to-side bending of the avatar's
+     * spine.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    Damper getSpineBender() {
+        return spineBender;
     }
 
     /**
