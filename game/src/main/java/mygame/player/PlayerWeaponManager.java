@@ -217,6 +217,19 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     }
 
     /**
+    /**
+     * Returns the location of the weapon.
+     *
+     * @return a new location vector in world coordinates
+     */
+    Vector3f locateWeapon() {
+        Spatial cylinder = ammoNode.getChild(0);
+        Vector3f location = cylinder.getWorldTranslation(); // alias
+
+        return location.clone();
+    }
+
+    /**
      * Returns the direction in which the weapon is pointed.
      *
      * @return a new unit vector in world coordinates
