@@ -1,8 +1,12 @@
 package mygame.camera;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.input.CameraInput;
 import com.jme3.input.InputManager;
 import com.jme3.input.Joystick;
@@ -22,6 +26,9 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.CameraControl;
+import jme3utilities.Validate;
+import jme3utilities.math.MyVector3f;
+import mygame.Main;
 
 /**
  *
@@ -371,4 +378,47 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
         this.zoomSensitivity = zoomSensitivity;
     }
 
+    /**
+     * Returns the target location for aiming weapons. The location must always
+     * be centered in the main camera's viewport.
+     *
+     * @param minRange minimum distance from the camera (in world units, &gt;0)
+     * @param maxRange maximum distance from the camera (in world units,
+     * &gt;minRange)
+     * @return a new location vector in world coordinates, or null if none found
+     */
+    public Vector3f locateTarget(float minRange, float maxRange) {
+        Validate.positive(minRange, "minimum range");
+        Validate.require(maxRange > minRange, "maxRange > minRange");
+
+        // Cast a ray from the camera in the direction it is looking.
+        Vector3f direction = camera.getDirection();
+        Vector3f rayBegin = camera.getLocation(); // alias
+        Vector3f rayEnd = rayBegin.clone();
+        MyVector3f.accumulateScaled(rayEnd, direction, maxRange);
+        PhysicsSpace physicsSpace = PhysicsSpace.getPhysicsSpace();
+        List<PhysicsRayTestResult> results
+                = physicsSpace.rayTestRaw(rayBegin, rayEnd);
+
+        // Find the closest result in the default collision group.
+        float minFraction = 9f;
+        for (PhysicsRayTestResult result : results) {
+            PhysicsCollisionObject pco = result.getCollisionObject();
+            if (pco.getCollisionGroup() == Main.DEFAULT_GROUP) {
+                float hitFraction = result.getHitFraction();
+                if (hitFraction * maxRange < minRange) { // too close to camera
+                    return null; // abort the search
+                }
+                if (hitFraction < minFraction) {
+                    minFraction = hitFraction;
+                }
+            }
+        }
+        if (minFraction > 1f) { // no results in the default group
+            return null;
+        }
+
+        Vector3f result = MyVector3f.lerp(minFraction, rayBegin, rayEnd, null);
+        return result;
+    }
 }
