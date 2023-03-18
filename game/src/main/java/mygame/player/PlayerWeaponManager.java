@@ -167,6 +167,46 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     }
 
     /**
+     * Estimates the elevation angle to hit a target at the specified offset
+     * from the weapon.
+     *
+     * @param targetOffset the target offset (in world coordinates, not null,
+     * unaffected)
+     * @return the angle above the horizontal (in radians) or null if no
+     * solution found
+     */
+    Float elevationAngle(Vector3f targetOffset) {
+        Float elevationAngle = null;
+        if (currentWeapon instanceof FireWeapon) {
+            elevationAngle = MyVector3f.altitude(targetOffset);
+
+        } else if (currentWeapon instanceof RangedWeapon) {
+            double g = -PhysicsSpace.getPhysicsSpace().getGravity(null).y;
+            double rxz = Math.hypot(targetOffset.x, targetOffset.z);
+            double v0 = currentLaunchForce; // in world units per second
+            assert v0 > 0.0 : "v0 = " + v0;
+            double rxzOverV0 = rxz / v0;
+
+            // Solve a quadratic equation for the tangent of the launch angle.
+            double a = g * rxzOverV0 * rxzOverV0 / 2.0;
+            assert a > 0.0 : "a = " + a;
+            double b = -rxz;
+            double c = targetOffset.y + a;
+            double discriminant = b * b - 4.0 * a * c;
+            if (discriminant >= 0.0) {
+                /*
+                 * To minimize flight time, select the more negative root,
+                 * which yields the lower elevation angle.
+                 */
+                double tangent = (-b - Math.sqrt(discriminant)) / (2.0 * a);
+                elevationAngle = (float) Math.atan(tangent);
+            }
+        }
+
+        return elevationAngle;
+    }
+
+    /**
      * Accesses the control system for side-to-side bending of the avatar's
      * spine.
      *
