@@ -6,15 +6,13 @@ import java.util.logging.Logger;
 import com.capdevon.anim.Animation3;
 import com.capdevon.anim.Animator;
 import com.capdevon.control.AdapterControl;
-import com.capdevon.engine.FRotator;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.control.BetterCharacterControl;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
+import jme3utilities.math.MyVector3f;
 
 import mygame.AnimDefs.Archer;
 
@@ -36,7 +34,6 @@ public class PlayerControl extends AdapterControl {
     private final Vector3f walkDirection = new Vector3f(0, 0, 0);
     private final Vector3f viewDirection = new Vector3f(0, 0, 1);
 
-    private final Quaternion dr = new Quaternion();
     private final Vector3f camDir = new Vector3f();
     private final Vector3f camLeft = new Vector3f();
     private final Vector2f velocity = new Vector2f();
@@ -63,17 +60,23 @@ public class PlayerControl extends AdapterControl {
     @Override
     protected void controlUpdate(float tpf) {
 
-        camera.getDirection(camDir).setY(0);
-        camera.getLeft(camLeft).setY(0);
-
-        walkDirection.set(0, 0, 0);
+        camera.getDirection(camDir);
+        camDir.setY(0);
+        camDir.normalizeLocal();
 
         if (m_PlayerWeaponManager.isAiming) {
-            bcc.setWalkDirection(walkDirection);
+            // Never walk while you're aiming.
+            bcc.setWalkDirection(Vector3f.ZERO);
             bcc.setViewDirection(camDir);
             footstepsSFX.stop();
 
-        } else {
+        } else { // not aiming a weapon
+            camera.getLeft(camLeft);
+            camLeft.setY(0f);
+            camLeft.normalizeLocal();
+
+            walkDirection.zero();
+
             if (_MoveForward) {
                 walkDirection.addLocal(camDir);
             } else if (_MoveBackward) {
@@ -86,15 +89,9 @@ public class PlayerControl extends AdapterControl {
                 walkDirection.addLocal(camLeft.negateLocal());
             }
 
-            walkDirection.normalizeLocal();
-
-            if (walkDirection.lengthSquared() > 0) {
-                float angle = FastMath.atan2(walkDirection.x, walkDirection.z);
-                dr.fromAngleNormalAxis(angle, Vector3f.UNIT_Y);
-
-                float smoothTime = 1 - (tpf * turnSpeed);
-                FRotator.smoothDamp(spatial.getWorldRotation(), dr, smoothTime, viewDirection);
-                bcc.setViewDirection(viewDirection);
+            if (!MyVector3f.isZero(walkDirection)) {
+                walkDirection.normalizeLocal();
+                bcc.setViewDirection(walkDirection);
             }
 
             float xSpeed = isRunning ? runSpeed : moveSpeed;
