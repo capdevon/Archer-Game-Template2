@@ -217,6 +217,34 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     }
 
     /**
+     * Returns the location of the aiming point for ranged weapons. The aiming
+     * point is always centered in the camera's viewport.
+     *
+     * @return a new location vector (in world coordinates) or {@code null} if
+     * the weapon isn't ready to shoot or doesn't see anything to shoot
+     */
+    Vector3f locateAimingPoint() {
+        assert isAiming;
+
+        ColorRGBA crosshairColor;
+        Vector3f location;
+        if (canShooting) { // weapon is ready
+            location = bpCamera.locateAimingPoint();
+
+            if (location != null) {
+                float range = locateWeapon().distance(location);
+                if (range < 0.8f) { // too close!
+                    location = null;
+                }
+            }
+
+        } else { // weapon isn't ready to shoot
+            location = null;
+        }
+
+        return location;
+    }
+
     /**
      * Returns the location of the weapon.
      *
