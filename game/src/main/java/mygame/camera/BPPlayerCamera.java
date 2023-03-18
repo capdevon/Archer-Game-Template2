@@ -17,6 +17,7 @@ import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.Trigger;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
@@ -26,7 +27,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.CameraControl;
-import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
 import mygame.Main;
 
@@ -379,23 +379,21 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
     }
 
     /**
-     * Returns the target location for aiming weapons. The location must always
-     * be centered in the main camera's viewport.
+     * Returns the location of the aiming point for ranged weapons. The aiming
+     * point is always centered in the camera's viewport.
      *
-     * @param minRange minimum distance from the camera (in world units, &gt;0)
-     * @param maxRange maximum distance from the camera (in world units,
-     * &gt;minRange)
-     * @return a new location vector in world coordinates, or null if none found
+     * @return a new location vector (in world coordinates) or {@code null} if
+     * the raycast doesn't find anything to shoot
      */
-    public Vector3f locateTarget(float minRange, float maxRange) {
-        Validate.positive(minRange, "minimum range");
-        Validate.require(maxRange > minRange, "maxRange > minRange");
-
-        // Cast a ray from the camera in the direction it is looking.
-        Vector3f direction = camera.getDirection();
-        Vector3f rayBegin = camera.getLocation(); // alias
-        Vector3f rayEnd = rayBegin.clone();
-        MyVector3f.accumulateScaled(rayEnd, direction, maxRange);
+    public Vector3f locateAimingPoint() {
+        /*
+         * Cast a ray from the center of the near clipping plane
+         * to the center of the far clipping plane.
+         */
+        Vector2f viewportCenter = new Vector2f(
+                camera.getWidth() / 2f, camera.getHeight() / 2f);
+        Vector3f rayBegin = camera.getWorldCoordinates(viewportCenter, 0f);
+        Vector3f rayEnd = camera.getWorldCoordinates(viewportCenter, 1f);
         PhysicsSpace physicsSpace = PhysicsSpace.getPhysicsSpace();
         List<PhysicsRayTestResult> results
                 = physicsSpace.rayTestRaw(rayBegin, rayEnd);
@@ -406,19 +404,18 @@ public class BPPlayerCamera extends AbstractControl implements AnalogListener {
             PhysicsCollisionObject pco = result.getCollisionObject();
             if (pco.getCollisionGroup() == Main.DEFAULT_GROUP) {
                 float hitFraction = result.getHitFraction();
-                if (hitFraction * maxRange < minRange) { // too close to camera
-                    return null; // abort the search
-                }
                 if (hitFraction < minFraction) {
                     minFraction = hitFraction;
                 }
             }
         }
-        if (minFraction > 1f) { // no results in the default group
-            return null;
-        }
 
-        Vector3f result = MyVector3f.lerp(minFraction, rayBegin, rayEnd, null);
+        Vector3f result;
+        if (minFraction > 1f) { // no results in the default group
+            result = null;
+        } else {
+            result = MyVector3f.lerp(minFraction, rayBegin, rayEnd, null);
+        }
         return result;
     }
 }
