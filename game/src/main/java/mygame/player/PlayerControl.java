@@ -78,11 +78,18 @@ public class PlayerControl extends AdapterControl {
             bcc.setWalkDirection(Vector3f.ZERO);
             footstepsSFX.stop();
 
-            float cameraAzimuth = MyVector3f.azimuth(camDir);
-            if (m_PlayerWeaponManager.canShooting) {
+            Vector3f targetLocation = m_PlayerWeaponManager.locateAimingPoint();
+            if (targetLocation != null) {
+                Vector3f weaponLocation = m_PlayerWeaponManager.locateWeapon();
+                Vector3f targetOffset = targetLocation.subtract(weaponLocation);
+                float targetAzimuth = MyVector3f.azimuth(targetOffset);
+                /*
+                 * Calculate the horizontal rotation required
+                 * to align the weapon with the target.
+                 */
                 Vector3f weaponDir = m_PlayerWeaponManager.weaponDirection();
                 float weaponAzimuth = MyVector3f.azimuth(weaponDir);
-                float azimuthErr = cameraAzimuth - weaponAzimuth;
+                float azimuthErr = targetAzimuth - weaponAzimuth;
                 azimuthErr = MyMath.standardizeAngle(azimuthErr);
                 bccTurner.setNextError(azimuthErr);
                 /*
@@ -90,8 +97,9 @@ public class PlayerControl extends AdapterControl {
                  * then we adjust the weapon's elevation angle as well.
                  */
                 if (FastMath.abs(azimuthErr) < 0.4f) {
-                    float eaSetpoint = MyVector3f.altitude(camera.getDirection());
-                    {
+                    Float eaSetpoint = m_PlayerWeaponManager
+                            .elevationAngle(targetOffset);
+                    if (eaSetpoint != null) {
                         // Adjust the elevation angle (EA) by bending the spine.
                         float eaMeasured = MyVector3f.altitude(weaponDir);
                         float eaErr = eaSetpoint - eaMeasured;
