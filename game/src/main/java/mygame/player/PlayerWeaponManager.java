@@ -163,6 +163,19 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
         }
     }
 
+    /**
+     * Returns the direction in which the weapon is pointed.
+     *
+     * @return a new unit vector in world coordinates
+     */
+    Vector3f weaponDirection() {
+        Spatial cylinder = ammoNode.getChild(0);
+        Quaternion orientation = cylinder.getWorldRotation(); // alias
+        Vector3f direction = orientation.mult(Vector3f.UNIT_Z, null);
+
+        return direction;
+    }
+
     public void setAiming(boolean enable) {
         this.isAiming = enable;
         float distance = (enable) ? bpCamera.getMinDistance() : bpCamera.getMaxDistance();
