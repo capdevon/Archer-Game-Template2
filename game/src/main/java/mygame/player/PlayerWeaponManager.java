@@ -219,6 +219,13 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
     /**
      * Returns the location of the aiming point for ranged weapons. The aiming
      * point is always centered in the camera's viewport.
+     * <p>
+     * The crosshair color is updated to indicate the aiming status:
+     * <ul>
+     * <li> Red - weapon isn't ready to shoot</li>
+     * <li> Yellow - weapon is ready, but doesn't see anything to shoot</li>
+     * <li> Green - weapon is ready and sees something to shoot</li>
+     * </ul>
      *
      * @return a new location vector (in world coordinates) or {@code null} if
      * the weapon isn't ready to shoot or doesn't see anything to shoot
@@ -238,9 +245,17 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
                 }
             }
 
+            if (location == null) { // weapon doesn't see anything to shoot
+                crosshairColor = ColorRGBA.Yellow;
+            } else { // found a target
+                crosshairColor = ColorRGBA.Green;
+            }
+
         } else { // weapon isn't ready to shoot
             location = null;
+            crosshairColor = ColorRGBA.Red;
         }
+        currentWeapon.crosshair.setColor(crosshairColor);
 
         return location;
     }
@@ -336,7 +351,7 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
 
     private void setWeaponReady() {
         canShooting = true;
-        currentWeapon.crosshair.setColor(ColorRGBA.Green);
+        // The crosshair color is updated in findTarget().
         reloadSFX.play();
     }
 
