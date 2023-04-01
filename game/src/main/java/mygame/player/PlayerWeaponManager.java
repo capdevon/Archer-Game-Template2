@@ -84,7 +84,6 @@ public class PlayerWeaponManager extends AdapterControl implements ActionAnimEve
      */
     final private Damper spineBender = new Damper(0.4f, -0.2f);
     private final Quaternion tempRotation = new Quaternion();
-    private final float[] angles = new float[3];
 
     @Override
     public void setSpatial(Spatial sp) {
