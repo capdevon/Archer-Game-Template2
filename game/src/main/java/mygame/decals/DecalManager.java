@@ -22,7 +22,7 @@ public class DecalManager extends BaseAppState {
     // Assign unique names to inactive decals.
     private int nextId = 0;
     // Maximum number of triangles to retain.
-    private int maxTriangles = 100_000;
+    private int maxTriangles = 20_000;
     // Total triangles across all retained decals.
     private int totalTriangles = 0;
     // Parent the decals.

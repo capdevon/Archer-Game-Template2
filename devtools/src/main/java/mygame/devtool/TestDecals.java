@@ -11,6 +11,7 @@ import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.input.controls.Trigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.light.LightProbe;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
@@ -26,6 +27,7 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.debug.Arrow;
 import com.jme3.scene.shape.Box;
 import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.system.AppSettings;
@@ -42,7 +44,7 @@ import mygame.decals.DecalProjector;
 public class TestDecals extends SimpleApplication implements ActionListener {
 
     /**
-     *
+     * Start the jMonkeyEngine application
      * @param args
      */
     public static void main(String[] args) {
@@ -55,9 +57,21 @@ public class TestDecals extends SimpleApplication implements ActionListener {
         app.start();
     }
 
-    private float widht = 1f;
-    private float height = 1f;
-    private float depth = 1f;
+    /**
+     * The size of the projector influence box. 
+     * The projector scales the decal to match the Width (along the local x-axis) 
+     * and Height (along the local y-axis) components of the Size.
+     */
+    private Vector2f projectionSize = new Vector2f(1f, 1f);
+    /**
+     * The depth of the projector influence box. 
+     * The projector scales the decal to match Projection Depth. 
+     * The Decal Projector component projects decals along the local z-axis.
+     */
+    private float projectionDepth = 1f;
+    // The Material to project.
+    private Material decalMat;
+    private Material wireMat;
     private boolean showDebugNode = true;
     private Node scene = new Node("Scene");
     private Node debugNode = new Node("DebugNode");
@@ -71,6 +85,9 @@ public class TestDecals extends SimpleApplication implements ActionListener {
         // Set the viewport's background color to light blue.
         ColorRGBA skyColor = new ColorRGBA(0.1f, 0.2f, 0.4f, 1f);
         viewPort.setBackgroundColor(skyColor);
+
+        decalMat = createDecalMaterial();
+        wireMat = createWireMaterial(ColorRGBA.White);
 
         configureCamera();
         setupScene();
@@ -98,7 +115,7 @@ public class TestDecals extends SimpleApplication implements ActionListener {
 
     private void setupScene() {
 
-        Box box = new Box(10f, 0.02f, 10f);
+        Box box = new Box(10f, 0.1f, 10f);
         box.scaleTextureCoordinates(new Vector2f(5, 5));
         Geometry floor = new Geometry("Floor", box);
         Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
@@ -106,14 +123,27 @@ public class TestDecals extends SimpleApplication implements ActionListener {
         tex.setWrap(Texture.WrapMode.Repeat);
         mat.setTexture("DiffuseMap", tex);
         floor.setMaterial(mat);
-        floor.setLocalTranslation(0, -0.01f, 0);
+        floor.setLocalTranslation(0, -0.1f, 0);
         scene.attachChild(floor);
 
         Spatial monkeyHead = assetManager.loadModel("Models/MonkeyHead/MonkeyHead.mesh.xml");
         monkeyHead.setLocalTranslation(0, 2, 0);
         scene.attachChild(monkeyHead);
 
+        Geometry cube = createCube(new Vector3f(4, 2, 0), new Vector3f(1, 1, 1));
+        scene.attachChild(cube);
+
         rootNode.attachChild(scene);
+    }
+
+    private Geometry createCube(Vector3f position, Vector3f size) {
+        Box mesh = new Box(size.x, size.y, size.z);
+        Geometry geom = new Geometry("Cube", mesh);
+        Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        mat.setTexture("DiffuseMap", assetManager.loadTexture("Interface/Logo/Monkey.jpg"));
+        geom.setMaterial(mat);
+        geom.setLocalTranslation(position);
+        return geom;
     }
 
     private void addLighting() {
@@ -122,6 +152,12 @@ public class TestDecals extends SimpleApplication implements ActionListener {
         AmbientLight ambient = new AmbientLight();
         ambient.setColor(new ColorRGBA(0.25f, 0.25f, 0.25f, 1));
         rootNode.addLight(ambient);
+
+        // add a PBR probe.
+        Spatial probeModel = assetManager.loadModel("Scenes/defaultProbe.j3o");
+        LightProbe lightProbe = (LightProbe) probeModel.getLocalLightList().get(0);
+        lightProbe.getArea().setRadius(100);
+        //rootNode.addLight(lightProbe);
 
         // skylight
         DirectionalLight sun = new DirectionalLight();
@@ -141,6 +177,7 @@ public class TestDecals extends SimpleApplication implements ActionListener {
     private void setupKeys() {
         addMapping("splat", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         addMapping("showDebugNode", new KeyTrigger(KeyInput.KEY_SPACE));
+        addMapping("removeAll", new KeyTrigger(KeyInput.KEY_R));
     }
 
     private void addMapping(String mappingName, Trigger... triggers) {
@@ -152,13 +189,17 @@ public class TestDecals extends SimpleApplication implements ActionListener {
     public void onAction(String name, boolean isPressed, float tpf) {
         if (name.equals("splat") && isPressed) {
             Vector3f position = getLocationOnMap();
-            Vector3f direction = new Vector3f(0, 0, -1);
+            Vector3f projectionDir = new Vector3f(0, -1, 0);
             if (position != null) {
-                Quaternion rotation = new Quaternion().lookAt(direction, Vector3f.UNIT_Y);
-                projectDecal(position, rotation, scene, widht, height, depth);
+                Quaternion rotation = new Quaternion().lookAt(projectionDir, Vector3f.UNIT_Y);
+                projectDecal(position, rotation, scene);
             }
         } else if (name.equals("showDebugNode") && isPressed) {
             showDebugNode = !showDebugNode;
+
+        } else if (name.equals("removeAll") && isPressed) {
+            decalManager.removeAll();
+            debugNode.detachAllChildren();
         }
     }
 
@@ -174,41 +215,50 @@ public class TestDecals extends SimpleApplication implements ActionListener {
         }
     }
 
-    private void projectDecal(Vector3f position, Quaternion rotation, Spatial subtree, float width, float height, float depth) {
+    private void projectDecal(Vector3f position, Quaternion rotation, Spatial subtree) {
 
-        Vector3f projectionBox = new Vector3f(width, height, depth);
+        Vector3f projectionBox = new Vector3f(projectionSize.x, projectionSize.y, projectionDepth);
         DecalProjector projector = new DecalProjector(subtree, position, rotation, projectionBox);
-        projector.setSeparation(0.01f);
+        projector.setSeparation(0.001f);
 
         Geometry decal = projector.project();
-        Material decalMat = createDecalMaterial();
         decal.setMaterial(decalMat);
         decal.setQueueBucket(Bucket.Transparent);
         decalManager.addDecal(decal);
 
-        // debug projection box
-        Geometry box = new Geometry(decal.getName() + "-ProjectionBox", new Box(projectionBox.x / 2f, projectionBox.y / 2f, projectionBox.z / 2f));
-        Material boxMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        boxMat.setColor("Color", ColorRGBA.White);
-        box.setMaterial(boxMat);
-        boxMat.getAdditionalRenderState().setWireframe(true);
+        // debug
+        Geometry box = new Geometry("ProjectionBox", new Box(projectionBox.x / 2f, projectionBox.y / 2f, projectionBox.z / 2f));
+        box.setMaterial(wireMat);
         box.setShadowMode(ShadowMode.Off);
         box.setLocalTranslation(position);
         box.setLocalRotation(rotation);
         debugNode.attachChild(box);
+
+        Geometry arrow = new Geometry("ProjectionLine", new Arrow(new Vector3f(0, -1, 0)));
+        arrow.setMaterial(wireMat);
+        arrow.setShadowMode(ShadowMode.Off);
+        arrow.setLocalTranslation(position.add(0, 1, 0));
+        debugNode.attachChild(arrow);
+    }
+
+    private Material createWireMaterial(ColorRGBA color) {
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", color);
+        mat.getAdditionalRenderState().setWireframe(true);
+        return mat;
     }
 
     private Material createDecalMaterial() {
-        Material decalMat = new Material(assetManager, "Common/MatDefs/Light/PBRLighting.j3md");
-//        Texture tex = assetManager.loadTexture("Textures/blood-splatter-png-44461.png");
+        Material mat = new Material(assetManager, "Common/MatDefs/Light/PBRLighting.j3md");
+        //Texture tex = assetManager.loadTexture("Textures/blood-splatter-png-44461.png");
         Texture tex = assetManager.loadTexture("Textures/blood-png-7145.png");
-        decalMat.setTexture("BaseColorMap", tex);
-        decalMat.setColor("BaseColor", ColorRGBA.White);
-        decalMat.setFloat("Metallic", 0.2f);
-        decalMat.getAdditionalRenderState().setPolyOffset(-1f, -1f);
-        decalMat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
-        decalMat.getAdditionalRenderState().setDepthWrite(false);
-        return decalMat;
+        mat.setTexture("BaseColorMap", tex);
+        mat.setColor("BaseColor", ColorRGBA.White);
+        mat.setFloat("Metallic", 0.2f);
+        mat.getAdditionalRenderState().setPolyOffset(-1f, -1f);
+        mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+        mat.getAdditionalRenderState().setDepthWrite(false);
+        return mat;
     }
 
 }

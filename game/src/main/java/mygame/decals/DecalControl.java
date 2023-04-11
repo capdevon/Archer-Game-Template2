@@ -3,6 +3,7 @@ package mygame.decals;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.capdevon.engine.GameObject;
 import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -17,34 +18,43 @@ import com.jme3.scene.control.AbstractControl;
 
 /**
  * https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@16.0/manual/renderer-feature-decal.html
+ *
  * @author capdevon
  */
 public class DecalControl extends AbstractControl {
 
     public DecalManager decalManager;
 
-    private String tagName = "";
+    // Geometries with this tag will be ignored.
+    private String ignoreTag = "";
     // The decal material.
     private Material material;
-    // The properties Width, Height and Depth define the bounding volume of the decal. 
-    // The decal material will be projected onto meshes within this bounding volume.
+    // The width of the projector bounding box. 
+    // The projector scales the decal to match this value along the local X axis.
     private float width = 1f;
+    // The height of the projector bounding box. 
+    // The projector scales the decal to match this value along the local Y axis.
     private float height = 1f;
-    private float depth = 1f;
+    // The depth of the projector bounding box. 
+    // The projector projects decals along the local Z axis.
+    private float projectionDepth = 1f;
 
     public void project(Spatial subtree) {
         Vector3f position = spatial.getWorldTranslation().clone();
-        Quaternion rotation = new Quaternion().lookAt(Vector3f.UNIT_Y.negate(), Vector3f.UNIT_Y);
-        Vector3f projectionBox = new Vector3f(width, height, depth);
+        Vector3f projectionDir = Vector3f.UNIT_Y.negate();
+        Quaternion rotation = new Quaternion().lookAt(projectionDir, Vector3f.UNIT_Y);
 
         List<Geometry> geometries = new ArrayList<>();
         subtree.depthFirstTraversal(new SceneGraphVisitorAdapter() {
             @Override
             public void visit(Geometry geom) {
-                geometries.add(geom);
+                if (!GameObject.compareTag(geom, ignoreTag)) {
+                    geometries.add(geom);
+                }
             }
         });
 
+        Vector3f projectionBox = new Vector3f(width, height, projectionDepth);
         DecalProjector projector = new DecalProjector(geometries, position, rotation, projectionBox);
         Geometry decal = projector.project();
         decal.setMaterial(material);
@@ -62,12 +72,12 @@ public class DecalControl extends AbstractControl {
     protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
-    public String getTagName() {
-        return tagName;
+    public String getIgnoreTag() {
+        return ignoreTag;
     }
 
-    public void setTagName(String tagName) {
-        this.tagName = tagName;
+    public void setIgnoreTag(String ignoreTag) {
+        this.ignoreTag = ignoreTag;
     }
 
     public Material getMaterial() {
@@ -94,12 +104,12 @@ public class DecalControl extends AbstractControl {
         this.height = height;
     }
 
-    public float getDepth() {
-        return depth;
+    public float getProjectionDepth() {
+        return projectionDepth;
     }
 
-    public void setDepth(float depth) {
-        this.depth = depth;
+    public void setProjectionDepth(float projectionDepth) {
+        this.projectionDepth = projectionDepth;
     }
 
 }
