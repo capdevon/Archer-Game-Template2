@@ -96,7 +96,7 @@ public class DecalProjector {
         Vector2f[] decalUvs = new Vector2f[decalVertices.size()];
         Vector3f[] decalPositions = new Vector3f[decalVertices.size()];
         Vector3f[] decalNormals = new Vector3f[decalVertices.size()];
-        int[] decalIndices = new int[decalVertices.size() * 3];
+        //int[] decalIndices = new int[decalVertices.size() * 3];
         int i = 0;
 
         for (DecalVertex decalVertex : decalVertices) {
@@ -109,12 +109,13 @@ public class DecalProjector {
             // now create vertex and normal buffer data
             decalPositions[i] = decalVertex.position;
             decalNormals[i] = decalVertex.normal;
-            decalIndices[i] = i++;
+            //decalIndices[i] = i;
+            i++;
         }
 
         Mesh decalMesh = new Mesh();
         decalMesh.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(decalPositions));
-        decalMesh.setBuffer(Type.Index, 1, BufferUtils.createIntBuffer(decalIndices));
+        //decalMesh.setBuffer(Type.Index, 1, BufferUtils.createIntBuffer(decalIndices));
         decalMesh.setBuffer(Type.Normal, 3, BufferUtils.createFloatBuffer(decalNormals));
         decalMesh.setBuffer(Type.TexCoord, 2, BufferUtils.createFloatBuffer(decalUvs));
         decalMesh.updateBound();
