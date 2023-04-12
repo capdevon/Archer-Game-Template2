@@ -57,7 +57,7 @@ public class MonsterPrefab extends PrefabComponent {
 
         enemy.addControl(new Animator());
 
-        BetterCharacterControl bcc = new BetterCharacterControl(radius, height, 10f);
+        BetterCharacterControl bcc = new BetterCharacterControl(radius, height, 1000f);
         enemy.addControl(bcc);
         phySpace.add(bcc);
         bcc.setPhysicsDamping(1f);
