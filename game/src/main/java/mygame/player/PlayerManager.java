@@ -73,7 +73,7 @@ public class PlayerManager extends SimpleAppState {
         rootNode.attachChild(player);
 
         // configure Physics Character
-        BetterCharacterControl bcc = new BetterCharacterControl(.5f, 1.8f, 20f);
+        BetterCharacterControl bcc = new BetterCharacterControl(.5f, 1.8f, 10f);
         player.addControl(bcc);
         getPhysicsSpace().add(bcc);
 
