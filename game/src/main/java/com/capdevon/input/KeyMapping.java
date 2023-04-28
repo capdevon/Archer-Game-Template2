@@ -21,6 +21,7 @@ public interface KeyMapping {
     final String DUMP_PHYSICS    = "DUMP_PHYSICS";
     final String DUMP_RENDER     = "DUMP_RENDER";
     final String TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
+    final String TOGGLE_NIGHT    = "TOGGLE_NIGHT";
     final String TOGGLE_VIDEO    = "TOGGLE_VIDEO";
 
 }

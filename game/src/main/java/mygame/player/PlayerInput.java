@@ -11,6 +11,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Spatial;
 import jme3utilities.minie.DumpFlags;
 import jme3utilities.minie.PhysicsDumper;
+import mygame.states.SceneAppState;
 
 /**
  *
@@ -64,9 +65,9 @@ public class PlayerInput extends AdapterControl implements ActionListener {
 
         // Additional actions for use during development and testing:
         if (keyPressed) {
+            AppStateManager stateManager = app.getStateManager();
             switch (action) {
                 case KeyMapping.DUMP_PHYSICS:
-                    AppStateManager stateManager = app.getStateManager();
                     BulletAppState bas = stateManager.getState(BulletAppState.class);
                     dumper.dump(bas);
                     return;
@@ -74,6 +75,11 @@ public class PlayerInput extends AdapterControl implements ActionListener {
                 case KeyMapping.DUMP_RENDER:
                     RenderManager renderManager = app.getRenderManager();
                     dumper.dump(renderManager);
+                    return;
+
+                case KeyMapping.TOGGLE_NIGHT:
+                    SceneAppState sas = stateManager.getState(SceneAppState.class);
+                    sas.toggleNight();
                     return;
 
                 case KeyMapping.TAKE_SCREENSHOT:

@@ -40,6 +40,17 @@ public class SceneAppState extends SimpleAppState {
     private DirectionalLight sun;
     private DirectionalLightShadowRenderer dlsr;
     private boolean generateLightProbe = false;
+    private SkyControl skyControl;
+
+    /**
+     * Toggle the SkyControl between day and night.
+     */
+    public void toggleNight() {
+        SunAndStars sns = skyControl.getSunAndStars();
+        float oldHour = sns.getHour();
+        float newHour = MyMath.modulo(oldHour + 12f, Constants.hoursPerDay);
+        sns.setHour(newHour);
+    }
 
     @Override
     public void simpleInit() {

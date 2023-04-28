@@ -38,6 +38,7 @@ public class GInputAppState extends AbstractInputAppState {
         addMapping(KeyMapping.DUMP_PHYSICS,     new KeyTrigger(KeyInput.KEY_O));
         addMapping(KeyMapping.DUMP_RENDER,      new KeyTrigger(KeyInput.KEY_P));
         addMapping(KeyMapping.TAKE_SCREENSHOT,  new KeyTrigger(KeyInput.KEY_F12));
+        addMapping(KeyMapping.TOGGLE_NIGHT,     new KeyTrigger(KeyInput.KEY_N));
         addMapping(KeyMapping.TOGGLE_VIDEO,     new KeyTrigger(KeyInput.KEY_F11));
     }
 
