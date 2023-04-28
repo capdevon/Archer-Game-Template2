@@ -18,6 +18,7 @@ repositories {
 
 dependencies {
     implementation 'com.github.stephengold:Minie:7.5.0+big3'
+    implementation 'com.github.stephengold:SkyControl:1.0.4'
     implementation 'org.jmonkeyengine:jme3-core:' + jmeVersion
     implementation 'org.jmonkeyengine:jme3-desktop:' + jmeVersion
     implementation 'org.jmonkeyengine:jme3-effects:' + jmeVersion

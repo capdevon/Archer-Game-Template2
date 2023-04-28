@@ -24,6 +24,12 @@ import com.jme3.scene.Spatial;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.util.SkyFactory;
+import jme3utilities.math.MyMath;
+import jme3utilities.sky.Constants;
+import jme3utilities.sky.SkyControl;
+import jme3utilities.sky.StarsOption;
+import jme3utilities.sky.SunAndStars;
+import jme3utilities.sky.Updater;
 
 /**
  *
@@ -32,20 +38,42 @@ import com.jme3.util.SkyFactory;
 public class SceneAppState extends SimpleAppState {
 
     private DirectionalLight sun;
+    private DirectionalLightShadowRenderer dlsr;
     private boolean generateLightProbe = false;
 
     @Override
     public void simpleInit() {
-        setupSkyBox();
         setupScene();
         setupLights();
         setupFilters();
+        setupSkyControl();
     }
 
     private void setupSkyBox() {
         Spatial sky = SkyFactory.createSky(assetManager, "Scenes/Beach/FullskiesSunset0068.dds", SkyFactory.EnvMapType.CubeMap);
         sky.setShadowMode(RenderQueue.ShadowMode.Off);
         rootNode.attachChild(sky);
+    }
+
+    /**
+     * Add a SkyControl to the root of the main scene and configure it.
+     */
+    private void setupSkyControl() {
+        float cloudFlattening = 0.8f;
+        boolean bottomDome = false;
+        this.skyControl = new SkyControl(
+                assetManager, camera, cloudFlattening, StarsOption.Cube, bottomDome);
+        rootNode.addControl(skyControl);
+        skyControl.setCloudiness(0.8f);
+        skyControl.setCloudsYOffset(0.4f);
+        skyControl.setTopVerticalAngle(1.78f);
+
+        Updater updater = skyControl.getUpdater();
+        //updater.setAmbientLight(ambientLight);
+        updater.setMainLight(sun);
+        updater.addShadowRenderer(dlsr);
+
+        skyControl.setEnabled(true);
     }
 
     private void setupScene() {
@@ -98,8 +126,7 @@ public class SceneAppState extends SimpleAppState {
 
     private void setupFilters() {
         // shadows
-        DirectionalLightShadowRenderer dlsr
-                = new DirectionalLightShadowRenderer(assetManager, 4_096, 3);
+        dlsr = new DirectionalLightShadowRenderer(assetManager, 4_096, 3);
         dlsr.setEdgeFilteringMode(EdgeFilteringMode.PCFPOISSON);
         dlsr.setEdgesThickness(5);
         dlsr.setLight(sun);
