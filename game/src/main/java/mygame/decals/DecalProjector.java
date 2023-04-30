@@ -19,6 +19,7 @@ import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.mesh.IndexBuffer;
 import com.jme3.util.BufferUtils;
+import jme3utilities.MyMesh;
 
 public class DecalProjector {
 	
@@ -26,6 +27,10 @@ public class DecalProjector {
     private Vector3f size;
     private Matrix4f projectorMatrix;
     private Matrix4f projectorMatrixInverse;
+    /**
+     * direction in which to project decals (unit vector in world coordinates)
+     */
+    final private Vector3f projectionDirection;
     private float separation;
 
     public DecalProjector(Spatial subtree, Vector3f position, Quaternion rotation, Vector3f size) {
@@ -40,6 +45,7 @@ public class DecalProjector {
         setSize(size);
         setSeparation(0.0001f);
         setTransform(new Transform(position, rotation, new Vector3f(1, 1, 1)));
+        this.projectionDirection = rotation.mult(Vector3f.UNIT_Z);
     }
 
     public DecalProjector(Collection<Geometry> geometries, Vector3f position, Quaternion rotation, Vector3f size) {
@@ -51,6 +57,7 @@ public class DecalProjector {
         setGeometries(geometries);
         setSeparation(separation);
         setTransform(new Transform(position, rotation, new Vector3f(1, 1, 1)));
+        this.projectionDirection = rotation.mult(Vector3f.UNIT_Z);
     }
 
     public void setSize(Vector3f size) {
@@ -89,10 +96,35 @@ public class DecalProjector {
             }
         }
 
-        // second, clip the geometry so that it doesn't extend out from the projector
+        // filter out any triangles that face the wrong way
+        int numVertices = decalVertices.size();
+        assert (numVertices % MyMesh.vpt) == 0 : numVertices;
+        int numTriangles = numVertices / MyMesh.vpt;
+        DecalVertex[] tmpVertexArray = new DecalVertex[numVertices];
+        decalVertices.toArray(tmpVertexArray);
+        decalVertices.clear();
+        for (int triIndex = 0; triIndex < numTriangles; ++triIndex) {  // each triangle
+            boolean keepTriangle = false;
+            for (int j = 0; j < MyMesh.vpt; j++) { // each vertex in triangle
+                int vertIndex = MyMesh.vpt * triIndex + j;
+                Vector3f normalDirection = tmpVertexArray[vertIndex].normal; // alias
+                if (normalDirection.dot(projectionDirection) <= 0f) {
+                    keepTriangle = true;
+                }
+            }
+            if (keepTriangle) { // At least one normal points the right way.
+                for (int j = 0; j < MyMesh.vpt; j++) { // each vertex in triangle
+                    int vertIndex = MyMesh.vpt * triIndex + j;
+                    DecalVertex v = tmpVertexArray[vertIndex]; // alias
+                    decalVertices.add(v);
+                }
+            }
+        }
+
+        // clip the geometry so that it doesn't extend out from the projector
         decalVertices = clipVertices(decalVertices);
 
-        // third, generate final vertices, normals and uvs
+        // generate final vertices, normals and uvs
         Vector2f[] decalUvs = new Vector2f[decalVertices.size()];
         Vector3f[] decalPositions = new Vector3f[decalVertices.size()];
         Vector3f[] decalNormals = new Vector3f[decalVertices.size()];
@@ -103,7 +135,7 @@ public class DecalProjector {
             // create texture coordinates (we are still in projector space)
             decalUvs[i] = new Vector2f(0.5f + (decalVertex.position.x / size.x), 0.5f + (decalVertex.position.y / size.y));
 
-            // transform the vertex back to world space
+            // transform the vertex position back to world space
             projectorMatrix.mult(decalVertex.position, decalVertex.position);
 
             // now create vertex and normal buffer data
