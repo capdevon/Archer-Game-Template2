@@ -81,7 +81,7 @@ public class DecalProjector {
             Mesh mesh = geometry.getMesh();
             Vector3f[] positions = getVectors(mesh, VertexBuffer.Type.Position);
             Vector3f[] normals = getVectors(mesh, VertexBuffer.Type.Normal);
-            IndexBuffer indices = mesh.getIndexBuffer();
+            IndexBuffer indices = mesh.getIndicesAsList();
 
             for (int i = 0; i < indices.size(); i++) {
                 int index = indices.get(i);
