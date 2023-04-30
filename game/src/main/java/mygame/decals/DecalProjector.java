@@ -38,6 +38,15 @@ public class DecalProjector {
         subtree.depthFirstTraversal(new SceneGraphVisitorAdapter() {
             @Override
             public void visit(Geometry geom) {
+                Mesh mesh = geom.getMesh();
+                if (!MyMesh.hasNormals(mesh)) {
+                    throw new IllegalArgumentException(
+                            "mesh lacks normals in " + geometry.getName());
+                }
+                if (!MyMesh.hasTriangles(mesh)) {
+                    throw new IllegalArgumentException(
+                            "unsupported mesh mode " + mesh.getMode() + " in " + geometry.getName());
+                }
                 geometries.add(geom);
             }
         });
