@@ -33,8 +33,8 @@ import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.system.AppSettings;
 import com.jme3.texture.Texture;
 
+import jme3utilities.DecalManager;
 import mygame.camera.MainCamera;
-import mygame.decals.DecalManager;
 import mygame.decals.DecalProjector;
 
 /**
@@ -94,7 +94,7 @@ public class TestDecals extends SimpleApplication implements ActionListener {
         addLighting();
         setupKeys();
 
-        stateManager.attach(decalManager);
+        rootNode.attachChild(decalManager.getNode());
         stateManager.attach(new WireAppState());
     }
 
