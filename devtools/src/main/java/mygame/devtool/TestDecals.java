@@ -189,8 +189,13 @@ public class TestDecals extends SimpleApplication implements ActionListener {
     public void onAction(String name, boolean isPressed, float tpf) {
         if (name.equals("splat") && isPressed) {
             Vector3f position = getLocationOnMap();
-            Vector3f projectionDir = new Vector3f(0, -1, 0);
             if (position != null) {
+                Vector3f cameraLocation = cam.getLocation(); // alias
+                Vector3f offsetFromCamera = position.subtract(cameraLocation);
+                if (offsetFromCamera.length() < 0.001f) {
+                    return; // too close to apply a decal
+                }
+                Vector3f projectionDir = offsetFromCamera.normalize();
                 Quaternion rotation = new Quaternion().lookAt(projectionDir, Vector3f.UNIT_Y);
                 projectDecal(position, rotation, scene);
             }
