@@ -239,10 +239,12 @@ public class TestDecals extends SimpleApplication implements ActionListener {
         box.setLocalRotation(rotation);
         debugNode.attachChild(box);
 
-        Geometry arrow = new Geometry("ProjectionLine", new Arrow(new Vector3f(0, -1, 0)));
+        Vector3f offset = rotation.mult(new Vector3f(0f, 0f, 1f));
+        Vector3f tailLocation = position.subtract(offset);
+        Geometry arrow = new Geometry("ProjectionArrow", new Arrow(offset));
         arrow.setMaterial(wireMat);
         arrow.setShadowMode(ShadowMode.Off);
-        arrow.setLocalTranslation(position.add(0, 1, 0));
+        arrow.setLocalTranslation(tailLocation);
         debugNode.attachChild(arrow);
     }
 
