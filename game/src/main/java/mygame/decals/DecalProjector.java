@@ -180,10 +180,10 @@ public class DecalProjector {
     	Vector3f normal = n.clone();
         // move the vertex away from the original (to avoid z-fighting)
         position.addLocal(normal.mult(separation));
-        // transform the vertex to world space, then to projector space
+        // transform the vertex position to world space, then to projector space
         geometry.getWorldMatrix().mult(position, position);
         projectorMatrixInverse.mult(position, position);
-
+        // transform the vertex normal to world space (not projector space)
         geometry.getWorldMatrix().rotateVect(normal);
         vertices.add(new DecalVertex(position, normal));
     }
