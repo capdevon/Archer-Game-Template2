@@ -58,11 +58,13 @@ public class DecalControl extends AbstractControl {
         Vector3f projectionBox = new Vector3f(width, height, projectionDepth);
         DecalProjector projector = new DecalProjector(geometries, position, rotation, projectionBox);
         Geometry decal = projector.project();
-        decal.setMaterial(material);
-        decal.setQueueBucket(Bucket.Transparent);
-        decal.setShadowMode(ShadowMode.Off);
+        if (decal.getMesh().getVertexCount() > 0) {
+            decal.setMaterial(material);
+            decal.setQueueBucket(Bucket.Transparent);
+            decal.setShadowMode(ShadowMode.Off);
 
-        decalManager.addDecal(decal);
+            decalManager.addDecal(decal);
+        }
     }
 
     @Override

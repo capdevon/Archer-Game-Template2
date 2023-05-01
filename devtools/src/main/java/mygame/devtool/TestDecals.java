@@ -227,6 +227,9 @@ public class TestDecals extends SimpleApplication implements ActionListener {
         projector.setSeparation(0.001f);
 
         Geometry decal = projector.project();
+        if (decal.getMesh().getVertexCount() < 1) {
+            return;
+        }
         decal.setMaterial(decalMat);
         decal.setQueueBucket(Bucket.Transparent);
         decalManager.addDecal(decal);
