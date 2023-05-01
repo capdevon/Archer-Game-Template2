@@ -41,11 +41,11 @@ public class DecalProjector {
                 Mesh mesh = geom.getMesh();
                 if (!MyMesh.hasNormals(mesh)) {
                     throw new IllegalArgumentException(
-                            "mesh lacks normals in " + geometry.getName());
+                            "mesh lacks normals in " + geom.getName());
                 }
                 if (!MyMesh.hasTriangles(mesh)) {
                     throw new IllegalArgumentException(
-                            "unsupported mesh mode " + mesh.getMode() + " in " + geometry.getName());
+                            "unsupported mesh mode " + mesh.getMode() + " in " + geom.getName());
                 }
                 geometries.add(geom);
             }
