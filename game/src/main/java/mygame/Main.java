@@ -1,11 +1,17 @@
 package mygame;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.logging.Level;
+
 import com.capdevon.engine.Capture;
+import com.capdevon.engine.SceneManager;
 import com.capdevon.input.GInputAppState;
 import com.capdevon.physx.Physics;
 import com.capdevon.physx.TogglePhysicsDebugState;
 import com.jme3.app.FlyCamAppState;
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
@@ -14,22 +20,13 @@ import com.jme3.bullet.objects.PhysicsBody;
 import com.jme3.input.JoystickCompatibilityMappings;
 import com.jme3.system.AppSettings;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.logging.Level;
 import jme3utilities.Heart;
 import mygame.audio.SoundManager;
-import mygame.player.PlayerManager;
-import mygame.states.CubeAppState;
-import mygame.states.MonsterAppState;
-import mygame.states.SceneAppState;
 
 /**
  * @author capdevon
  */
-public class Main extends SimpleApplication {
+public class Main extends GameApplication {
     /**
      * collision group for arrows
      */
@@ -85,7 +82,30 @@ public class Main extends SimpleApplication {
         assetManager.loadModel(AnimDefs.Archer.ASSET_PATH);
         assetManager.loadModel(AnimDefs.Monster.ASSET_PATH);
 
-        // Initialize the physics simulation.
+        initPhysics();
+        
+        stateManager.attach(new SceneManager());
+        stateManager.attach(new GInputAppState());
+        stateManager.attach(new GameManager());
+        stateManager.attach(new TogglePhysicsDebugState());
+
+//        stateManager.attach(new SceneAppState());
+//        stateManager.attach(new GInputAppState());
+//        stateManager.attach(new PlayerManager());
+//        stateManager.attach(new CubeAppState());
+//        stateManager.attach(new MonsterAppState());
+//        stateManager.attach(new TogglePhysicsDebugState());
+
+        // Attach an app state for taking screenshots.
+        String workingDirectory = System.getProperty("user.dir") + File.separator;
+        ScreenshotAppState screenshot = new ScreenshotAppState(workingDirectory, "screenshot");
+        stateManager.attach(screenshot);
+    }
+    
+    /**
+     * Initialize the physics simulation.
+     */
+    private void initPhysics() {
         PhysicsBody.setDeactivationEnabled(false);
         BulletAppState physics = new BulletAppState();
         stateManager.attach(physics);
@@ -93,18 +113,6 @@ public class Main extends SimpleApplication {
         space.setGravity(Physics.DEFAULT_GRAVITY);
         space.getSolverInfo().setJointErp(1f);
         //physics.setDebugEnabled(true);
-
-        stateManager.attach(new SceneAppState());
-        stateManager.attach(new GInputAppState());
-        stateManager.attach(new PlayerManager());
-        stateManager.attach(new CubeAppState());
-        stateManager.attach(new MonsterAppState());
-        stateManager.attach(new TogglePhysicsDebugState());
-
-        // Attach an app state for taking screenshots.
-        String workingDirectory = System.getProperty("user.dir") + File.separator;
-        ScreenshotAppState screenshot = new ScreenshotAppState(workingDirectory, "screenshot");
-        stateManager.attach(screenshot);
     }
 
     /**
