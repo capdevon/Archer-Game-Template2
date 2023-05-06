@@ -23,12 +23,13 @@ dependencies {
     implementation 'org.jmonkeyengine:jme3-core:' + jmeVersion
     implementation 'org.jmonkeyengine:jme3-desktop:' + jmeVersion
     implementation 'org.jmonkeyengine:jme3-effects:' + jmeVersion
+    runtimeOnly    'org.jmonkeyengine:jme3-awt-dialogs:' + jmeVersion
     runtimeOnly    'org.jmonkeyengine:jme3-jogg:' + jmeVersion
     implementation 'org.jmonkeyengine:jme3-plugins:' + jmeVersion
 
     // select one version of LWJGL
-    runtimeOnly 'org.jmonkeyengine:jme3-lwjgl:' + jmeVersion  // LWJGL 2.x
-    //runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jmeVersion // LWJGL 3.x
+    //runtimeOnly 'org.jmonkeyengine:jme3-lwjgl:' + jmeVersion  // LWJGL 2.x
+    runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jmeVersion // LWJGL 3.x
 
     implementation files('../lib/shaderblow-ex-1.0.0.jar')
     runtimeOnly    files('../lib/jme-materialize.jar')
