@@ -15,6 +15,7 @@ public interface KeyMapping {
     final String FIRE           = "FIRE";
     final String SWITCH_AMMO    = "SWITCH_WEAPON";
     final String TOGGLE_CROUCH  = "TOGGLE_CROUCH";
+    final String TOGGLE_PAUSE   = "TOGGLE_PAUSE";
     final String EMPTY          = "EMPTY";
 
     // additional key mappings for development and testing:
