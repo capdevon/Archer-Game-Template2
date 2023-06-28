@@ -5,7 +5,7 @@ apply plugin: 'java'
 
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
-ext.jmeVersion = '3.6.0-stable'
+ext.jmeVersion = '3.6.1-stable'
 
 tasks.withType(JavaExec) { // Java runtime options:
     enableAssertions true
@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     implementation 'com.github.stephengold:Heart:8.6.0'
-    implementation 'com.github.stephengold:Minie:7.5.0+big3'
+    implementation 'com.github.stephengold:Minie:7.6.0+big3'
     implementation 'com.github.stephengold:SkyControl:1.0.4'
     implementation 'org.jmonkeyengine:jme3-core:' + jmeVersion
     implementation 'org.jmonkeyengine:jme3-desktop:' + jmeVersion
