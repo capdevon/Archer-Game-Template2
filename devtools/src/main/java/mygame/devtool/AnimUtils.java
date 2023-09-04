@@ -78,7 +78,7 @@ public class AnimUtils {
                 tracks.add(newTrack);
 
             } else {
-                throw new IllegalStateException("Joint not found in the target Armature: " + tt.getTarget());
+                logger.log(Level.WARNING, "Joint not found in the target Armature: {0}", tt.getTarget());
             }
         }
 
