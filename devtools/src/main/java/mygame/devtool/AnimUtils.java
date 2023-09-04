@@ -43,7 +43,8 @@ public class AnimUtils {
         AnimTrack[] tracks = copyAnimTracks(sourceClip, targetArmature);
         copy.setTracks(tracks);
         
-        logger.log(Level.INFO, "Copy AnimClip {0} Tracks {1}", new Object[]{newClipName, tracks.length});
+        logger.log(Level.INFO, "Copy AnimClip {0} Tracks {1} of {2}",
+                new Object[]{newClipName, tracks.length, sourceClip.getTracks().length});
         return copy;
     }
 
