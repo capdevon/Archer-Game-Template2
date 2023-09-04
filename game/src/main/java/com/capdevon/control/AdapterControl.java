@@ -1,6 +1,5 @@
 package com.capdevon.control;
 
-import java.util.List;
 import java.util.Objects;
 
 import com.capdevon.engine.GameObject;
@@ -49,18 +48,6 @@ public abstract class AdapterControl extends AbstractControl {
     }
 
     /**
-     * Returns all components of Type type in the GameObject or any of its
-     * children using depth first search. Works recursively.
-     *
-     * @param <T>
-     * @param type
-     * @return
-     */
-    public <T extends Control> List<T> getComponentsInChildren(Class<T> type) {
-        return GameObject.getComponentsInChildren(spatial, type);
-    }
-
-    /**
      * Returns the component of Type type in the GameObject or any of its
      * children using depth first search.
      *
@@ -88,12 +75,10 @@ public abstract class AdapterControl extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-        //To change body of generated methods, choose Tools | Templates.
     }
 
 }
