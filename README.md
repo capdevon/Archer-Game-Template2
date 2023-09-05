@@ -1,9 +1,8 @@
 ## Archer-Game-Template 2
-A Third Person Shooter demo made with [jMonkeyEngine](https://jmonkeyengine.org/)
+A demo of a third-person controller with a bow and arrow system made with [jMonkeyEngine](https://jmonkeyengine.org/)
 
 The demo contains:
 
-* Physics with [Minie](https://stephengold.github.io/Minie/minie/overview.html)
 * Arrows are now physical objects affected by gravity with trajectory prediction
 * There are 3 types of arrows:
   - normal (The normal arrows stick to surfaces)
@@ -19,9 +18,6 @@ The demo contains:
 * Particles Effects
 * Post Processing Filters
 
-## Youtube videos
-[Demo](https://www.youtube.com/watch?v=US9KNTqL2js&feature=emb_logo)
-
 ## Keyboard Commands
 - WASD: Basic movements
 - E: Aiming
@@ -31,9 +27,15 @@ The demo contains:
 - CAMERA: Use the mouse to orient the camera
 - KEY_0: Toggle Physics Debug
 
-## Resource Used
-- [Mixamo](https://www.mixamo.com/)
-- [Blender](https://www.blender.org/download/)
+## Youtube videos
+[Demo](https://www.youtube.com/watch?v=US9KNTqL2js&feature=emb_logo)
+
+# Requirements
+- [jmonkeyengine](https://github.com/jMonkeyEngine/jmonkeyengine) - A complete 3D game development suite written purely in Java.
+- [Minie](https://stephengold.github.io/Minie/minie/overview.html) - A physics library for JMonkeyEngine.
+- [SkyControl](https://github.com/stephengold/SkyControl) - A sky simulation library for jMonkeyEngine
+- [Lemur](https://github.com/jMonkeyEngine-Contributions/Lemur) - jMonkeyEngine-based UI toolkit.
+- java 11+
 
 # 
 ![Screenshot](images/archer-1.jpg)
