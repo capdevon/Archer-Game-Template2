@@ -5,6 +5,7 @@ import com.jme3.anim.tween.Tween;
 import com.jme3.anim.tween.action.Action;
 import com.jme3.anim.tween.action.BaseAction;
 
+@Deprecated
 public class MaskBaseAction extends BaseAction {
 
     private boolean maskPropagationEnabled = true;
