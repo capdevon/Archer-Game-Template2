@@ -6,7 +6,7 @@ import com.jme3.anim.AnimComposer;
  *
  * @author capdevon
  */
-public interface ActionAnimEventListener {
+public interface AnimationListener {
 
     /**
      * For non-looping animations, this event is invoked when the animation is

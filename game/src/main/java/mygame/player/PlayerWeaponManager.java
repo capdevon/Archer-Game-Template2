@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.capdevon.anim.ActionAnimEventListener;
+import com.capdevon.anim.AnimationListener;
 import com.capdevon.anim.Animator;
 import com.capdevon.anim.HumanBodyBones;
 import com.capdevon.anim.IKRig;
@@ -39,7 +39,7 @@ import mygame.weapon.Weapon;
 /**
  * @author capdevon
  */
-public class PlayerWeaponManager extends AdapterControl implements ActionAnimEventListener {
+public class PlayerWeaponManager extends AdapterControl implements AnimationListener {
 
     private static final Logger logger = Logger.getLogger(PlayerWeaponManager.class.getName());
 

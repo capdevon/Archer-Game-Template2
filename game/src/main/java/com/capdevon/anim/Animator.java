@@ -31,7 +31,7 @@ public class Animator extends AdapterControl {
     private AnimComposer animComposer;
     private SkinningControl skinningControl;
     private String currentAnim;
-    private ArrayList<ActionAnimEventListener> listeners = new ArrayList<>();
+    private ArrayList<AnimationListener> listeners = new ArrayList<>();
     private ArmatureDebugger debugger;
 
     @Override
@@ -156,7 +156,7 @@ public class Animator extends AdapterControl {
     /**
      * Adds a new listener to receive animation related events.
      */
-    public void addListener(ActionAnimEventListener listener) {
+    public void addListener(AnimationListener listener) {
         if (listeners.contains(listener)) {
             throw new IllegalArgumentException("The given listener is already registered at this Animator");
         }
@@ -167,7 +167,7 @@ public class Animator extends AdapterControl {
     /**
      * Removes the given listener from listening to events.
      */
-    public void removeListener(ActionAnimEventListener listener) {
+    public void removeListener(AnimationListener listener) {
         if (!listeners.remove(listener)) {
             throw new IllegalArgumentException("The given listener is not registered at this Animator");
         }
@@ -181,13 +181,13 @@ public class Animator extends AdapterControl {
     }
 
     void notifyAnimChange(String name) {
-        for (ActionAnimEventListener listener : listeners) {
+        for (AnimationListener listener : listeners) {
             listener.onAnimChange(animComposer, name);
         }
     }
 
     void notifyAnimCycleDone(String name, boolean loop) {
-        for (ActionAnimEventListener listener : listeners) {
+        for (AnimationListener listener : listeners) {
             listener.onAnimCycleDone(animComposer, name, loop);
         }
     }

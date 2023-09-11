@@ -3,7 +3,7 @@ package mygame.ai;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.capdevon.anim.ActionAnimEventListener;
+import com.capdevon.anim.AnimationListener;
 import com.capdevon.anim.Animator;
 import com.capdevon.control.AdapterControl;
 import com.jme3.anim.AnimComposer;
@@ -25,7 +25,7 @@ import mygame.AnimDefs.Monster;
  *
  * @author capdevon
  */
-public class AIControl extends AdapterControl implements ActionAnimEventListener {
+public class AIControl extends AdapterControl implements AnimationListener {
 
     private static final Logger logger = Logger.getLogger(AIControl.class.getName());
 
@@ -39,7 +39,7 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
     /**
      * display the monster's status in the viewport
      */
-    final private BitmapText hud;
+    private final BitmapText hud;
     /**
      * physics controls
      */
@@ -129,20 +129,25 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
             case ATTACK:
                 animator.setAnimation(Monster.Attack2);
                 break;
+                
             case AWARE:
                 animator.setAnimation(Monster.Scream);
                 break;
+                
             case CHASE:
                 animator.setAnimation(Monster.Running);
                 break;
+                
             case DYING:
                 animator.setAnimation(Monster.Dying);
                 bcc.setEnabled(false);
                 bcc.getSpatial().removeControl(bcc);
                 break;
+                
             case HIT:
                 animator.setAnimation(Monster.ReactionHit);
                 break;
+                
             case IDLE:
                 animator.setAnimation(Monster.OrcIdle);
                 break;
@@ -159,6 +164,7 @@ public class AIControl extends AdapterControl implements ActionAnimEventListener
 
             case WAIT:
                 break;
+                
             default:
                 break;
         }
