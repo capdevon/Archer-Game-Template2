@@ -64,8 +64,7 @@ public class Animator extends AdapterControl {
         Action action = animComposer.action(animName);
         Tween doneTween = Tweens.callMethod(this, "notifyAnimCycleDone", animName, loop);
         // Register custom action with specified name.
-        action = new MaskBaseAction(Tweens.sequence(action, doneTween));
-        animComposer.addAction(animName, action);
+        animComposer.actionSequence(animName, action, doneTween);
         return action;
     }
 
