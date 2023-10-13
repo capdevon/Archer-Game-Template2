@@ -2,7 +2,6 @@ package mygame.decals;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.jme3.math.FastMath;
@@ -19,9 +18,12 @@ import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.mesh.IndexBuffer;
 import com.jme3.util.BufferUtils;
+
 import jme3utilities.MyMesh;
 
 public class DecalProjector {
+    
+    private static final float DEFAULT_SEPARATION = 0.0001f;
 	
     private List<Geometry> geometries;
     private Vector3f size;
@@ -30,51 +32,66 @@ public class DecalProjector {
     /**
      * direction in which to project decals (unit vector in world coordinates)
      */
-    final private Vector3f projectionDirection;
+    private final Vector3f projectionDirection;
     private float separation;
 
+    /**
+     * Instantiate a DecalProjector.
+     */
     public DecalProjector(Spatial subtree, Vector3f position, Quaternion rotation, Vector3f size) {
-        List<Geometry> geometries = new ArrayList<>();
-        subtree.depthFirstTraversal(new SceneGraphVisitorAdapter() {
-            @Override
-            public void visit(Geometry geom) {
-                Mesh mesh = geom.getMesh();
-                if (!MyMesh.hasNormals(mesh)) {
-                    throw new IllegalArgumentException(
-                            "mesh lacks normals in " + geom.getName());
-                }
-                if (!MyMesh.hasTriangles(mesh)) {
-                    throw new IllegalArgumentException(
-                            "unsupported mesh mode " + mesh.getMode() + " in " + geom.getName());
-                }
-                geometries.add(geom);
-            }
-        });
-        setGeometries(geometries);
-        setSize(size);
-        setSeparation(0.0001f);
-        setTransform(new Transform(position, rotation, new Vector3f(1, 1, 1)));
-        this.projectionDirection = rotation.mult(Vector3f.UNIT_Z);
+        this(collectSources(subtree), position, rotation, size, DEFAULT_SEPARATION);
+    }
+    
+    /**
+     * Instantiate a DecalProjector.
+     */
+    public DecalProjector(List<Geometry> geometryList, Vector3f position, Quaternion rotation, Vector3f size) {
+        this(geometryList, position, rotation, size, DEFAULT_SEPARATION);
     }
 
-    public DecalProjector(Collection<Geometry> geometries, Vector3f position, Quaternion rotation, Vector3f size) {
-        this(geometries, position, rotation, size, 0.0001f);
-    }
-
-    public DecalProjector(Collection<Geometry> geometries, Vector3f position, Quaternion rotation, Vector3f size, float separation) {
+    /**
+     * Instantiate a DecalProjector.
+     */
+    public DecalProjector(List<Geometry> geometryList, Vector3f position, Quaternion rotation, Vector3f size, float separation) {
         setSize(size);
-        setGeometries(geometries);
+        setGeometries(geometryList);
         setSeparation(separation);
         setTransform(new Transform(position, rotation, new Vector3f(1, 1, 1)));
         this.projectionDirection = rotation.mult(Vector3f.UNIT_Z);
     }
-
-    public void setSize(Vector3f size) {
-        this.size = size;
+    
+    private static List<Geometry> collectSources(Spatial subtree) {
+        List<Geometry> result = new ArrayList<>();
+        subtree.depthFirstTraversal(new SceneGraphVisitorAdapter() {
+            @Override
+            public void visit(Geometry geom) {
+                result.add(geom);
+            }
+        });
+        return result;
+    }
+    
+    private void validateMeshes() {
+        for (Geometry geom : geometries) {
+            Mesh mesh = geom.getMesh();
+            if (!MyMesh.hasNormals(mesh)) {
+                throw new IllegalArgumentException(
+                        "Mesh lacks normals in " + geom.getName());
+            }
+            if (!MyMesh.hasTriangles(mesh)) {
+                throw new IllegalArgumentException(
+                        "Unsupported mesh mode " + mesh.getMode() + " in " + geom.getName());
+            }
+        }
     }
 
-    public void setGeometries(Collection<Geometry> geometries) {
-        this.geometries = List.copyOf(geometries);
+    public void setGeometries(List<Geometry> geometryList) {
+        this.geometries = List.copyOf(geometryList);
+        validateMeshes();
+    }
+    
+    public void setSize(Vector3f size) {
+        this.size = size;
     }
 
     public void setSeparation(float separation) {
@@ -165,7 +182,7 @@ public class DecalProjector {
         return new Geometry("decal", decalMesh);
     }
 
-    protected List<DecalVertex> clipVertices(List<DecalVertex> decalVertices) {
+    private List<DecalVertex> clipVertices(List<DecalVertex> decalVertices) {
         decalVertices = clipGeometry(decalVertices, new Vector3f(1, 0, 0));
         decalVertices = clipGeometry(decalVertices, new Vector3f(-1, 0, 0));
         decalVertices = clipGeometry(decalVertices, new Vector3f(0, 1, 0));
