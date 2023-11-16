@@ -5,12 +5,9 @@ import com.capdevon.engine.Capture;
 import com.capdevon.input.KeyMapping;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.bullet.BulletAppState;
 import com.jme3.input.controls.ActionListener;
-import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Spatial;
-import jme3utilities.minie.DumpFlags;
-import jme3utilities.minie.PhysicsDumper;
+
 import mygame.states.SceneAppState;
 
 /**
@@ -20,7 +17,6 @@ import mygame.states.SceneAppState;
 public class PlayerInput extends AdapterControl implements ActionListener {
 
     private final Application app;
-    private static final PhysicsDumper dumper = new PhysicsDumper();
     private PlayerWeaponManager m_PlayerWeaponManager;
     private PlayerControl playerControl;
 
@@ -31,7 +27,6 @@ public class PlayerInput extends AdapterControl implements ActionListener {
      */
     PlayerInput(Application app) {
         this.app = app;
-        dumper.setEnabled(DumpFlags.ChildShapes, true);
     }
 
     @Override
@@ -67,16 +62,6 @@ public class PlayerInput extends AdapterControl implements ActionListener {
         if (keyPressed) {
             AppStateManager stateManager = app.getStateManager();
             switch (action) {
-                case KeyMapping.DUMP_PHYSICS:
-                    BulletAppState bas = stateManager.getState(BulletAppState.class);
-                    dumper.dump(bas);
-                    return;
-
-                case KeyMapping.DUMP_RENDER:
-                    RenderManager renderManager = app.getRenderManager();
-                    dumper.dump(renderManager);
-                    return;
-
                 case KeyMapping.TOGGLE_NIGHT:
                     SceneAppState sas = stateManager.getState(SceneAppState.class);
                     sas.toggleNight();
