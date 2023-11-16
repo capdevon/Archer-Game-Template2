@@ -29,7 +29,7 @@ import com.jme3.util.TempVars;
  * @author capdevon
  */
 public class Physics {
-    
+
     private static final Logger logger = Logger.getLogger(Physics.class.getName());
 
     /**
@@ -50,11 +50,12 @@ public class Physics {
      * Applies a force to a rigidbody that simulates explosion effects.
      * 
      * @param rb
-     * @param explosionForce	- The force of the explosion (which may be modified by distance).
-     * @param explosionPosition	- The centre of the sphere within which the explosion has its effect.
-     * @param explosionRadius	- The radius of the sphere within which the explosion has its effect.
+     * @param explosionForce    The force of the explosion (which may be modified by distance).
+     * @param explosionPosition The centre of the sphere within which the explosion has its effect.
+     * @param explosionRadius   The radius of the sphere within which the explosion has its effect.
      */
-    public static void addExplosionForce(PhysicsRigidBody rb, float explosionForce, Vector3f explosionPosition, float explosionRadius) {
+    public static void addExplosionForce(PhysicsRigidBody rb, float explosionForce, Vector3f explosionPosition,
+            float explosionRadius) {
         Vector3f expCenter2Body = rb.getPhysicsLocation().subtract(explosionPosition);
         float distance = expCenter2Body.length();
         if (distance < explosionRadius) {
@@ -63,7 +64,7 @@ public class Physics {
             rb.setLinearVelocity(expCenter2Body.normalize().mult(strength));
         }
     }
-    
+
     /**
      * Casts a ray through the scene and returns all hits.
      * 
@@ -99,30 +100,34 @@ public class Physics {
         t.release();
         return lstResults;
     }
-     
+
     /**
      * Casts a ray through the scene and returns all hits.
      */
     public static List<RaycastHit> raycastAll(Vector3f origin, Vector3f direction, float maxDistance) {
         return raycastAll(origin, direction, maxDistance, ALL_LAYERS);
     }
-    
+
     /**
      * Casts a ray, from point origin, in direction direction, of length
-     * maxDistance, against all colliders in the scene. You may optionally
-     * provide a LayerMask, to filter out any Colliders you aren't interested in
-     * generating collisions with.
+     * maxDistance, against all colliders in the scene. You may optionally provide a
+     * LayerMask, to filter out any Colliders you aren't interested in generating
+     * collisions with.
      *
-     * @param origin        - The starting point of the ray in world coordinates. (not null, unaffected)
-     * @param direction     - The direction of the ray. (not null, unaffected)
-     * @param hitInfo       - If true is returned, hitInfo will contain more information about where the closest collider was hit. (See Also: RaycastHit).
-     * @param maxDistance   - The max distance the ray should check for collisions.
-     * @param layerMask     - A Layer mask that is used to selectively ignore Colliders when casting a ray.
-     * @return Returns true if the ray intersects with a Collider, otherwise
-     * false.
+     * @param origin      The starting point of the ray in world coordinates. (not
+     *                    null, unaffected)
+     * @param direction   The direction of the ray. (not null, unaffected)
+     * @param hitInfo     If true is returned, hitInfo will contain more
+     *                    information about where the closest collider was hit. (See
+     *                    Also: RaycastHit).
+     * @param maxDistance The max distance the ray should check for collisions.
+     * @param layerMask   A Layer mask that is used to selectively ignore
+     *                    Colliders when casting a ray.
+     * @return Returns true if the ray intersects with a Collider, otherwise false.
      */
-    public static boolean raycast(Vector3f origin, Vector3f direction, RaycastHit hitInfo, float maxDistance, int layerMask) {
-        
+    public static boolean raycast(Vector3f origin, Vector3f direction, RaycastHit hitInfo, float maxDistance,
+            int layerMask) {
+
         hitInfo.clear();
         boolean collision = false;
 
@@ -150,28 +155,31 @@ public class Physics {
         t.release();
         return collision;
     }
-    
+
     public static boolean raycast(Vector3f origin, Vector3f direction, RaycastHit hitInfo, float maxDistance) {
         return raycast(origin, direction, hitInfo, maxDistance, ALL_LAYERS);
     }
-    
+
     public static boolean raycast(Ray ray, RaycastHit hitInfo, float maxDistance, int layerMask) {
         return raycast(ray.origin, ray.direction, hitInfo, maxDistance, layerMask);
     }
-    
+
     public static boolean raycast(Ray ray, RaycastHit hitInfo, float maxDistance) {
         return raycast(ray.origin, ray.direction, hitInfo, maxDistance, ALL_LAYERS);
     }
 
     /**
-     * Returns true if there is any collider intersecting the line between start and end.
+     * Returns true if there is any collider intersecting the line between start and
+     * end.
      * 
-     * @param beginVec  - Start point (not null, unaffected).
-     * @param finalVec  - End point (not null, unaffected).
-     * @param hitInfo   - If true is returned, hitInfo will contain more information about where the closest collider was hit. (See Also: RaycastHit).
-     * @param layerMask - A Layer mask that is used to selectively ignore Colliders when casting a ray.
-     * @return Returns true if the ray intersects with a Collider, otherwise
-     * false.
+     * @param beginVec  Start point (not null, unaffected).
+     * @param finalVec  End point (not null, unaffected).
+     * @param hitInfo   If true is returned, hitInfo will contain more information
+     *                  about where the closest collider was hit. (See Also:
+     *                  RaycastHit).
+     * @param layerMask A Layer mask that is used to selectively ignore Colliders
+     *                  when casting a ray.
+     * @return Returns true if the ray intersects with a Collider, otherwise false.
      */
     public static boolean linecast(Vector3f beginVec, Vector3f finalVec, RaycastHit hitInfo, int layerMask) {
 
@@ -197,14 +205,15 @@ public class Physics {
 
         return collision;
     }
-        
+
     /**
-     * Returns true if there is any collider intersecting the line between start and end.
+     * Returns true if there is any collider intersecting the line between start and
+     * end.
      */
     public static boolean linecast(Vector3f beginVec, Vector3f finalVec, RaycastHit hitInfo) {
         return linecast(beginVec, finalVec, hitInfo, ALL_LAYERS);
     }
-    
+
     /**
      * Casts the box along a ray and returns detailed information on what was hit.
      * https://docs.unity3d.com/ScriptReference/Physics.BoxCast.html
@@ -219,16 +228,18 @@ public class Physics {
      *                    when casting a capsule.
      * @return True, if any intersections were found.
      */
-    public static boolean boxCast(Vector3f center, Vector3f halfExtents, Vector3f direction, RaycastHit hitInfo, float maxDistance, int layerMask) {
+    public static boolean boxCast(Vector3f center, Vector3f halfExtents, Vector3f direction, RaycastHit hitInfo,
+            float maxDistance, int layerMask) {
         BoxCollisionShape shape = new BoxCollisionShape(halfExtents);
         return sweepTest(center, direction, shape, hitInfo, maxDistance, layerMask);
     }
 
-    public static List<RaycastHit> boxCastAll(Vector3f center, Vector3f halfExtents, Vector3f direction, float maxDistance, int layerMask) {
+    public static List<RaycastHit> boxCastAll(Vector3f center, Vector3f halfExtents, Vector3f direction,
+            float maxDistance, int layerMask) {
         BoxCollisionShape shape = new BoxCollisionShape(halfExtents);
         return sweepTestAll(center, direction, shape, maxDistance, layerMask);
     }
-    
+
     /**
      * Casts a sphere along a ray and returns detailed information on what was hit.
      * https://docs.unity3d.com/ScriptReference/Physics.SphereCast.html
@@ -243,17 +254,20 @@ public class Physics {
      *                    when casting a capsule.
      * @return True, if any intersections were found.
      */
-    public static boolean sphereCast(Vector3f center, float radius, Vector3f direction, RaycastHit hitInfo, float maxDistance, int layerMask) {
+    public static boolean sphereCast(Vector3f center, float radius, Vector3f direction, RaycastHit hitInfo,
+            float maxDistance, int layerMask) {
         SphereCollisionShape shape = new SphereCollisionShape(radius);
         return sweepTest(center, direction, shape, hitInfo, maxDistance, layerMask);
     }
 
-    public static List<RaycastHit> sphereCastAll(Vector3f center, float radius, Vector3f direction, float maxDistance, int layerMask) {
+    public static List<RaycastHit> sphereCastAll(Vector3f center, float radius, Vector3f direction, 
+            float maxDistance, int layerMask) {
         SphereCollisionShape shape = new SphereCollisionShape(radius);
         return sweepTestAll(center, direction, shape, maxDistance, layerMask);
     }
 
-    private static boolean sweepTest(Vector3f center, Vector3f direction, ConvexShape shape, RaycastHit hitInfo, float maxDistance, int layerMask) {
+    private static boolean sweepTest(Vector3f center, Vector3f direction, ConvexShape shape, RaycastHit hitInfo,
+            float maxDistance, int layerMask) {
 
         hitInfo.clear();
         boolean collision = false;
@@ -273,7 +287,7 @@ public class Physics {
             PhysicsCollisionObject pco = tr.getCollisionObject();
 
             if (tr.getHitFraction() < hf && applyMask(layerMask, pco.getCollisionGroup())) {
-            	hf = tr.getHitFraction();
+                hf = tr.getHitFraction();
                 hitInfo.set(beginVec, finalVec, tr);
                 collision = true;
             }
@@ -282,8 +296,9 @@ public class Physics {
         t.release();
         return collision;
     }
-	
-    private static List<RaycastHit> sweepTestAll(Vector3f origin, Vector3f direction, ConvexShape shape, float maxDistance, int layerMask) {
+
+    private static List<RaycastHit> sweepTestAll(Vector3f origin, Vector3f direction, ConvexShape shape,
+            float maxDistance, int layerMask) {
 
         List<RaycastHit> lstResults = new ArrayList<>();
 
@@ -311,21 +326,20 @@ public class Physics {
         t.release();
         return lstResults;
     }
-   
+
     /**
      * Computes and stores colliders inside the sphere.
      * https://docs.unity3d.com/ScriptReference/Physics.OverlapSphere.html
      *
      * @param position  Center of the sphere.
      * @param radius    Radius of the sphere.
-     * @param layerMask A Layer mask defines which layers of colliders to include in
-     *                  the query.
+     * @param layerMask A Layer mask defines which layers of colliders to include in the query.
      * @return Returns all colliders that overlap with the given sphere.
      */
     public static Set<PhysicsCollisionObject> overlapSphere(Vector3f position, float radius, int layerMask) {
 
         Set<PhysicsCollisionObject> overlappingObjects = new HashSet<>(5);
-        PhysicsGhostObject ghost = new PhysicsGhostObject(new SphereCollisionShape(radius)); //MultiSphere
+        PhysicsGhostObject ghost = new PhysicsGhostObject(new SphereCollisionShape(radius)); // MultiSphere
         ghost.setPhysicsLocation(position);
 
         contactTest(ghost, overlappingObjects, layerMask);
@@ -335,7 +349,7 @@ public class Physics {
     public static Set<PhysicsCollisionObject> overlapSphere(Vector3f position, float radius) {
         return overlapSphere(position, radius, ALL_LAYERS);
     }
-    
+
     /**
      * Find all colliders touching or inside of the given box.
      * https://docs.unity3d.com/ScriptReference/Physics.OverlapBox.html
@@ -343,8 +357,7 @@ public class Physics {
      * @param center      Center of the box.
      * @param halfExtents Half of the size of the box in each dimension.
      * @param rotation    Rotation of the box.
-     * @param layerMask   A Layer mask that is used to selectively ignore colliders
-     *                    when casting a ray.
+     * @param layerMask   A Layer mask that is used to selectively ignore colliders  when casting a ray.
      * @return Returns all colliders that overlap with the given box.
      */
     public static Set<PhysicsCollisionObject> overlapBox(Vector3f center, Vector3f halfExtents, Quaternion rotation, int layerMask) {
@@ -386,15 +399,15 @@ public class Physics {
             }
         });
 
-        //logger.log(Level.INFO, "numContacts={0}", numContacts);
+        // logger.log(Level.INFO, "numContacts={0}", numContacts);
         return numContacts;
     }
-    
-    //TODO: https://docs.unity3d.com/ScriptReference/Physics.OverlapBoxNonAlloc.html
-    //TODO: https://docs.unity3d.com/ScriptReference/Physics.OverlapSphereNonAlloc.html
-    //TODO: https://docs.unity3d.com/ScriptReference/Physics.BoxCastNonAlloc.html
-    //TODO: https://docs.unity3d.com/ScriptReference/Physics.SphereCastNonAlloc.html
-    
+
+    // TODO: https://docs.unity3d.com/ScriptReference/Physics.OverlapBoxNonAlloc.html
+    // TODO: https://docs.unity3d.com/ScriptReference/Physics.OverlapSphereNonAlloc.html
+    // TODO: https://docs.unity3d.com/ScriptReference/Physics.BoxCastNonAlloc.html
+    // TODO: https://docs.unity3d.com/ScriptReference/Physics.SphereCastNonAlloc.html
+
     /**
      * Check if a collisionGroup is in a layerMask
      *
