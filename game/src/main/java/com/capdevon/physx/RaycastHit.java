@@ -21,37 +21,38 @@ public class RaycastHit {
     public Vector3f normal;
     public Vector3f point;
     public float distance;
-    
+
     public RaycastHit() {
         this.normal = new Vector3f();
-        this.point  = new Vector3f();
+        this.point = new Vector3f();
     }
-    
+
     protected void set(Vector3f beginVec, Vector3f finalVec, PhysicsRayTestResult ray) {
         PhysicsCollisionObject pco = ray.getCollisionObject();
         float hf = ray.getHitFraction();
 
-        rigidBody = pco;
-        collider = pco.getCollisionShape();
-        gameObject = GameObject.findGameObject(pco);
-        distance = finalVec.subtract(beginVec).length() * hf;
-        point.interpolateLocal(beginVec, finalVec, hf);
+        rigidBody   = pco;
+        collider    = pco.getCollisionShape();
+        gameObject  = GameObject.findGameObject(pco);
         ray.getHitNormalLocal(normal);
+        point.interpolateLocal(beginVec, finalVec, hf);
+        distance = beginVec.distance(point);
     }
-    
+
     protected void set(Vector3f beginVec, Vector3f finalVec, PhysicsSweepTestResult tr) {
         PhysicsCollisionObject pco = tr.getCollisionObject();
 
-        rigidBody = pco;
-        collider = pco.getCollisionShape();
-        gameObject = GameObject.findGameObject(pco);
-        MyVector3f.lerp(tr.getHitFraction(), beginVec, finalVec, point);
+        rigidBody   = pco;
+        collider    = pco.getCollisionShape();
+        gameObject  = GameObject.findGameObject(pco);
         tr.getHitNormalLocal(normal);
+        MyVector3f.lerp(tr.getHitFraction(), beginVec, finalVec, point);
         distance = beginVec.distance(point);
     }
-    
+
     public void clear() {
         rigidBody = null;
+        collider = null;
         gameObject = null;
         distance = Float.NaN;
         point.set(Vector3f.NAN);
@@ -60,11 +61,11 @@ public class RaycastHit {
 
     @Override
     public String toString() {
-        return "RaycastHit [rigidbody=" + toHexString(rigidBody)
+        return "RaycastHit [rigidbody=" + toHexString(rigidBody) 
                 + ", collider=" + toHexString(collider)
-                + ", gameObject=" + gameObject
-                + ", distance=" + distance
-                + ", normal=" + normal
+                + ", gameObject=" + gameObject 
+                + ", distance=" + distance 
+                + ", normal=" + normal 
                 + ", point=" + point
                 + "]";
     }
