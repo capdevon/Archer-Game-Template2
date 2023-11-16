@@ -10,7 +10,7 @@ import com.capdevon.engine.Capture;
 import com.capdevon.engine.SceneManager;
 import com.capdevon.input.GInputAppState;
 import com.capdevon.physx.Physics;
-import com.capdevon.physx.TogglePhysicsDebugState;
+import com.capdevon.physx.PhysxDebugState;
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.bullet.BulletAppState;
@@ -87,7 +87,7 @@ public class Main extends GameApplication {
         stateManager.attach(new SceneManager());
         stateManager.attach(new GInputAppState());
         stateManager.attach(new GameManager());
-        stateManager.attach(new TogglePhysicsDebugState());
+        stateManager.attach(new PhysxDebugState());
 
 //        stateManager.attach(new SceneAppState());
 //        stateManager.attach(new GInputAppState());

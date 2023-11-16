@@ -16,7 +16,7 @@ import jme3utilities.minie.PhysicsDumper;
 /**
  * @author capdevon
  */
-public class TogglePhysicsDebugState extends BaseAppState implements ActionListener {
+public class PhysxDebugState extends BaseAppState implements ActionListener {
 
     private static final String TOGGLE_PHYSICS_DEBUG = "TOGGLE_PHYSICS_DEBUG";
     private static final String DUMP_PHYSICS = "DUMP_PHYSICS";
