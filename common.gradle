@@ -3,12 +3,14 @@
 apply plugin: 'application'
 apply plugin: 'java'
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
 ext.jmeVersion = '3.6.1-stable'
 
 tasks.withType(JavaExec) { // Java runtime options:
-    enableAssertions true
+    enableAssertions = true
 }
 
 repositories {
