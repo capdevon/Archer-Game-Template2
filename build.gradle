@@ -7,3 +7,8 @@ plugins {
 subprojects {
     apply from: rootProject.file('common.gradle')
 }
+
+tasks.register('run') {
+    dependsOn ':game:run'
+    description = 'Runs the demo application.'
+}
