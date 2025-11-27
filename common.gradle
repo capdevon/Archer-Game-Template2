@@ -7,7 +7,6 @@ java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 }
-ext.jmeVersion = '3.6.1-stable'
 
 tasks.withType(JavaExec) { // Java runtime options:
     enableAssertions = true
@@ -19,19 +18,17 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.stephengold:Heart:8.8.0'
-    implementation 'com.github.stephengold:Minie:8.2.0+big4'
-    implementation 'com.github.stephengold:SkyControl:1.0.5'
-    implementation 'org.jmonkeyengine:jme3-core:' + jmeVersion
-    implementation 'org.jmonkeyengine:jme3-desktop:' + jmeVersion
-    implementation 'org.jmonkeyengine:jme3-effects:' + jmeVersion
-    runtimeOnly    'org.jmonkeyengine:jme3-awt-dialogs:' + jmeVersion
-    runtimeOnly    'org.jmonkeyengine:jme3-jogg:' + jmeVersion
-    implementation 'org.jmonkeyengine:jme3-plugins:' + jmeVersion
+    implementation(libs.heart)
+    implementation(libs.minie)
+    implementation(libs.skyControl)
+    implementation(libs.jme3.core)
+    implementation(libs.jme3.desktop)
+    implementation(libs.jme3.effects)
+    runtimeOnly(libs.jme3.awt.dialogs)
+    runtimeOnly(libs.jme3.jogg)
+    implementation(libs.jme3.plugins)
 
-    // select one version of LWJGL
-    //runtimeOnly 'org.jmonkeyengine:jme3-lwjgl:' + jmeVersion  // LWJGL 2.x
-    runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jmeVersion // LWJGL 3.x
+    runtimeOnly(libs.jme3.lwjgl3)
 
     implementation files('../lib/shaderblow-ex-1.0.0.jar')
     runtimeOnly    files('../lib/jme-materialize.jar')

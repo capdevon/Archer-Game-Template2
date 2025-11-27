@@ -8,11 +8,11 @@ sourceSets.main.java.srcDir '../game/src/main/java'
 sourceSets.main.resources.srcDir '../game/src/main/resources'
 
 dependencies {
-    runtimeOnly 'org.jmonkeyengine:jme3-testdata:' + jmeVersion
+    runtimeOnly(libs.jme3.testdata)
 
     // libraries related to the Lemur GUI and Groovy:
-    implementation 'com.simsilica:lemur:1.16.0'
-    implementation 'com.simsilica:lemur-props:1.2.0'
-    implementation 'com.simsilica:lemur-proto:1.13.0'
-    runtimeOnly 'org.codehaus.groovy:groovy-jsr223:3.0.19'
+    implementation(libs.lemur)
+    implementation(libs.lemur.props)
+    implementation(libs.lemur.proto)
+    runtimeOnly(libs.groovy.jsr223)
 }
