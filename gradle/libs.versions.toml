@@ -6,7 +6,7 @@ jme = "3.8.1-stable"
 
 [libraries]
 
-groovy-jsr223 = "org.codehaus.groovy:groovy-jsr223:3.0.19"
+groovy-jsr223 = "org.apache.groovy:groovy-jsr223:5.0.2"
 heart = "com.github.stephengold:Heart:9.2.0"
 
 jme3-awt-dialogs = { module = "org.jmonkeyengine:jme3-awt-dialogs", version.ref = "jme" }
