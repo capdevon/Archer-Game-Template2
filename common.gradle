@@ -17,6 +17,7 @@ tasks.withType(JavaExec) { // Java runtime options:
         jvmArgs '-XstartOnFirstThread'
     }
     enableAssertions = true
+    jvmArgs '--enable-native-access=ALL-UNNAMED' // suppress deprecation warnings
 }
 
 repositories {
