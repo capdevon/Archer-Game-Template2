@@ -1,13 +1,11 @@
-/*
- * settings.gradle: global settings shared by all subprojects
- */
+// global build settings for the Archer-Game-Template2 project
 
 rootProject.name = 'Archer-Game-Template2'
 
 /*
  * Enumerate subdirectories in the project's root directory that contain a
- * "build.gradle" file. Any subdirectory with a "build.gradle" file is
- * automatically a subproject of this project.
+ * "build.gradle" file. Any subdirectory that contains a "build.gradle" file is
+ * automatically included as a subproject.
  */
 def subDirs = rootDir.listFiles(
     new FileFilter() {

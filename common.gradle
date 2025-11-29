@@ -1,7 +1,7 @@
-// Gradle settings and tasks common to all Archer Game Template subprojects
+// Gradle settings and tasks common to all Archer-Game-Template2 subprojects
 
-apply plugin: 'application'
-apply plugin: 'java'
+apply plugin: 'application' // to build JVM applications
+apply plugin: 'java'        // to compile and test Java projects
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
