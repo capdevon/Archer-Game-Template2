@@ -45,9 +45,17 @@ public class Main extends GameApplication {
 
     /**
      * Start the jMonkeyEngine application
-     * @param args
+     *
+     * @param args might contain "--noDialog"
      */
     public static void main(String[] args) {
+        boolean showSettingsDialog = true;
+        for (String arg : args) {
+            if (arg.equals("--noDialog")) {
+                showSettingsDialog = false;
+            }
+        }
+
         // Mute the chatty loggers in certain packages.
         Heart.setLoggingLevels(Level.WARNING);
 
@@ -65,7 +73,7 @@ public class Main extends GameApplication {
         //settings.setFrameRate(60);
 
         app.setSettings(settings);
-        app.setShowSettings(true);
+        app.setShowSettings(showSettingsDialog);
         app.setPauseOnLostFocus(false);
         app.start();
     }

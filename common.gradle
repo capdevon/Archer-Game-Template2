@@ -8,7 +8,14 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+Boolean isMacOS = DefaultNativePlatform.currentOperatingSystem.isMacOsX()
+
 tasks.withType(JavaExec) { // Java runtime options:
+    if (isMacOS) {
+        args '--noDialog'
+        jvmArgs '-XstartOnFirstThread'
+    }
     enableAssertions = true
 }
 
