@@ -38,7 +38,6 @@ public class ExplosiveArrowControl extends AdapterControl implements PhysicsColl
 
     public float maxFlyingTime = 10f;
     public float explosionForce = 20f;
-    public float explosionRadius = 4f;
     public ExplosionPrefab explosionPrefab;
 
     public ExplosiveArrowControl() {
@@ -56,7 +55,7 @@ public class ExplosiveArrowControl extends AdapterControl implements PhysicsColl
     }
 
     private void createGhostObject() {
-        ghostObject = new PhysicsGhostObject(new SphereCollisionShape(explosionRadius));
+        ghostObject = new PhysicsGhostObject(new SphereCollisionShape(FireWeapon.explosionRadius));
     }
 
     @Override
@@ -134,7 +133,7 @@ public class ExplosiveArrowControl extends AdapterControl implements PhysicsColl
                 PhysicsRigidBody rb = (PhysicsRigidBody) pco;
                 if (rb.getMass() > 0) {
                     logger.log(Level.INFO, "addExplosionForce to: {0}", gameObject);
-                    Physics.addExplosionForce(rb, explosionForce, rigidBody.getPhysicsLocation(), explosionRadius);
+                    Physics.addExplosionForce(rb, explosionForce, rigidBody.getPhysicsLocation(), FireWeapon.explosionRadius);
                 }
                 if (!affectedGameObjects.contains(gameObject)) {
                     affectedGameObjects.add(gameObject);

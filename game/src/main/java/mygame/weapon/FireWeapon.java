@@ -27,7 +27,7 @@ public class FireWeapon extends Weapon {
     private static final Logger logger = Logger.getLogger(FireWeapon.class.getName());
 
     public float distance = 30f;
-    public float explosionRadius = 5;
+    public static float explosionRadius = 1.5f;
     public float baseStrength = 10f;
     public int layerMask = Main.DEFAULT_GROUP;
     public AudioNode impactSFX;
