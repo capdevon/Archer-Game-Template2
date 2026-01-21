@@ -2,7 +2,7 @@
 
 [versions]
 
-jme = "3.9.0-beta1"
+jme = "3.9.0-stable"
 
 [libraries]
 
