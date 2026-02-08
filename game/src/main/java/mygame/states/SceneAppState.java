@@ -97,7 +97,7 @@ public class SceneAppState extends SimpleAppState {
         CollisionShape shape = CollisionShapeFactory.createMeshShape(scene);
         RigidBodyControl rbc = new RigidBodyControl(shape, PhysicsBody.massForStatic);
         scene.addControl(rbc);
-        getPhysicsSpace().add(rbc);
+        rbc.setPhysicsSpace(getPhysicsSpace());
 
         rootNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         rootNode.setQueueBucket(RenderQueue.Bucket.Opaque);

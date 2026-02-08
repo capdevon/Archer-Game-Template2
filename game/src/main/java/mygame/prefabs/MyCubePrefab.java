@@ -49,7 +49,7 @@ public class MyCubePrefab extends PrefabComponent {
         CollisionShape shape = new BoxCollisionShape(size, size, size);
         JoinedBodyControl jbc = new JoinedBodyControl(shape, mass);
         cube.addControl(jbc);
-        getPhysicsSpace().add(jbc);
+        jbc.setPhysicsSpace(getPhysicsSpace());
 
         Damageable m_Damageable = new Damageable();
         cube.addControl(m_Damageable);

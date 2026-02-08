@@ -59,12 +59,12 @@ public class MonsterPrefab extends PrefabComponent {
 
         BetterCharacterControl bcc = new BetterCharacterControl(radius, height, 1000f);
         enemy.addControl(bcc);
-        phySpace.add(bcc);
+        bcc.setPhysicsSpace(phySpace);
         bcc.setPhysicsDamping(1f);
         bcc.setViewDirection(rotation.mult(Vector3f.UNIT_Z));
 
         DynamicAnimControl ragdoll = GameObject.getComponentInChildren(enemy, DynamicAnimControl.class);
-        phySpace.add(ragdoll);
+        ragdoll.setPhysicsSpace(phySpace);
 
         // The ragdoll and the character control should ignore one another.
         PhysicsRigidBody bccBody = bcc.getRigidBody();
