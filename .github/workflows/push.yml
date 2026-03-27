@@ -37,5 +37,5 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 25
-      - uses: gradle/actions/wrapper-validation@v5
+      - uses: gradle/actions/wrapper-validation@v6
       - run: ./gradlew javadoc build --console=plain --stacktrace
