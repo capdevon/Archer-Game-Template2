@@ -32,11 +32,12 @@ dependencies {
     implementation(libs.jme3.core)
     implementation(libs.jme3.desktop)
     implementation(libs.jme3.effects)
-    runtimeOnly(libs.jme3.awt.dialogs)
-    runtimeOnly(libs.jme3.jogg)
     implementation(libs.jme3.plugins)
 
+    runtimeOnly(libs.jme3.awt.dialogs)
+    runtimeOnly(libs.jme3.jogg)
     runtimeOnly(libs.jme3.lwjgl3)
+    runtimeOnly(libs.jme3.saferallocator)
 
     implementation files('../lib/shaderblow-ex-1.0.0.jar')
     runtimeOnly    files('../lib/jme-materialize.jar')
