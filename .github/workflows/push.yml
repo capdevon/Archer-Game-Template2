@@ -28,7 +28,7 @@ jobs:
       - run: ./gradlew javadoc build --console=plain --stacktrace
         shell: bash
 
-  Java25-Linux:
+  Java26-Linux:
     if: contains(toJson(github.event.commits), '[ci skip] ') == false
     runs-on: ubuntu-24.04
     steps:
@@ -36,6 +36,6 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
-          java-version: 25
+          java-version: 26
       - uses: gradle/actions/wrapper-validation@v6
       - run: ./gradlew javadoc build --console=plain --stacktrace
