@@ -1,4 +1,9 @@
 ## Archer-Game-Template 2
+[![Java Support](https://img.shields.io/badge/Java-11-orange.svg)](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
+[![jMonkeyEngine](https://img.shields.io/badge/jMonkeyEngine-3.9.0--stable-blue.svg)](https://jmonkeyengine.org/)
+
+> 💡 **Built for Developers:** Clean, modular Java code engineered to jumpstart your survival horror, action-adventure, or tactical shooter prototypes without starting from scratch.
+
 A demo of a third-person controller with a bow and arrow system made with [jMonkeyEngine](https://jmonkeyengine.org/)
 
 The demo contains:
@@ -37,7 +42,7 @@ The demo contains:
 - [Lemur](https://github.com/jMonkeyEngine-Contributions/Lemur) - jMonkeyEngine-based UI toolkit.
 - java 11+
 
-# 
+# 📸 Media / Showcase
 ![Screenshot](images/archer-1.jpg)
 ![Screenshot](images/archer-2.jpg)
 
