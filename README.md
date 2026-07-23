@@ -83,5 +83,5 @@ You can restore the project to a pristine state:
 + using Windows Command Prompt: `.\gradlew clean`
 
 
-[adoptium]: https://adoptium.net/releases.html "Adoptium Project"
+[adoptium]: https://adoptium.net/temurin/releases/ "Adoptium Project"
 [gradle]: https://gradle.org "Gradle Project"
