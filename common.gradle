@@ -5,7 +5,7 @@ apply plugin: 'java'        // to compile and test Java projects
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
