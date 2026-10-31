@@ -2,12 +2,12 @@
 
 [versions]
 
-jme = "3.10.0-beta2"
+jme = "3.9.0-stable"
 
 [libraries]
 
 groovy-jsr223 = "org.apache.groovy:groovy-jsr223:6.0.0"
-heart = "com.github.stephengold:Heart:9.4.0-test1"
+heart = "com.github.stephengold:Heart:9.3.0"
 
 jme3-awt-dialogs = { module = "org.jmonkeyengine:jme3-awt-dialogs", version.ref = "jme" }
 jme3-core = { module = "org.jmonkeyengine:jme3-core", version.ref = "jme" }
@@ -23,7 +23,7 @@ lemur = "com.simsilica:lemur:1.16.0"
 lemur-props = "com.simsilica:lemur-props:1.2.0"
 lemur-proto = "com.simsilica:lemur-proto:1.13.0"
 
-minie = "com.github.stephengold:Minie:10.0.0-test1"
+minie = "com.github.stephengold:Minie:9.0.3"
 skyControl = "com.github.stephengold:SkyControl:1.1.0"
 
 [bundles]

@@ -37,7 +37,7 @@ dependencies {
     runtimeOnly(rootProject.libs.jme3.awt.dialogs)
     runtimeOnly(rootProject.libs.jme3.jogg)
     runtimeOnly(rootProject.libs.jme3.lwjgl3)
-    runtimeOnly(rootProject.libs.jme3.saferallocator)
+    //runtimeOnly(rootProject.libs.jme3.saferallocator) coming soon in JME v3.10
 
     implementation files('../lib/shaderblow-ex-1.0.0.jar')
     runtimeOnly    files('../lib/jme-materialize.jar')
