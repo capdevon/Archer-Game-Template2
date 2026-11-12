@@ -23,7 +23,7 @@ The demo contains:
 * Particles Effects
 * Post Processing Filters
 
-## Keyboard Commands
+## Keyboard/Mouse Commands
 - WASD: Basic movements
 - E: Aiming
 - R: Switch arrow type
@@ -35,7 +35,7 @@ The demo contains:
 ## Youtube videos
 [Demo](https://www.youtube.com/watch?v=US9KNTqL2js&feature=emb_logo)
 
-# Requirements
+# Dependencies
 - [jmonkeyengine](https://github.com/jMonkeyEngine/jmonkeyengine) - A complete 3D game development suite written purely in Java.
 - [Minie](https://stephengold.github.io/Minie/minie/overview.html) - A physics library for JMonkeyEngine.
 - [SkyControl](https://github.com/stephengold/SkyControl) - A sky simulation library for jMonkeyEngine
