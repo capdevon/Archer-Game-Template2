@@ -25,11 +25,11 @@ The demo contains:
 
 ## Keyboard/Mouse Commands
 - WASD: Basic movements
-- E: Aiming
-- R: Switch arrow type
-- LMB: Left Mouse Button to fire
-- LSHIFT: Running
-- CAMERA: Use the mouse to orient the camera
+- Move the mouse to rotate the camera
+- E: Aim the bow
+- Click the Left Mouse Button (LMB) to fire the bow
+- R: Next arrow type
+- N: Toggle day/night
 - KEY_0: Toggle Physics Debug
 
 # Dependencies
