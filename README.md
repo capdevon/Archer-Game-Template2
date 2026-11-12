@@ -69,15 +69,15 @@ I acknowledge the following artists and software developers:
 3. Download and extract the demo source code from GitHub:
   + `git clone https://github.com/capdevon/Archer-Game-Template2.git`
   + `cd Archer-Game-Template2`
-  + `git branch latest 14000ad6`
+  + `git branch latest e6b69d2`
   + `git checkout latest`
 4. Run the [Gradle] wrapper:
   + using Bash or PowerShell or Zsh: `./gradlew build`
   + using Windows Command Prompt: `.\gradlew build`
 
 You can run the demo application:
-+ using Bash or PowerShell or Zsh: `./gradlew run`
-+ using Windows Command Prompt: `.\gradlew run`
++ using Bash or PowerShell or Zsh: `./gradlew :game:run`
++ using Windows Command Prompt: `.\gradlew :game:run`
 
 You can restore the project to a pristine state:
 + using Bash or PowerShell or Zsh: `./gradlew clean`
