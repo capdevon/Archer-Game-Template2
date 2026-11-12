@@ -1,5 +1,5 @@
 ## Archer-Game-Template 2
-[![Java Support](https://img.shields.io/badge/Java-11-orange.svg)](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
+[![Java Support](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/technologies/downloads/#java17)
 [![jMonkeyEngine](https://img.shields.io/badge/jMonkeyEngine-3.9.0--stable-blue.svg)](https://jmonkeyengine.org/)
 
 > 💡 **Built for Developers:** Clean, modular Java code engineered to jumpstart your survival horror, action-adventure, or tactical shooter prototypes without starting from scratch.
@@ -40,7 +40,7 @@ The demo contains:
 - [Minie](https://stephengold.github.io/Minie/minie/overview.html) - A physics library for JMonkeyEngine.
 - [SkyControl](https://github.com/stephengold/SkyControl) - A sky simulation library for jMonkeyEngine
 - [Lemur](https://github.com/jMonkeyEngine-Contributions/Lemur) - jMonkeyEngine-based UI toolkit.
-- java 11+
+- JDK 17+
 
 # 📸 Media / Showcase
 ![Screenshot](images/archer-1.jpg)
@@ -57,10 +57,11 @@ I acknowledge the following artists and software developers:
 ## How to build and run the demo from source
 
 1. Install a 64-bit [Java Development Kit (JDK)][adoptium],
+   version 17 or higher,
    if you don't already have one.
 2. Point the "JAVA_HOME" environment variable to your JDK installation.
-   (The path might be something like "C:\Program Files\Java\jre1.8.0_301"
-   or "/usr/lib/jvm/java-8-openjdk-amd64" or
+   (The path might be something like "C:\Program Files\Eclipse Adoptium\jdk-17.0.3.7-hotspot"
+   or "/usr/lib/jvm/jdk-17.0.19+10" or
    "/Library/Java/JavaVirtualMachines/liberica-jdk-17-full.jdk/Contents/Home" .)
   + using Bash or Zsh: `export JAVA_HOME="` *path to installation* `"`
   + using Windows Command Prompt: `set JAVA_HOME="` *path to installation* `"`
