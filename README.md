@@ -32,9 +32,6 @@ The demo contains:
 - CAMERA: Use the mouse to orient the camera
 - KEY_0: Toggle Physics Debug
 
-## Youtube videos
-[Demo](https://www.youtube.com/watch?v=US9KNTqL2js&feature=emb_logo)
-
 # Dependencies
 - [jmonkeyengine](https://github.com/jMonkeyEngine/jmonkeyengine) - A complete 3D game development suite written purely in Java.
 - [Minie](https://stephengold.github.io/Minie/minie/overview.html) - A physics library for JMonkeyEngine.
