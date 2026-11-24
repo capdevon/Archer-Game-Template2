@@ -7,7 +7,7 @@ on: [push]
 jobs:
   Java17-MacOS:
     if: contains(toJson(github.event.commits), '[ci skip] ') == false
-    runs-on: macos-26
+    runs-on: xcode-27
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-java@v6
